@@ -10,11 +10,9 @@
         {
             "id": "workflow_test_01",
             "parameters": {
-                "tumor_bam": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/tumor.bam",
-                "tumor_bai": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/tumor.bai",
-                "normal_bam": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/normal.bam",
-                "normal_bai": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/normal.bai",
-                "external_identifier": "INS-D-004-ST"
+                "input_files_tumor": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/tumor.bam",
+                "input_files_normal": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/normal.bam",
+                "external_name": "INS-D-004-ST"
             }
         }
     ]

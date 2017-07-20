@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Development Tests" parallel="methods" thread-count="20">
+    <test name="Run Tests">
+        <classes>
+            <parameter name="testDefinition" value="/developmentRunTests.json"/>
+            <class name="ca.on.oicr.pde.testing.DeciderRunTestFactory"/>
+        </classes>
+    </test>
+</suite>

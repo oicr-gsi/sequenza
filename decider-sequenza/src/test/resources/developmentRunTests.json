@@ -1,0 +1,50 @@
+{
+    "defaults": {
+        "description": "BamQC decider test",
+        "metricsResources": "/expected_output/development/",
+        "parameters": {
+            "--rsconfig-file": "/.mounts/labs/PDE/data/rsconfig.xml",
+            "--parent-wf-accessions": "23341,375928,570530,942767,1753734"
+        },
+        "iniExclusions": ["parent-accessions", "json_metadata_file", "workflow_run_accession", "workflow-run-accession",
+            "unique_string", "parent_accessions", "parent_accession", "input_file", "input_files", "workflow_bundle_dir",
+            "output_prefix", "samstats_script"]
+    },
+    "tests": [
+        {
+            "id": "TGL01 study test",
+            "parameters": {
+                "--study-name": "TGL01",
+                "--after-date": "2015-11-19"
+            }
+        },
+        {
+            "id": "TGL-0001 sample test",
+            "parameters": {
+                "--root-sample-name": "TGL01_0001",
+                "--after-date": "2015-11-19"
+            }
+        },
+        {
+            "id": "sequencer run test",
+            "parameters": {
+                "--sequencer-run-name": "120912_h804_0094_BD181GACXX",
+                "--after-date": "2013-11-19"
+            }
+        },
+        {
+            "id": "OBC sample test",
+            "parameters": {
+                "--root-sample-name": "OBC_0001",
+                "--after-date": "2013-11-19"
+            }
+        },
+        {
+            "id": "GP-453",
+            "parameters": {
+                "--root-sample-name": "LSP_0001",
+                "--after-date": "2015-08-21"
+            }
+        }
+    ]
+}

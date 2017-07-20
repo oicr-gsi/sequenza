@@ -1,0 +1,406 @@
+{
+  "workflowRunCount" : 8,
+  "studies" : [ "SingleCellSeq" ],
+  "sequencerRuns" : [ "120912_h804_0094_BD181GACXX" ],
+  "lanes" : [ "120912_h804_0094_BD181GACXX_lane_1", "120912_h804_0094_BD181GACXX_lane_2", "120912_h804_0094_BD181GACXX_lane_3", "120912_h804_0094_BD181GACXX_lane_4", "120912_h804_0094_BD181GACXX_lane_5", "120912_h804_0094_BD181GACXX_lane_6", "120912_h804_0094_BD181GACXX_lane_7", "120912_h804_0094_BD181GACXX_lane_8" ],
+  "samples" : [ "SCS_0006_nn_n_PE_300_WG", "SCS_0007_nn_n_PE_300_WG", "SCS_0008_nn_n_PE_300_WG" ],
+  "workflows" : [ "GenomicAlignmentNovoalign" ],
+  "processingAlgorithms" : [ "PicardAddReadGroups" ],
+  "fileMetaTypes" : [ "application/bam" ],
+  "maxInputFiles" : 1,
+  "minInputFiles" : 1,
+  "totalInputFiles" : 8,
+  "workflowRuns" : [ {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0006_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0006_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0006\\\",\\\"lane\\\":1,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1349891405451000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0006_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G3.1-10_H" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7122", "7489", "7490", "7491" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1068_6_1", "1130_1_2", "1130_2_2", "1130_3_2" ] ],
+        "geo_template_id" : [ [ "21539", "21557", "21558" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_1" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "1" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : -1065943906
+    } ]
+  }, {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0006_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0006_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0006\\\",\\\"lane\\\":2,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1349428763385000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0006_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G3.1-10_H" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7122", "7489", "7490", "7491" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1068_6_1", "1130_1_2", "1130_2_2", "1130_3_2" ] ],
+        "geo_template_id" : [ [ "21539", "21557", "21558" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_2" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "2" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : -183673678
+    } ]
+  }, {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0006_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0006_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0006\\\",\\\"lane\\\":3,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1350122655743000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0006_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G3.1-10_H" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7122", "7489", "7490", "7491" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1068_6_1", "1130_1_2", "1130_2_2", "1130_3_2" ] ],
+        "geo_template_id" : [ [ "21539", "21557", "21558" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_3" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "3" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : 1013662556
+    } ]
+  }, {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0007_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0007_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0007\\\",\\\"lane\\\":4,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1349529211025000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0007_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G0" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7134", "7492", "7493", "7494" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1070_6_1", "1130_4_2", "1130_5_2", "1130_6_2" ] ],
+        "geo_template_id" : [ [ "21540", "21559", "21560" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_4" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "4" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : -1312368166
+    } ]
+  }, {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0007_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0007_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0007\\\",\\\"lane\\\":5,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1349423359676000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0007_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G0" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7134", "7492", "7493", "7494" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1070_6_1", "1130_4_2", "1130_5_2", "1130_6_2" ] ],
+        "geo_template_id" : [ [ "21540", "21559", "21560" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_5" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "5" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : 1697166438
+    } ]
+  }, {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0007_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0007_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0007\\\",\\\"lane\\\":6,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1349424801304000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0007_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G0" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7134", "7492", "7493", "7494" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1070_6_1", "1130_4_2", "1130_5_2", "1130_6_2" ] ],
+        "geo_template_id" : [ [ "21540", "21559", "21560" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_6" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "6" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : 625928507
+    } ]
+  }, {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0008_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0008_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0008\\\",\\\"lane\\\":7,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1350068749760000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0008_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G2.5" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7135", "7495", "7496" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1070_7_1", "1130_7_2", "1130_8_2" ] ],
+        "geo_template_id" : [ [ "21541", "21561", "21562" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_7" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "7" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : -1832690829
+    } ]
+  }, {
+    "workflowIni" : {
+      "json_metadata" : "{\\\"run name\\\":\\\"120912_h804_0094_BD181GACXX\\\",\\\"instrument\\\":\\\"h804\\\",\\\"barcode\\\":\\\"NoIndex\\\",\\\"library\\\":\\\"SCS_0008_nn_n_PE_300_WG\\\",\\\"sample\\\":\\\"SCS_0008_nn_n_PE\\\",\\\"sample group\\\":\\\"SCS_0008\\\",\\\"lane\\\":8,\\\"sequencing type\\\":\\\"WG\\\",\\\"workflow name\\\":\\\"GenomicAlignmentNovoalign\\\",\\\"workflow version\\\":\\\"0.10.1\\\",\\\"last modified\\\":\\\"1349437240149000\\\"}",
+      "manual_output" : "false",
+      "map_qual_cut" : "30",
+      "metadata" : "metadata",
+      "normal_insert_max" : "1500",
+      "output_dir" : "seqware-results",
+      "output_path" : "NA",
+      "sample_rate" : "1000",
+      "target_bed" : "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
+    },
+    "files" : [ {
+      "studyTitle" : [ "SingleCellSeq" ],
+      "studyAttributes" : {
+        "geo_lab_group_id" : [ [ "138" ] ]
+      },
+      "experimentName" : [ ],
+      "experimentAttributes" : { },
+      "sampleName" : [ "SCS_0008_nn_n_PE_300_WG" ],
+      "sampleAttributes" : {
+        "geo_external_name" : [ [ "G2.5" ] ],
+        "geo_library_source_template_type" : [ [ "WG" ] ],
+        "geo_organism" : [ [ "Homo sapiens" ] ],
+        "geo_prep_kit" : [ [ "GA_multiplex" ] ],
+        "geo_reaction_id" : [ [ "7135", "7495", "7496" ] ],
+        "geo_run_id_and_position_and_slot" : [ [ "1070_7_1", "1130_7_2", "1130_8_2" ] ],
+        "geo_template_id" : [ [ "21541", "21561", "21562" ] ],
+        "geo_template_type" : [ [ "Identity", "Illumina PE Library", "Illumina PE Library Seq" ] ],
+        "geo_tissue_origin" : [ [ "nn" ] ],
+        "geo_tissue_type" : [ [ "n" ] ]
+      },
+      "sequencerRunName" : [ "120912_h804_0094_BD181GACXX" ],
+      "sequencerRunAttributes" : {
+        "geo_instrument_run_id" : [ [ "1130" ] ]
+      },
+      "laneName" : [ "120912_h804_0094_BD181GACXX_lane_8" ],
+      "laneAttributes" : {
+        "geo_lane" : [ [ "8" ] ]
+      },
+      "iusTag" : [ "NoIndex" ],
+      "iusAttributes" : { },
+      "workflowName" : [ "GenomicAlignmentNovoalign" ],
+      "processingAlgorithm" : [ "PicardAddReadGroups" ],
+      "processingAttributes" : { },
+      "fileMetaType" : [ "application/bam" ],
+      "fileAttributes" : { },
+      "fileId" : 1513304839
+    } ]
+  } ]
+}

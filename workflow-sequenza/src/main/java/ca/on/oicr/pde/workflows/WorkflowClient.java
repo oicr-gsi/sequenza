@@ -29,9 +29,7 @@ public class WorkflowClient extends OicrWorkflow {
     
     // Input Data
     private String tumorBam;
-    private String tumorBai;
     private String normalBam;
-    private String normalBai;
     private String externalId;
     
     // Output check
@@ -71,13 +69,11 @@ public class WorkflowClient extends OicrWorkflow {
             tmpDir = getProperty("tmp_dir");
             
             // input samples 
-            tumorBam = getProperty("tumor_bam");
-            tumorBai = getProperty("tumor_bai");
-            normalBam = getProperty("normal_bam");
-            normalBai = getProperty("normal_bai");
+            tumorBam = getProperty("input_files_tumor");
+            normalBam = getProperty("input_files_tumor");
 
             //Ext id
-            externalId = getProperty("external_identifier");
+            externalId = getProperty("external_name");
 
             //bin data 
             sequenzaGCData = getProperty("sequenza_bin_data_hg19");
