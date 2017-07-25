@@ -1,45 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>ca.on.oicr.gsi</groupId>
-        <artifactId>pipedev-decider-parent</artifactId>
-        <version>2.2</version>
-        <relativePath/>
-    </parent>
-
-    <groupId>ca.on.oicr.pde.deciders</groupId>
-    <artifactId>Sequenza</artifactId>
+    <groupId>ca.on.oicr.pde</groupId>
+    <artifactId>sequenza</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
-
-    <name>${display-name}</name>
-
+    <packaging>pom</packaging>
+    <modules>
+        <module>decider-sequenza</module>
+        <module>decider-sequenza</module>
+        <module>workflow-sequenza</module>
+        <module>workflow-sequenza</module>
+    </modules>
     <properties>
-        <workflow-version>1.0</workflow-version>
-        <main-class>ca.on.oicr.pde.deciders.SequenzaDecider</main-class>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>ca.on.oicr.pde.workflows</groupId>
-            <artifactId>workflow-sequenza</artifactId>
-            <version>${workflow-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-    </dependencies>
-     
 </project>
