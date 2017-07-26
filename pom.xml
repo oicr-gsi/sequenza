@@ -7,8 +7,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>decider-sequenza</module>
-        <module>decider-sequenza</module>
-        <module>workflow-sequenza</module>
         <module>workflow-sequenza</module>
     </modules>
     <properties>
