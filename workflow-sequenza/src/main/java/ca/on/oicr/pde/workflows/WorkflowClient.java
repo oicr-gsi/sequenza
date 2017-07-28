@@ -181,7 +181,7 @@ public class WorkflowClient extends OicrWorkflow {
         command.addArgument("-n " + normalSampleBamFilePath);
         command.addArgument("-t " + tumorSampleBamFilePath);
         command.addArgument("-gc " + sequenzaGCData);
-        command.addArgument("-S " + "/oicr/local/analysis/sw/samtools/" + samtools + "/samtools" + " |");
+        command.addArgument("-S " + samtools + " |");
         command.addArgument(pypy);
         command.addArgument(sequenzaUtil);
         command.addArgument("seqz-binning");
