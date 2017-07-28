@@ -3,8 +3,8 @@
         "description": "Sequenza workflow test",
         "metrics_calculate": "calculate.sh",
         "metrics_compare": "compare.sh",
-        "input_config_dir": "/.mounts/labs/PDE/data/RegressionTests/Sequenza/workflow/input_config/",
-        "output_metrics_dir": "/.mounts/labs/PDE/data/RegressionTests/Sequenza/workflow/output_expectation/"
+        "input_config_dir": "/.mounts/labs/PDE/data/RegressionTests/Sequenza/workflow/input_config/${project.version}",
+        "output_metrics_dir": "/.mounts/labs/PDE/data/RegressionTests/Sequenza/workflow/output_expectation/${project.version}"
     },
     "tests": [
         {
