@@ -155,13 +155,16 @@ public class WorkflowClient extends OicrWorkflow {
         intermediateFilePath = tempDir+sample_name + "seqz.bin50.gz";
         
         Job sequenzaUtilJob = getSequenzaUtilsJob(inputNormalBamFilePath, inputTumorBamFilePath, intermediateFilePath);
+        sequenzaUtilJob.addParent(parentJob);
         parentJob = sequenzaUtilJob;
         
         Job runSequenzaR = runSequenzaRJob(intermediateFilePath, outputDir);
+        runSequenzaR.addParent(parentJob);
         parentJob = runSequenzaR;
         
         String cmd = iterOutputDir(outputDir);
         Job zipFiles = getWorkflow().createBashJob("zip-model-fit");
+        zipFiles.addParent(parentJob);
         Command command = zipFiles.getCommand();
         command.addArgument(cmd);
 
@@ -178,7 +181,7 @@ public class WorkflowClient extends OicrWorkflow {
         command.addArgument("-n " + normalSampleBamFilePath);
         command.addArgument("-t " + tumorSampleBamFilePath);
         command.addArgument("-gc " + sequenzaGCData);
-        command.addArgument("-S " + samtools + " |");
+        command.addArgument("-S " + "samtools" + " |");
         command.addArgument(pypy);
         command.addArgument(sequenzaUtil);
         command.addArgument("seqz-binning");
