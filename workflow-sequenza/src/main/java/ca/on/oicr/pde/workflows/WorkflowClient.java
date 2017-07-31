@@ -155,7 +155,7 @@ public class WorkflowClient extends OicrWorkflow {
         intermediateFilePath = tempDir+sample_name + "seqz.bin50.gz";
         
         Job sequenzaUtilJob = getSequenzaUtilsJob(inputNormalBamFilePath, inputTumorBamFilePath, intermediateFilePath);
-        sequenzaUtilJob.addParent(parentJob);
+        //sequenzaUtilJob.addParent(parentJob);
         parentJob = sequenzaUtilJob;
         
         Job runSequenzaR = runSequenzaRJob(intermediateFilePath, outputDir);
