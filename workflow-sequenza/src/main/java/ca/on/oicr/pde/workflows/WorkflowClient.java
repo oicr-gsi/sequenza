@@ -49,6 +49,7 @@ public class WorkflowClient extends OicrWorkflow {
     //path to bin
     private String pypy;
     private String rScript;
+    private String rLib;
     
     //ref Data
     private String refFasta;
@@ -86,6 +87,7 @@ public class WorkflowClient extends OicrWorkflow {
 
             //r path
             rScript = getProperty("rpath") + "/bin/Rscript";
+            rLib = getProperty("rLib");
             pypy = getProperty("pypy");
             manualOutput = Boolean.parseBoolean(getProperty("manual_output"));
             queue = getOptionalProperty("queue", "");
@@ -158,6 +160,9 @@ public class WorkflowClient extends OicrWorkflow {
         //sequenzaUtilJob.addParent(parentJob);
         parentJob = sequenzaUtilJob;
         
+        Job loadRLib = runLoadRLib();
+        loadRLib.addParent(parentJob);
+        parentJob = loadRLib;
         Job runSequenzaR = runSequenzaRJob(intermediateFilePath, outputDir);
         runSequenzaR.addParent(parentJob);
         parentJob = runSequenzaR;
@@ -192,6 +197,12 @@ public class WorkflowClient extends OicrWorkflow {
         return jobSequenzaUtils;
     }
 
+    private Job runLoadRLib(){
+        Job rlibLoadJob = getWorkflow().createBashJob("load_rlib");
+        Command cmd = rlibLoadJob.getCommand();
+        cmd.addArgument("export R_LIBS=" + rLib);
+        return rlibLoadJob;
+    }
     private Job runSequenzaRJob(String intFilePath, String outDir) {
         Job jobSequenzaR = getWorkflow().createBashJob("sequenza_R");
         Command cmd = jobSequenzaR.getCommand();
