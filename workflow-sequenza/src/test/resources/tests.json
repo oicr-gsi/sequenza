@@ -13,9 +13,9 @@
                 "input_files_tumor": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/TGL01_0001_Sk_M_PE_426_EX.sorted.filter.deduped.realign.recal.bam",
                 "input_files_normal": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/TGL01_0001_Pb_R_PE_466_EX.sorted.filter.deduped.realign.recal.bam",
                 "external_name": "INS-D-004-ST"
-            },
-        {
-            "id": "workflow_test_02",
+            }
+        },
+        {    "id": "workflow_test_02",
             "parameters": {
                 "input_files_tumor": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/tumor.bam",
                 "input_files_normal": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/normal.bam",
