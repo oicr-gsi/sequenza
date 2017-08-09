@@ -71,7 +71,7 @@ public class WorkflowClient extends OicrWorkflow {
             
             // input samples 
             tumorBam = getProperty("input_files_tumor");
-            normalBam = getProperty("input_files_tumor");
+            normalBam = getProperty("input_files_normal");
 
             //Ext id
             externalId = getProperty("external_name");
