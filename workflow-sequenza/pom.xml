@@ -20,17 +20,7 @@
 
     <properties>
         <workflow-name>Sequenza</workflow-name>
-        <samtools-version>0.1.19</samtools-version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>samtools</groupId>
-            <artifactId>samtools</artifactId>
-            <version>${samtools-version}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 
 </project>

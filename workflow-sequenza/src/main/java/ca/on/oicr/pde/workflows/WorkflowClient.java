@@ -150,23 +150,20 @@ public class WorkflowClient extends OicrWorkflow {
         String inputNormalBamFilePath = this.normalBam;
         String inputTumorBamFilePath = this.tumorBam;
         String externalIdentifier = this.externalId;
-        String outputDir = externalIdentifier+"_output";
+        String outputDir = externalIdentifier + "_output";
         String tempDir = this.tmpDir;
-        
+
         String sample_name = inputTumorBamFilePath.substring(inputTumorBamFilePath.lastIndexOf("/") + 1, inputTumorBamFilePath.lastIndexOf(".bam"));
-        intermediateFilePath = tempDir+sample_name + "seqz.bin50.gz";
-        
+        intermediateFilePath = tempDir + sample_name + "seqz.bin50.gz";
+
         Job sequenzaUtilJob = getSequenzaUtilsJob(inputNormalBamFilePath, inputTumorBamFilePath, intermediateFilePath);
         //sequenzaUtilJob.addParent(parentJob);
         parentJob = sequenzaUtilJob;
-        
-        Job loadRLib = runLoadRLib();
-        loadRLib.addParent(parentJob);
-        parentJob = loadRLib;
+
         Job runSequenzaR = runSequenzaRJob(intermediateFilePath, outputDir);
         runSequenzaR.addParent(parentJob);
         parentJob = runSequenzaR;
-        
+
         String cmd = iterOutputDir(outputDir);
         Job zipFiles = getWorkflow().createBashJob("zip-model-fit");
         zipFiles.addParent(parentJob);
@@ -190,22 +187,17 @@ public class WorkflowClient extends OicrWorkflow {
         command.addArgument(pypy);
         command.addArgument(sequenzaUtil);
         command.addArgument("seqz-binning");
-        command.addArgument("-s");
-        command.addArgument("- -w 50 | gzip > " + intFilePath);
+        command.addArgument("-s -");
+        command.addArgument("-w 50 | gzip > " + intFilePath);
         jobSequenzaUtils.setMaxMemory(Integer.toString(sequenzaUtilMem*1024));
         jobSequenzaUtils.setQueue(getOptionalProperty("queue", ""));
         return jobSequenzaUtils;
     }
 
-    private Job runLoadRLib(){
-        Job rlibLoadJob = getWorkflow().createBashJob("load_rlib");
-        Command cmd = rlibLoadJob.getCommand();
-        cmd.addArgument("export R_LIBS=" + rLib);
-        return rlibLoadJob;
-    }
     private Job runSequenzaRJob(String intFilePath, String outDir) {
         Job jobSequenzaR = getWorkflow().createBashJob("sequenza_R");
         Command cmd = jobSequenzaR.getCommand();
+        cmd.addArgument("export R_LIBS=" + rLib + ";");
         cmd.addArgument(rScript);
         cmd.addArgument(sequenzaRscript);
         cmd.addArgument(outDir);
