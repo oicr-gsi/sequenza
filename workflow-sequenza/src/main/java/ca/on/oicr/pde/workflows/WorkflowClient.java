@@ -47,6 +47,7 @@ public class WorkflowClient extends OicrWorkflow {
     private Integer sequenzaRscriptMem;
     
     //path to bin
+    private String bin;
     private String pypy;
     private String rScript;
     private String rLib;
@@ -164,12 +165,8 @@ public class WorkflowClient extends OicrWorkflow {
         runSequenzaR.addParent(parentJob);
         parentJob = runSequenzaR;
 
-        String cmd = iterOutputDir(outputDir);
-        Job zipFiles = getWorkflow().createBashJob("zip-model-fit");
-        zipFiles.addParent(parentJob);
-        Command command = zipFiles.getCommand();
-        command.addArgument(cmd);
-
+        Job zipOutput = iterOutputDir(outputDir);
+        zipOutput.addParent(parentJob);
     }
     
     // create Job function for the sequenza steps - pre-step
@@ -208,7 +205,7 @@ public class WorkflowClient extends OicrWorkflow {
         return jobSequenzaR;
     }
     
-    String iterOutputDir(String outDir) {
+    private Job iterOutputDir(String outDir) {
         /**
          * Method to handle file from the output directory All provision files
          * are in tempDir Create a directory called model-fit in output
@@ -221,39 +218,14 @@ public class WorkflowClient extends OicrWorkflow {
          * construct a cmd string to zip the model-fit folder
          */
         // find only folders in the output Directory
-        String[] items = {"_log.txt", ".pdf", "_solutions.txt", "_CP.txt", "_mutations.txt", "segments.txt", ".RData"};
-
-        File modelDir = new File(outDir + "/model-fit/");
-        boolean foo = modelDir.mkdir();
-        File dir = new File(outDir);
-        File[] directoryListing = dir.listFiles();
-        if (directoryListing != null) {
-            for (File sub : directoryListing) {
-                if (sub.isDirectory()) {
-                    modelDir = new File(modelDir.toString() + sub.toString());
-                    if (foo) {
-                        sub.renameTo(modelDir);
-                    }
-                } else {
-                    for (String item : items) {
-                        if (sub.toString().endsWith(item)) {
-                            modelDir = new File(modelDir.toString() + sub.toString());
-                            if (foo) {
-                                sub.renameTo(modelDir);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        String modelFitDir = outDir + "/model-fit/";
-        //File zipFolder = new File(modelFitDir);
-        //File[] listFolder = zipFolder.listFiles();
-        String cmd = null;
-        //if (listFolder != null) {
-        cmd = "zip -r ";
-        cmd += modelFitDir;
-        return cmd;
+        Job iterOutput = getWorkflow().createBashJob("handle_output");
+        Command cmd = iterOutput.getCommand();
+        cmd.addArgument("sh " + getWorkflowBaseDir() + "/dependencies/handlefile.sh");
+        cmd.addArgument(this.externalId);
+        cmd.addArgument(outDir);
+        iterOutput.setMaxMemory(Integer.toString(sequenzaRscriptMem*1024));
+        iterOutput.setQueue(getOptionalProperty("queue", ""));
+        return iterOutput;
     }
 
 }
