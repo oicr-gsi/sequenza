@@ -220,7 +220,7 @@ public class WorkflowClient extends OicrWorkflow {
         // find only folders in the output Directory
         Job iterOutput = getWorkflow().createBashJob("handle_output");
         Command cmd = iterOutput.getCommand();
-        cmd.addArgument("bash -x" + getWorkflowBaseDir() + "/dependencies/handleFile.sh");
+        cmd.addArgument("bash -x " + getWorkflowBaseDir() + "/dependencies/handleFile.sh");
         cmd.addArgument(this.externalId);
         cmd.addArgument(outDir);
         iterOutput.setMaxMemory(Integer.toString(sequenzaRscriptMem*1024));
