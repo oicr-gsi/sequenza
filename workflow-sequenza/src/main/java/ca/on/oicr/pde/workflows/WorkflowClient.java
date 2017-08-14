@@ -62,6 +62,12 @@ public class WorkflowClient extends OicrWorkflow {
     private String queue;
     private Map<String, SqwFile> tempFiles;
     
+    // meta-types
+    private final static String BAM_METATYPE = "application/bam";
+    private final static String BAI_METATYPE = "application/bam-index";
+    private final static String PDF_METATYPE = "application/pdf";
+    private final static String TXT_METATYPE = "text/plain";
+    private final static String TAR_GZ_METATYPE = "application/tar-gzip";
             
 
     private void init() {
@@ -167,6 +173,21 @@ public class WorkflowClient extends OicrWorkflow {
 
         Job zipOutput = iterOutputDir(outputDir);
         zipOutput.addParent(parentJob);
+        
+        // Provision *pdf, .seg, model-fit.tar.gz files
+        String segFile = this.externalId+"_Total_CN.seg";
+        String pdfFile = this.externalId+"_genome_view.pdf";
+        SqwFile cnSegFile = createOutputFile(this.dataDir + outputDir + "/" + segFile, TXT_METATYPE, this.manualOutput);
+        cnSegFile.getAnnotations().put("segment data from the tool ", "Sequenza ");
+        zipOutput.addFile(cnSegFile);
+        
+        SqwFile cnImage = createOutputFile(this.dataDir + outputDir + "/" + pdfFile, PDF_METATYPE , this.manualOutput);
+        cnImage.getAnnotations().put("copy number view ", "Sequenza ");
+        zipOutput.addFile(cnImage);
+        
+        SqwFile zipFile = createOutputFile(this.dataDir + outputDir + "/" + "model-fit.tar.gz", TAR_GZ_METATYPE , this.manualOutput);
+        zipFile.getAnnotations().put("Other files ", "Sequenza ");
+        zipOutput.addFile(zipFile);
     }
     
     // create Job function for the sequenza steps - pre-step
