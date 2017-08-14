@@ -1,6 +1,8 @@
 #!/bin/bash
+wdPath=`pwd`
+echo $wdPath
 extid=$1
-inPath=$2
+inPath=$wdPath/$2
 cd $inPath
 model=$inPath/model-fit; mkdir $model
 for f in $( ls ); do
