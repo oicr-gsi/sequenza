@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>ca.on.oicr.pde.deciders</groupId>
-    <artifactId>Sequenza</artifactId>
+    <artifactId>decider-sequenza</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 

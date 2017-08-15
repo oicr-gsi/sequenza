@@ -9,9 +9,9 @@
         <version>2.2</version>
         <relativePath/>
     </parent>
-
-    <groupId>com.github.seqware</groupId>
-    <artifactId>workflow-Sequenza</artifactId>
+    
+    <groupId>ca.on.oicr.pde.workflows</groupId>
+    <artifactId>workflow-sequenza</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 

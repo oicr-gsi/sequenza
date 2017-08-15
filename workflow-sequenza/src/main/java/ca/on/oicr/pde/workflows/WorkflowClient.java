@@ -63,8 +63,6 @@ public class WorkflowClient extends OicrWorkflow {
     private Map<String, SqwFile> tempFiles;
     
     // meta-types
-    private final static String BAM_METATYPE = "application/bam";
-    private final static String BAI_METATYPE = "application/bam-index";
     private final static String PDF_METATYPE = "application/pdf";
     private final static String TXT_METATYPE = "text/plain";
     private final static String TAR_GZ_METATYPE = "application/tar-gzip";
