@@ -43,14 +43,10 @@ public class SequenzaDecider extends OicrDecider {
     private String skipMissing     = "true";
     private String manual_output   = "false";
     private String forceCrosscheck = "true";
-    private String do_sort         = "false";
 
     private final static String BAM_METATYPE = "application/bam";
     private final static String EX           = "EX";
-    //private String rsconfigXmlPath           = "/.mounts/labs/PDE/data/rsconfig.xml";
-    private Rsconfig rs;
     private String tumorType;
-    //private String targetFile = " ";
     private List<String> duplicates;
     
     public SequenzaDecider() {
@@ -71,10 +67,8 @@ public class SequenzaDecider extends OicrDecider {
 	        + "the output-path. Corresponds to output-dir in INI file. Default: seqware-results").withRequiredArg();
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
-        parser.accepts("do-sort", "Optional: Set the flag (true or false) to indicate if need to sort bam files. Default: false").withRequiredArg();
         parser.accepts("skip-missing-files","Optional. Set the flag for skipping non-existing files to true or false "
                 + "when running the workflow, the default is true").withRequiredArg();
-        parser.accepts("verbose", "Optional: Enable verbose Logging").withRequiredArg();
     }
 
     @Override
@@ -139,16 +133,7 @@ public class SequenzaDecider extends OicrDecider {
               Log.debug("Setting force crosscheck to " + this.forceCrosscheck);
             }
 	} 
-        
-        if (this.options.has("verbose")) {
-            Log.setVerbose(true);
-	} 
-        
-        if (this.options.has("do-sort")) {
-            String tempSort = options.valueOf("do-sort").toString();
-            if (tempSort.equalsIgnoreCase("false") || tempSort.equalsIgnoreCase("true"))
-                this.do_sort = tempSort.toLowerCase();
-        }
+
 
         if (this.options.has("output-path")) {
              this.output_prefix = options.valueOf("output-path").toString();
@@ -165,29 +150,6 @@ public class SequenzaDecider extends OicrDecider {
         if (options.has("force-run-all")) {
             Log.stderr("Using --force-run-all WILL BREAK THE LOGIC OF THIS DECIDER, USE AT YOUR OWN RISK");
         }
-        
-        /* if (options.has("rsconfig-file")) {
-            if (!options.hasArgument("rsconfig-file")) {
-                Log.error("--rsconfig-file requires a file argument.");
-                rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
-                return rv;
-            }
-            if (!fileExistsAndIsAccessible(options.valueOf("rsconfig-file").toString())) {
-                Log.error("The rsconfig-file is not accessible.");
-                rv.setExitStatus(ReturnValue.FILENOTREADABLE);
-                return rv;
-            } else {
-                rsconfigXmlPath = options.valueOf("rsconfig-file").toString();
-            }
-        }
-
-        try {
-            rs = new Rsconfig(new File(rsconfigXmlPath));
-        } catch (Exception e) {
-            Log.error("Rsconfig file did not load properly, exeception stack trace:\n" + e.getStackTrace());
-            rv.setExitStatus(ReturnValue.FAILURE);
-            return rv;
-        }**/
 
         return rv;
     }
@@ -268,8 +230,6 @@ public class SequenzaDecider extends OicrDecider {
         for (FileMetadata fmeta : returnValue.getFiles()) {
             if (!fmeta.getMetaType().equals(BAM_METATYPE))
                 continue;
-            if (!fmeta.getFilePath().contains("sorted"))
-                this.do_sort = "true"; // Force sorting of all files even if only one is unsorted
         }
        
         return super.checkFileDetails(returnValue, fm);
@@ -277,6 +237,8 @@ public class SequenzaDecider extends OicrDecider {
 
     @Override
     public Map<String, List<ReturnValue>> separateFiles(List<ReturnValue> vals, String groupBy) {
+        Log.debug("Number of files from file provenance = " + vals.size());
+        
         // get files from study
         Map<String, ReturnValue> iusDeetsToRV = new HashMap<String, ReturnValue>();
         // Override the supplied group-by value
@@ -423,7 +385,6 @@ public class SequenzaDecider extends OicrDecider {
         iniFileMap.put("manual_output",  this.manual_output);
         iniFileMap.put("force_crosscheck",  this.forceCrosscheck);
         iniFileMap.put("skip_missing_files", this.skipMissing);
-        iniFileMap.put("do_sort", this.do_sort);
         
         //Note that we can use group_id, group_description and external_name for tumor bams only
         if (null != groupIds && groupIds.length() != 0 && !groupIds.toString().contains("NA")) {

@@ -11,8 +11,9 @@ import org.testng.annotations.*;
 
 /**
  *
- * @author rtahir
+ * @author 
  */
+@Test(enabled = false)
 public class SequenzaDeciderTest {
 
     File filepath = FileUtils.toFile(this.getClass().getResource("/rsconfig.xml"));

@@ -123,6 +123,19 @@ public class WorkflowClient extends OicrWorkflow {
         }
     }
     
+    @Override
+    public Map<String, SqwFile> setupFiles() {
+        SqwFile file0 = this.createFile("tumor");
+        file0.setSourcePath(tumorBam);
+        file0.setType("application/bam");
+        file0.setIsInput(true);
+        SqwFile file1 = this.createFile("normal");
+        file1.setSourcePath(normalBam);
+        file1.setType("application/bam");
+        file1.setIsInput(true);
+        return this.getFiles();
+    }
+    
    
     @Override
     public void buildWorkflow() {
@@ -152,8 +165,8 @@ public class WorkflowClient extends OicrWorkflow {
         
         Job parentJob = null;
         String intermediateFilePath;
-        String inputNormalBamFilePath = this.normalBam;
-        String inputTumorBamFilePath = this.tumorBam;
+        String inputTumorBamFilePath = getFiles().get("tumor").getProvisionedPath();
+        String inputNormalBamFilePath = getFiles().get("normal").getProvisionedPath();
         String externalIdentifier = this.externalId;
         String outputDir = externalIdentifier + "_output";
         String tempDir = this.tmpDir;
@@ -161,7 +174,7 @@ public class WorkflowClient extends OicrWorkflow {
         String sample_name = inputTumorBamFilePath.substring(inputTumorBamFilePath.lastIndexOf("/") + 1, inputTumorBamFilePath.lastIndexOf(".bam"));
         intermediateFilePath = tempDir + sample_name + "seqz.bin50.gz";
 
-        Job sequenzaUtilJob = getSequenzaUtilsJob(inputNormalBamFilePath, inputTumorBamFilePath, intermediateFilePath);
+        Job sequenzaUtilJob = getSequenzaUtilsJob(intermediateFilePath, inputTumorBamFilePath, inputNormalBamFilePath);
         //sequenzaUtilJob.addParent(parentJob);
         parentJob = sequenzaUtilJob;
 
@@ -178,7 +191,7 @@ public class WorkflowClient extends OicrWorkflow {
         SqwFile cnSegFile = createOutputFile(outputDir + "/" + segFile, TXT_METATYPE, this.manualOutput);
         cnSegFile.getAnnotations().put("segment data from the tool ", "Sequenza ");
         zipOutput.addFile(cnSegFile);
-        
+
         SqwFile cnImage = createOutputFile(outputDir + "/" + pdfFile, PDF_METATYPE , this.manualOutput);
         cnImage.getAnnotations().put("copy number view ", "Sequenza ");
         zipOutput.addFile(cnImage);
@@ -189,15 +202,15 @@ public class WorkflowClient extends OicrWorkflow {
     }
     
     // create Job function for the sequenza steps - pre-step
-    private Job getSequenzaUtilsJob(String normalSampleBamFilePath, String tumorSampleBamFilePath, String intFilePath) {
+    private Job getSequenzaUtilsJob(String intFilePath, String inputTumorBamFilePath, String inputNormalBamFilePath) {
         Job jobSequenzaUtils = getWorkflow().createBashJob("sequenza-utils");
         Command command = jobSequenzaUtils.getCommand();
         command.addArgument(pypy);
         command.addArgument(sequenzaUtil);
         command.addArgument("bam2seqz");
         command.addArgument("--fasta " + refFasta);
-        command.addArgument("-n " + normalSampleBamFilePath);
-        command.addArgument("-t " + tumorSampleBamFilePath);
+        command.addArgument("-n " + inputNormalBamFilePath);
+        command.addArgument("-t " + inputTumorBamFilePath);
         command.addArgument("-gc " + sequenzaGCData);
         command.addArgument("-S " + samtools + " |");
         command.addArgument(pypy);
