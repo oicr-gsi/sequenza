@@ -16,13 +16,6 @@
                 "--study-name": "TGL05",
                 "--before-date": "2017-07-31"
             }
-        },
-        {
-            "id": "TGL-0001 sample test",
-            "parameters": {
-                "--root-sample-name": "TGL01_0001",
-                "--before-date": "2017-07-31"
-            }
         }
     ]
 }
