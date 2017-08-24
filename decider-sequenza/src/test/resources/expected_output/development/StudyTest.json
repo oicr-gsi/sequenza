@@ -13,10 +13,6 @@
   "workflowRuns" : [ {
     "workflowIni" : {
       "data_dir" : "data",
-      "external_name" : "01-101",
-      "force_crosscheck" : "true",
-      "group_id" : "NA",
-      "group_id_description" : "NA",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/58263846/TGL05_0001_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/58263846/TGL05_0001_Bd_P_EX.sorted.filter.deduped.realign.recal.bam",
       "java" : "${workflow_bundle_dir}/Workflow_Bundle_Sequenza/1.0/bin/jre1.7.0_51/bin/java",
@@ -38,7 +34,6 @@
       "sequenza_rscript_mem" : "64",
       "sequenza_utils_mem" : "32",
       "sequenza_utils_script" : "/.mounts/labs/PDE/Modules/modulefiles/sequenza/sequenza-utils.py ",
-      "skip_missing_files" : "true",
       "template_type" : "EX",
       "tmp_dir" : "tmp"
     },
@@ -122,10 +117,6 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
-      "external_name" : "01-700",
-      "force_crosscheck" : "true",
-      "group_id" : "NA",
-      "group_id_description" : "NA",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/17063221/TGL05_0002_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/17063221/TGL05_0002_Co_P_EX.sorted.filter.deduped.realign.recal.bam",
       "java" : "${workflow_bundle_dir}/Workflow_Bundle_Sequenza/1.0/bin/jre1.7.0_51/bin/java",
@@ -147,7 +138,6 @@
       "sequenza_rscript_mem" : "64",
       "sequenza_utils_mem" : "32",
       "sequenza_utils_script" : "/.mounts/labs/PDE/Modules/modulefiles/sequenza/sequenza-utils.py ",
-      "skip_missing_files" : "true",
       "template_type" : "EX",
       "tmp_dir" : "tmp"
     },
@@ -231,10 +221,6 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
-      "external_name" : "02-202",
-      "force_crosscheck" : "true",
-      "group_id" : "NA",
-      "group_id_description" : "NA",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/68739040/TGL05_0004_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/68739040/TGL05_0004_Co_P_EX.sorted.filter.deduped.realign.recal.bam",
       "java" : "${workflow_bundle_dir}/Workflow_Bundle_Sequenza/1.0/bin/jre1.7.0_51/bin/java",
@@ -256,7 +242,6 @@
       "sequenza_rscript_mem" : "64",
       "sequenza_utils_mem" : "32",
       "sequenza_utils_script" : "/.mounts/labs/PDE/Modules/modulefiles/sequenza/sequenza-utils.py ",
-      "skip_missing_files" : "true",
       "template_type" : "EX",
       "tmp_dir" : "tmp"
     },
@@ -340,10 +325,6 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
-      "external_name" : "02-703",
-      "force_crosscheck" : "true",
-      "group_id" : "NA",
-      "group_id_description" : "NA",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/47342630/TGL05_0005_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/47342630/TGL05_0005_Pt_P_EX.sorted.filter.deduped.realign.recal.bam",
       "java" : "${workflow_bundle_dir}/Workflow_Bundle_Sequenza/1.0/bin/jre1.7.0_51/bin/java",
@@ -365,7 +346,6 @@
       "sequenza_rscript_mem" : "64",
       "sequenza_utils_mem" : "32",
       "sequenza_utils_script" : "/.mounts/labs/PDE/Modules/modulefiles/sequenza/sequenza-utils.py ",
-      "skip_missing_files" : "true",
       "template_type" : "EX",
       "tmp_dir" : "tmp"
     },
@@ -449,10 +429,6 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
-      "external_name" : "01-804",
-      "force_crosscheck" : "true",
-      "group_id" : "NA",
-      "group_id_description" : "NA",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/72249522/TGL05_0006_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/72249522/TGL05_0006_Ov_P_EX.sorted.filter.deduped.realign.recal.bam",
       "java" : "${workflow_bundle_dir}/Workflow_Bundle_Sequenza/1.0/bin/jre1.7.0_51/bin/java",
@@ -474,7 +450,6 @@
       "sequenza_rscript_mem" : "64",
       "sequenza_utils_mem" : "32",
       "sequenza_utils_script" : "/.mounts/labs/PDE/Modules/modulefiles/sequenza/sequenza-utils.py ",
-      "skip_missing_files" : "true",
       "template_type" : "EX",
       "tmp_dir" : "tmp"
     },
@@ -558,10 +533,6 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
-      "external_name" : "02-901",
-      "force_crosscheck" : "true",
-      "group_id" : "NA",
-      "group_id_description" : "NA",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/95271390/TGL05_0007_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/95271390/TGL05_0007_Np_P_EX.sorted.filter.deduped.realign.recal.bam",
       "java" : "${workflow_bundle_dir}/Workflow_Bundle_Sequenza/1.0/bin/jre1.7.0_51/bin/java",
@@ -583,7 +554,6 @@
       "sequenza_rscript_mem" : "64",
       "sequenza_utils_mem" : "32",
       "sequenza_utils_script" : "/.mounts/labs/PDE/Modules/modulefiles/sequenza/sequenza-utils.py ",
-      "skip_missing_files" : "true",
       "template_type" : "EX",
       "tmp_dir" : "tmp"
     },

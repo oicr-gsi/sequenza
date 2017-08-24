@@ -1,0 +1,14 @@
+{
+  "workflowRunCount" : 0,
+  "studies" : [ ],
+  "sequencerRuns" : [ ],
+  "lanes" : [ ],
+  "samples" : [ ],
+  "workflows" : [ ],
+  "processingAlgorithms" : [ ],
+  "fileMetaTypes" : [ ],
+  "maxInputFiles" : -2147483648,
+  "minInputFiles" : 2147483647,
+  "totalInputFiles" : 0,
+  "workflowRuns" : [ ]
+}
