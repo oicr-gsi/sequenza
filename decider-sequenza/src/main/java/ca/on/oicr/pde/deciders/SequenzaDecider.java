@@ -168,7 +168,6 @@ public class SequenzaDecider extends OicrDecider {
     protected boolean checkFileDetails(ReturnValue returnValue, FileMetadata fm) {
         Log.debug("CHECK FILE DETAILS:" + fm);
         String currentTtype = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
-        //String targetResequencingType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_targeted_resequencing");
         String currentTissueType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
 
         if (null == currentTissueType) {
@@ -187,13 +186,11 @@ public class SequenzaDecider extends OicrDecider {
         if (this.templateType.isEmpty() || !this.templateType.equals(currentTtype)) {
             this.templateType = currentTtype;
         }
-        //String target_bed = rs.get(currentTtype, targetResequencingType, "interval_file");
 
         if (!currentTtype.equals(EX)) {
 
             Log.error("For the file with SWID = [" + returnValue.getAttribute(Header.FILE_SWA.getTitle())
                     + "], the template type/geo_library_source_template_type = [" + currentTtype);
-            //+ "] could not be found in rsconfig.xml (path = [" + rsconfigXmlPath + "])");
             return false;
 
         }
