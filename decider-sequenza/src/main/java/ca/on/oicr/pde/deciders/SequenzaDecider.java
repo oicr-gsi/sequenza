@@ -28,15 +28,13 @@ public class SequenzaDecider extends OicrDecider {
     private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
     private Map<String, BeSmall> fileSwaToSmall;
 
-    private String templateTypeFilter = "";
-    private String templateType = "";
+    private String templateType = "EX";
     private String output_prefix = "./";
     private String queue = "";
     private String output_dir = "seqware-results";
     private String manual_output = "false";
 
     private final static String BAM_METATYPE = "application/bam";
-    private final static String EX = "EX";
     private String tumorType;
     private List<String> duplicates;
 
@@ -76,18 +74,16 @@ public class SequenzaDecider extends OicrDecider {
             this.queue = options.valueOf("queue").toString();
         }
 
-        this.templateTypeFilter = EX;
         if (this.options.has("template-type")) {
             if (!options.hasArgument("template-type")) {
                 Log.error("--template-type requires an argument, EX");
                 rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
                 return rv;
             } else {
-                this.templateTypeFilter = options.valueOf("template-type").toString();
-                if (this.templateTypeFilter.equals(EX)) {
+                this.templateType = options.valueOf("template-type").toString();
+                if (this.templateType.equals("EX")) {
                     Log.stderr("NOTE THAT ONLY EX template-type SUPPORTED, WE CANNOT GUARANTEE MEANINGFUL RESULTS WITH OTHER TEMPLATE TYPES");
                 }
-                this.templateType = this.templateTypeFilter;
             }
         }
 
@@ -166,10 +162,15 @@ public class SequenzaDecider extends OicrDecider {
 
         if (null == currentTissueType) {
             return false; // we need only those which have their tissue type set
-        }        // Filter the data of a different template type if filter is specified
-        if (!this.templateTypeFilter.equalsIgnoreCase(currentTtype)) {
+        }        
+
+        // Filter the data of a different template type if filter is specified
+        if (!this.templateType.equalsIgnoreCase(currentTtype)) {
+            Log.warn("Excluding file with SWID = [" + returnValue.getAttribute(Header.FILE_SWA.getTitle())
+                    + "] due to template type/geo_library_source_template_type = [" + currentTtype + "]");
             return false;
         }
+        
         // Do not process tumor tissues of type that doesn't match set parameter
         if (null != this.tumorType) {
             if (!currentTissueType.equals("R") && !currentTissueType.equals(this.tumorType)) {
@@ -177,17 +178,6 @@ public class SequenzaDecider extends OicrDecider {
             }
         }
 
-        if (this.templateType.isEmpty() || !this.templateType.equals(currentTtype)) {
-            this.templateType = currentTtype;
-        }
-
-        if (!currentTtype.equals(EX)) {
-
-            Log.error("For the file with SWID = [" + returnValue.getAttribute(Header.FILE_SWA.getTitle())
-                    + "], the template type/geo_library_source_template_type = [" + currentTtype);
-            return false;
-
-        }
 
         for (FileMetadata fmeta : returnValue.getFiles()) {
             if (!fmeta.getMetaType().equals(BAM_METATYPE)) {
