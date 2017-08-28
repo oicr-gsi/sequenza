@@ -22,17 +22,12 @@ import net.sourceforge.seqware.common.util.Log;
 /**
  *
  * @author prath@oicr.on.ca
- *
- * Before running test (i.e mvn failsafe:integration-test -DskipITs=false
- * -DwebserviceUrl=http://hsqwstage-www1.hpc.oicr.on.ca:8080/seqware-webservice)
- * issue this command: export _JAVA_OPTIONS="-Xmx3000M"
  */
 public class SequenzaDecider extends OicrDecider {
 
     private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
     private Map<String, BeSmall> fileSwaToSmall;
 
-    //CNV specific stuff
     private String templateTypeFilter = "";
     private String templateType = "";
     private String output_prefix = "./";
