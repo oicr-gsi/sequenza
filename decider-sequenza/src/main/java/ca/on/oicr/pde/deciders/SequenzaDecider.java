@@ -60,7 +60,7 @@ public class SequenzaDecider extends OicrDecider {
     public ReturnValue init() {
         Log.debug("INIT");
         this.setMetaType(Arrays.asList(BAM_METATYPE));
-        this.setGroupingStrategy(Header.FILE_SWA);
+        this.setHeadersToGroupBy(Arrays.asList(Header.FILE_SWA));
 
         ReturnValue rv = super.init();
         rv.setExitStatus(ReturnValue.SUCCESS);
@@ -307,16 +307,9 @@ public class SequenzaDecider extends OicrDecider {
             }
         }
 
-        //reset test mode
-        if (!this.options.has("test")) {
-            this.setTest(false);
-        }
-
-        // Just in case
-        // This should handle possible problems with --force-run-all
         if (inputNormFiles.length() == 0 || inputTumrFiles.length() == 0) {
             Log.error("THE DONOR does not have data to run the workflow");
-            this.setTest(true);
+            abortSchedulingOfCurrentWorkflowRun();
         }
 
         Map<String, String> iniFileMap = new TreeMap<String, String>();
