@@ -109,6 +109,7 @@ public class SequenzaDecider extends OicrDecider {
      *
      * @param commaSeparatedFilePaths
      * @param commaSeparatedParentAccessions
+     *
      * @return
      */
     @Override
@@ -155,7 +156,7 @@ public class SequenzaDecider extends OicrDecider {
 
         if (null == currentTissueType) {
             return false; // we need only those which have their tissue type set
-        }        
+        }
 
         // Filter the data of a different template type if filter is specified
         if (!this.templateType.equalsIgnoreCase(currentTtype)) {
@@ -163,7 +164,7 @@ public class SequenzaDecider extends OicrDecider {
                     + "] due to template type/geo_library_source_template_type = [" + currentTtype + "]");
             return false;
         }
-        
+
         // Do not process tumor tissues of type that doesn't match set parameter
         if (null != this.tumorType) {
             if (!currentTissueType.equals("R") && !currentTissueType.equals(this.tumorType)) {
@@ -312,7 +313,7 @@ public class SequenzaDecider extends OicrDecider {
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
         }
-        
+
         return iniFileMap;
     }
 
@@ -440,6 +441,7 @@ public class SequenzaDecider extends OicrDecider {
      *
      * @param path
      * @param extension
+     *
      * @return
      */
     public static String makeBasename(String path, String extension) {
