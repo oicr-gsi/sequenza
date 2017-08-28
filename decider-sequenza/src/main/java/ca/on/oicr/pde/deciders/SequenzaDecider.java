@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ca.on.oicr.pde.deciders;
 
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -309,16 +304,15 @@ public class SequenzaDecider extends OicrDecider {
         iniFileMap.put("input_files_tumor", inputTumrFiles.toString());
         iniFileMap.put("data_dir", "data");
         iniFileMap.put("template_type", this.templateType);
-        //iniFileMap.put("target_file", this.targetFile);
 
         iniFileMap.put("output_prefix", this.output_prefix);
         iniFileMap.put("output_dir", this.output_dir);
+        iniFileMap.put("manual_output", this.manual_output);
+
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
         }
-
-        iniFileMap.put("manual_output", this.manual_output);
-
+        
         return iniFileMap;
     }
 
