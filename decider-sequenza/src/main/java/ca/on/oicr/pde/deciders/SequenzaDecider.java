@@ -31,7 +31,7 @@ public class SequenzaDecider extends OicrDecider {
     private String templateTypeFilter = "";
     private String templateType = "";
     private String output_prefix = "./";
-    private String queue = " ";
+    private String queue = "";
     private String output_dir = "seqware-results";
     private String manual_output = "false";
 
@@ -74,8 +74,6 @@ public class SequenzaDecider extends OicrDecider {
 
         if (this.options.has("queue")) {
             this.queue = options.valueOf("queue").toString();
-        } else {
-            this.queue = " ";
         }
 
         this.templateTypeFilter = EX;
@@ -343,8 +341,6 @@ public class SequenzaDecider extends OicrDecider {
         iniFileMap.put("output_dir", this.output_dir);
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
-        } else {
-            iniFileMap.put("queue", " ");
         }
 
         iniFileMap.put("manual_output", this.manual_output);
