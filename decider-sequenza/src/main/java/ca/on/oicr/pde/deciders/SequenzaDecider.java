@@ -48,10 +48,6 @@ public class SequenzaDecider extends OicrDecider {
                 + "either to true or false").withRequiredArg();
         parser.accepts("template-type", "Required. Set the template type to limit the workflow run "
                 + "so that it runs on data only of this template type").withRequiredArg();
-        parser.accepts("aligner-software", "Optional. Set the name of the aligner software "
-                + "when running the workflow, the default is novocraft").withRequiredArg();
-        parser.accepts("force-crosscheck", "Optional. Set the crosscheck to true or false "
-                + "when running the workflow, the default is true").withRequiredArg();
         parser.accepts("output-path", "Optional: the path where the files should be copied to "
                 + "after analysis. Corresponds to output-prefix in INI file. Default: ./").withRequiredArg();
         parser.accepts("output-folder", "Optional: the name of the folder to put the output into relative to "
