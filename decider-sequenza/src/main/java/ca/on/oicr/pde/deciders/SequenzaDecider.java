@@ -52,8 +52,6 @@ public class SequenzaDecider extends OicrDecider {
                 + "the output-path. Corresponds to output-dir in INI file. Default: seqware-results").withRequiredArg();
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
-        parser.accepts("skip-missing-files", "Optional. Set the flag for skipping non-existing files to true or false "
-                + "when running the workflow, the default is true").withRequiredArg();
     }
 
     @Override
