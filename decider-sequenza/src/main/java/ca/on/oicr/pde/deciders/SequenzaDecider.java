@@ -176,13 +176,6 @@ public class SequenzaDecider extends OicrDecider {
             }
         }
 
-
-        for (FileMetadata fmeta : returnValue.getFiles()) {
-            if (!fmeta.getMetaType().equals(BAM_METATYPE)) {
-                continue;
-            }
-        }
-
         return super.checkFileDetails(returnValue, fm);
     }
 
