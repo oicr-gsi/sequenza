@@ -428,13 +428,6 @@ public class SequenzaDecider extends OicrDecider {
         }
     }
 
-    public static boolean fileExistsAndIsAccessible(String filePath) {
-
-        File file = new File(filePath);
-        return (file.exists() && file.canRead() && file.isFile());
-
-    }
-
     public static List<String> detectDuplicates(String commaSeparatedFilePaths) {
 
         String[] filePaths = commaSeparatedFilePaths.split(",");
