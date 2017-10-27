@@ -28,6 +28,7 @@ public class SequenzaDecider extends OicrDecider {
     private String queue = "";
     private String output_dir = "seqware-results";
     private String manual_output = "false";
+    //private String outputFileNamePrefix="seqz_output";
 
     private final static String BAM_METATYPE = "application/bam";
     private String tumorType;
@@ -47,6 +48,7 @@ public class SequenzaDecider extends OicrDecider {
                 + "the output-path. Corresponds to output-dir in INI file. Default: seqware-results").withRequiredArg();
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
+        //parser.accepts("output_file_name_prefix","Optional:set the output name prefix for putfile directory and results");
     }
 
     @Override
@@ -258,7 +260,7 @@ public class SequenzaDecider extends OicrDecider {
         StringBuilder inputTumrFiles = new StringBuilder();
         StringBuilder groupIds = new StringBuilder();
         String[] filePaths = commaSeparatedFilePaths.split(",");
-        StringBuilder tubeId = new StringBuilder();
+        StringBuilder outputNamePrefix = new StringBuilder();
         StringBuilder groupDescription = new StringBuilder();
 
         for (String p : filePaths) {
@@ -284,12 +286,16 @@ public class SequenzaDecider extends OicrDecider {
                         // group_ids recoreded using info from tumor entries, normal files do not have group_ids
                         groupIds.append(",");
                         groupDescription.append(",");
-                        tubeId.append(",");
+                        outputNamePrefix.append(",");
                     }
                     inputTumrFiles.append(p);
                     groupIds.append(bs.getGroupID());
                     groupDescription.append(bs.getGroupDescription());
-                    tubeId.append(bs.getTubeId());
+                    if (bs.getExternalName() != null){
+                        outputNamePrefix.append(bs.getExternalName());
+                    } else {
+                        outputNamePrefix.append("");
+                    }
                 }
             }
         }
@@ -303,6 +309,8 @@ public class SequenzaDecider extends OicrDecider {
 
         iniFileMap.put("input_files_normal", inputNormFiles.toString());
         iniFileMap.put("input_files_tumor", inputTumrFiles.toString());
+        iniFileMap.put("output_file_name_prefix", outputNamePrefix.toString());
+        
         iniFileMap.put("data_dir", "data");
         iniFileMap.put("template_type", this.templateType);
 
@@ -336,7 +344,7 @@ public class SequenzaDecider extends OicrDecider {
         private String groupByAttribute = null;
         private String tissueType = null;
         private String path = null;
-        private String tubeID = null;
+        private String externalName = null;
         private String groupID = null;
         private String groupDescription = null;
 
@@ -350,10 +358,10 @@ public class SequenzaDecider extends OicrDecider {
             FileAttributes fa = new FileAttributes(rv, rv.getFiles().get(0));
             iusDetails = fa.getLibrarySample() + fa.getSequencerRun() + fa.getLane() + fa.getBarcode();
             tissueType = fa.getLimsValue(Lims.TISSUE_TYPE);
-            tubeID = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
+            externalName = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
             //fa.getLimsValue(Lims.TUBE_ID);
-            if (null == tubeID || tubeID.isEmpty()) {
-                tubeID = "NA";
+            if (null == externalName || externalName.isEmpty()) {
+                externalName = "NA";
             }
             groupID = fa.getLimsValue(Lims.GROUP_ID);
             if (null == groupID || groupID.isEmpty()) {
@@ -399,8 +407,8 @@ public class SequenzaDecider extends OicrDecider {
             return path;
         }
 
-        public String getTubeId() {
-            return tubeID;
+        public String getExternalName() {
+            return externalName;
         }
 
         public String getGroupID() {

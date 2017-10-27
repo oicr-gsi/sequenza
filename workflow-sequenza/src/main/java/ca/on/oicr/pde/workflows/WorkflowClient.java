@@ -31,7 +31,7 @@ public class WorkflowClient extends OicrWorkflow {
     // Input Data
     private String tumorBam;
     private String normalBam;
-    private String externalId;
+    private String outputFileNamePrefix;
 
     // Output check
     private boolean isFolder = true;
@@ -78,7 +78,7 @@ public class WorkflowClient extends OicrWorkflow {
             normalBam = getProperty("input_files_normal");
 
             //Ext id
-            externalId = getProperty("external_name");
+            outputFileNamePrefix = getProperty("output_file_prefix");
 
             //bin data 
             sequenzaGCData = getProperty("sequenza_bin_data_hg19");
@@ -160,7 +160,7 @@ public class WorkflowClient extends OicrWorkflow {
         String intermediateFilePath;
         String inputTumorBamFilePath = getFiles().get("tumor").getProvisionedPath();
         String inputNormalBamFilePath = getFiles().get("normal").getProvisionedPath();
-        String externalIdentifier = this.externalId;
+        String externalIdentifier = this.outputFileNamePrefix;
         String outputDir = externalIdentifier + "_output";
         String tempDir = this.tmpDir;
 
@@ -179,8 +179,8 @@ public class WorkflowClient extends OicrWorkflow {
         zipOutput.addParent(parentJob);
 
         // Provision *.pdf, .seg, model-fit.tar.gz files
-        String segFile = this.externalId + "_Total_CN.seg";
-        String pdfFile = this.externalId + "_genome_view.pdf";
+        String segFile = this.outputFileNamePrefix + "_Total_CN.seg";
+        String pdfFile = this.outputFileNamePrefix + "_genome_view.pdf";
         SqwFile cnSegFile = createOutputFile(outputDir + "/" + segFile, TXT_METATYPE, this.manualOutput);
         cnSegFile.getAnnotations().put("segment data from the tool ", "Sequenza ");
         zipOutput.addFile(cnSegFile);
@@ -224,7 +224,7 @@ public class WorkflowClient extends OicrWorkflow {
         cmd.addArgument(sequenzaRscript);
         cmd.addArgument(outDir);
         cmd.addArgument(intFilePath);
-        cmd.addArgument(externalId);
+        cmd.addArgument(outputFileNamePrefix);
         jobSequenzaR.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         jobSequenzaR.setQueue(getOptionalProperty("queue", ""));
         return jobSequenzaR;
@@ -246,7 +246,7 @@ public class WorkflowClient extends OicrWorkflow {
         Job iterOutput = getWorkflow().createBashJob("handle_output");
         Command cmd = iterOutput.getCommand();
         cmd.addArgument("bash -x " + getWorkflowBaseDir() + "/dependencies/handleFile.sh");
-        cmd.addArgument(this.externalId);
+        cmd.addArgument(this.outputFileNamePrefix);
         cmd.addArgument(outDir);
         iterOutput.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         iterOutput.setQueue(getOptionalProperty("queue", ""));
