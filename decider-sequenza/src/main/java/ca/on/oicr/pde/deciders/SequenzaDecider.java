@@ -74,8 +74,9 @@ public class SequenzaDecider extends OicrDecider {
                 return rv;
             } else {
                 this.templateType = options.valueOf("template-type").toString();
-                if (this.templateType.equals("EX")) {
+                if (!this.templateType.equals("EX")) {
                     Log.stderr("NOTE THAT ONLY EX template-type SUPPORTED, WE CANNOT GUARANTEE MEANINGFUL RESULTS WITH OTHER TEMPLATE TYPES");
+                    rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
                 }
             }
         }
