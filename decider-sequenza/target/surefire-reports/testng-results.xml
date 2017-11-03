@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="2" passed="2">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Surefire suite" duration-ms="1186" started-at="2017-10-27T17:08:59Z" finished-at="2017-10-27T17:09:00Z">
+    <groups>
+    </groups>
+    <test name="Surefire test" duration-ms="1186" started-at="2017-10-27T17:08:59Z" finished-at="2017-10-27T17:09:00Z">
+      <class name="ca.on.oicr.pde.deciders.SequenzaDeciderTest">
+        <test-method status="PASS" signature="invalidTemplateType()[pri:0, instance:ca.on.oicr.pde.deciders.SequenzaDeciderTest@4f933fd1]" name="invalidTemplateType" duration-ms="1154" started-at="2017-10-27T13:08:59Z" finished-at="2017-10-27T13:09:00Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- invalidTemplateType -->
+        <test-method status="PASS" signature="validTemplateType()[pri:0, instance:ca.on.oicr.pde.deciders.SequenzaDeciderTest@4f933fd1]" name="validTemplateType" duration-ms="9" started-at="2017-10-27T13:09:00Z" finished-at="2017-10-27T13:09:00Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- validTemplateType -->
+      </class> <!-- ca.on.oicr.pde.deciders.SequenzaDeciderTest -->
+    </test> <!-- Surefire test -->
+  </suite> <!-- Surefire suite -->
+</testng-results>

@@ -1,0 +1,20 @@
+static
+usepacklists
+strip ppi
+incglob *
+exclude /Devel/**
+exclude /ExtUtils/**
+exclude /Encode/??.*
+exclude /Encode/??/**
+exclude /PPI.pm
+exclude /PPI/**
+exclude /CPAN**
+exclude /Compress**
+exclude /TAP**
+exclude /Test/**
+exclude /Module/Build**
+exclude /Module/CoreList.pm
+exclude /unicore/Name.pl
+exclude /unicore/To/NFKCCF.pl
+exclude /unicore/Decomposition.pl
+add ../eg/httpd httpd.pm
