@@ -53,7 +53,7 @@ public class WorkflowClient extends OicrWorkflow {
     //Tools
     private String samtools;
     private String java;
-    private String varscan ="/.mounts/labs/PDE/Modules/modulefiles/sequenza/VarScan.v2.3.9.jar";
+    private String varscan;
 
     //Memory allocation
     private Integer sequenzaRscriptMem;
@@ -100,7 +100,7 @@ public class WorkflowClient extends OicrWorkflow {
             //samtools
             samtools = getProperty("samtools");
             java = getProperty("java");
-//            varscan = getProperty("varscan");
+            varscan = getProperty("varscan").toString();
 
             // ref fasta
             refFasta = getProperty("ref_fasta");
