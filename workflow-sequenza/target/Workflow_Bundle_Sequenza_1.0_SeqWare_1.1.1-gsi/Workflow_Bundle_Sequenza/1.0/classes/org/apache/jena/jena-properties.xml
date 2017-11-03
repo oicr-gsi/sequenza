@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+<properties version="1.0">
+  <comment>Jena System Properties</comment>
+  <entry key="org.apache.jena.name">Apache Jena - Core</entry>
+  <entry key="org.apache.jena.website">http://jena.apache.org/jena-core/</entry>
+  <entry key="org.apache.jena.version">2.13.0</entry>
+  <entry key="org.apache.jena.build.datetime">2015-03-08T09:49:20+0000</entry>
+</properties>
