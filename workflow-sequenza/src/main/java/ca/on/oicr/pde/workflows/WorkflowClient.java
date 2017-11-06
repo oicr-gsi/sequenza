@@ -326,7 +326,7 @@ public class WorkflowClient extends OicrWorkflow {
         Command cmd = somaticPileup.getCommand();
         cmd.addArgument(this.java);
         cmd.addArgument(this.javaMem);
-        cmd.addArgument("--jar");
+        cmd.addArgument("-jar");
         cmd.addArgument(this.varscan);
         cmd.addArgument("somatic");
         cmd.addArgument(this.mpileupFile);
