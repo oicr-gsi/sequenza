@@ -219,7 +219,7 @@ public class WorkflowClient extends OicrWorkflow {
 //        parentJob = varscanCNA;
         
         Job varscanCNACaller = varscanCNACaller();
-        parentJob = somaticMpileup;
+        parentJob = varscanCNA;
 //        parentJob = varscanCNACaller;
         
         Job sequenzaJobV2 = runSequenzaSingleSampleV2();
