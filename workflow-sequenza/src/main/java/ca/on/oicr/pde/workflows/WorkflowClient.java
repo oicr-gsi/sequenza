@@ -10,14 +10,11 @@ import net.sourceforge.seqware.pipeline.workflowV2.model.SqwFile;
 /**
  * <p>
  * For more information on developing workflows, see the documentation at
- * <a href="http://seqware.github.io/docs/6-pipeline/java-workflows/">SeqWare Java Workflows</a>.</p>
+ * <a href="http://seqware.github.io/docs/6-pipeline/java-workflows/">SeqWare
+ * Java Workflows</a>.</p>
  *
- * Quick reference for the order of methods called:
- * 1. setupDirectory
- * 2. setupFiles
- * 3. setupWorkflow
- * 4. setupEnvironment
- * 5. buildWorkflow
+ * Quick reference for the order of methods called: 1. setupDirectory 2.
+ * setupFiles 3. setupWorkflow 4. setupEnvironment 5. buildWorkflow
  *
  * See the SeqWare API for
  * <a href="http://seqware.github.io/javadoc/stable/apidocs/net/sourceforge/seqware/pipeline/workflowV2/AbstractWorkflowDataModel.html#setupDirectory%28%29">AbstractWorkflowDataModel</a>
@@ -33,7 +30,7 @@ public class WorkflowClient extends OicrWorkflow {
     private String tumorBam;
     private String normalBam;
     private String outputFilenamePrefix;
-    
+
     //varscan intermediate file names
     private String snpFile;
     private String cnvFile;
@@ -45,7 +42,6 @@ public class WorkflowClient extends OicrWorkflow {
 
     // Output check
 //    private boolean isFolder = true;
-
     //Scripts 
 //    private String sequenzaUtil;
 //    private String sequenzaRscript;
@@ -80,7 +76,6 @@ public class WorkflowClient extends OicrWorkflow {
     private final static String TXT_METATYPE = "text/plain";
     private final static String TAR_GZ_METATYPE = "application/tar-gzip";
 
-
     private void init() {
         try {
             //dir
@@ -96,7 +91,6 @@ public class WorkflowClient extends OicrWorkflow {
 
 //            //bin data 
 //            sequenzaGCData = getProperty("sequenza_bin_data_hg19");
-
             //samtools
             samtools = getProperty("samtools");
             java = getProperty("java");
@@ -155,22 +149,19 @@ public class WorkflowClient extends OicrWorkflow {
     public void buildWorkflow() {
 
         /**
-         * Steps for sequenza:
-         * 1. Check if "bam" file exists; true
-         * 2. Check if "bai" file exists; true: go to step 4
-         * 3. Check if normal Pb_R sample exists; true: go to step 4; else abort
-         * 3. If false: samtools index "bam" file
-         * 4. Run job sequenza-utils
-         * 5. If outputFile ends with "bin50.gz"; go to step 6; else go to step 4
-         * 6. Run job sequenzaR
-         * 7. Iterate through the files/folders in outDir:
-         * 8. If fileName1 == "pandc.txt" and fileName2 ends with "Total_CN.seg"; create a folder called "copynumber"
-         * 9. If fileType == "folder"; create a folder called "model-fit"; move folders to "model-fit"
-         * 10. If fileType == "file" && fileName != outputFile; move file to "model-fit"
-         * 11. Delete outputFile (rm outputFile)
-         * 12. zip "model-fit"
-         * 13. outputFile = fileName2
-         * 14. OutputDir contains the following: fileName1, outputFile, model-fit.zip
+         * Steps for sequenza: 1. Check if "bam" file exists; true 2. Check if
+         * "bai" file exists; true: go to step 4 3. Check if normal Pb_R sample
+         * exists; true: go to step 4; else abort 3. If false: samtools index
+         * "bam" file 4. Run job sequenza-utils 5. If outputFile ends with
+         * "bin50.gz"; go to step 6; else go to step 4 6. Run job sequenzaR 7.
+         * Iterate through the files/folders in outDir: 8. If fileName1 ==
+         * "pandc.txt" and fileName2 ends with "Total_CN.seg"; create a folder
+         * called "copynumber" 9. If fileType == "folder"; create a folder
+         * called "model-fit"; move folders to "model-fit" 10. If fileType ==
+         * "file" && fileName != outputFile; move file to "model-fit" 11. Delete
+         * outputFile (rm outputFile) 12. zip "model-fit" 13. outputFile =
+         * fileName2 14. OutputDir contains the following: fileName1,
+         * outputFile, model-fit.zip
          */
         // workflow : read inputs tumor and normal bam; run sequenza-utils; write the output to temp directory; 
         // run sequenzaR; handle output; provision files (3) -- model-fit.zip; text/plain; text/plain
@@ -180,53 +171,47 @@ public class WorkflowClient extends OicrWorkflow {
 //        String inputNormalBamFilePath = getFiles().get("normal").getProvisionedPath();
 //        String externalIdentifier = this.outputFilenamePrefix;
         this.outDir = this.outputFilenamePrefix + "_output";
-        this.snpFile = this.tmpDir+this.outputFilenamePrefix+".varscanSomatic.snp";
-        this.cnvFile = this.tmpDir+this.outputFilenamePrefix+".VarScan.CopyNumber.copynumber";
-        this.indelFile = this.tmpDir+this.outputFilenamePrefix+".varscanSomatic.indel";
-        this.mpileupFile = this.tmpDir+this.outputFilenamePrefix+".mpileup";
-        this.varscanCopycallFile = this.tmpDir+this.outputFilenamePrefix+".VarScan.CopyCaller";
-        this.copyNumberFile = this.tmpDir+this.outputFilenamePrefix+".VarScan.CopyNumber";
-        this.somaticPileupFile = this.tmpDir+this.outputFilenamePrefix +".varscanSomatic";
-        
+        this.snpFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic.snp";
+        this.cnvFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyNumber.copynumber";
+        this.indelFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic.indel";
+        this.mpileupFile = this.tmpDir + this.outputFilenamePrefix + ".mpileup";
+        this.varscanCopycallFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyCaller";
+        this.copyNumberFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyNumber";
+        this.somaticPileupFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic";
 
 //        String sample_name = inputTumorBamFilePath.substring(inputTumorBamFilePath.lastIndexOf("/") + 1, inputTumorBamFilePath.lastIndexOf(".bam"));
 //        intermediateFilePath = tempDir + sample_name + "seqz.bin50.gz";
-
 //        Job sequenzaUtilJob = getSequenzaUtilsJob(intermediateFilePath, inputTumorBamFilePath, inputNormalBamFilePath);
         //sequenzaUtilJob.addParent(parentJob);
 //        parentJob = sequenzaUtilJob;
-
 //        Job runSequenzaR = runSequenzaRJob(intermediateFilePath);
 //        runSequenzaR.addParent(parentJob);
 //        parentJob = runSequenzaR;
-
         Job mpileup = runMpileup();
         parentJob = mpileup;
-        
+
         Job somaticMpileup = getSomaticPileup();
         parentJob = somaticMpileup;
-        
+
         Job varscanIndels = varscanIndels();
-        parentJob = somaticMpileup;
+        parentJob = varscanIndels;
 //        parentJob = varscanIndels;
-        
+
         Job varscanSNP = varscanSNP();
-        parentJob = somaticMpileup;
-//        parentJob = varscanSNP;
+//        parentJob = somaticMpileup;
+        parentJob = varscanSNP;
 
         Job varscanCNA = varscanCNA();
-        parentJob = somaticMpileup;
-//        parentJob = varscanCNA;
-        
-        Job varscanCNACaller = varscanCNACaller();
+//        parentJob = somaticMpileup;
         parentJob = varscanCNA;
+
+        Job varscanCNACaller = varscanCNACaller();
+        parentJob = varscanCNACaller;
 //        parentJob = varscanCNACaller;
-        
+
         Job sequenzaJobV2 = runSequenzaSingleSampleV2();
         parentJob = sequenzaJobV2;
-        
-        
-        
+
         Job zipOutput = iterOutputDir(this.outDir);
         zipOutput.addParent(parentJob);
 
@@ -267,7 +252,6 @@ public class WorkflowClient extends OicrWorkflow {
 //        jobSequenzaUtils.setQueue(getOptionalProperty("queue", ""));
 //        return jobSequenzaUtils;
 //    }
-
 //    private Job runSequenzaRJob(String intFilePath, String outDir) {
 //        Job jobSequenzaR = getWorkflow().createBashJob("sequenza_R");
 //        Command cmd = jobSequenzaR.getCommand();
@@ -281,18 +265,14 @@ public class WorkflowClient extends OicrWorkflow {
 //        jobSequenzaR.setQueue(getOptionalProperty("queue", ""));
 //        return jobSequenzaR;
 //    }
-
     private Job iterOutputDir(String outDir) {
         /**
          * Method to handle file from the output directory All provision files
          * are in tempDir Create a directory called model-fit in output
-         * directory
-         * move the subfolders into it
-         * move files with the following
-         * extentions to model-fit
-         * "_log.txt", ".pdf", "_solutions.txt", "_CP.txt",
-         * "_mutations.txt", "segments.txt", ".RData"
-         * construct a cmd string to zip the model-fit folder
+         * directory move the subfolders into it move files with the following
+         * extentions to model-fit "_log.txt", ".pdf", "_solutions.txt",
+         * "_CP.txt", "_mutations.txt", "segments.txt", ".RData" construct a cmd
+         * string to zip the model-fit folder
          */
         // find only folders in the output Directory
         Job iterOutput = getWorkflow().createBashJob("handle_output");
@@ -304,24 +284,24 @@ public class WorkflowClient extends OicrWorkflow {
         iterOutput.setQueue(getOptionalProperty("queue", ""));
         return iterOutput;
     }
-    
-    private Job runMpileup(){
+
+    private Job runMpileup() {
         Job mpileup = getWorkflow().createBashJob("mpileup");
         Command cmd = mpileup.getCommand();
         cmd.addArgument(this.samtools);
         cmd.addArgument("mpileup -q 1");
-        cmd.addArgument("-f "+this.refFasta);
-        cmd.addArgument("-l "+ this.intervalFile);
+        cmd.addArgument("-f " + this.refFasta);
+        cmd.addArgument("-l " + this.intervalFile);
         cmd.addArgument("-B -d 1000000");
         cmd.addArgument(getFiles().get("normal").getProvisionedPath());
         cmd.addArgument(getFiles().get("tumor").getProvisionedPath());
-        cmd.addArgument("> "+this.mpileupFile);
+        cmd.addArgument("> " + this.mpileupFile);
         mpileup.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         mpileup.setQueue(getOptionalProperty("queue", ""));
         return mpileup;
     }
-    
-    private Job getSomaticPileup(){
+
+    private Job getSomaticPileup() {
         Job somaticPileup = getWorkflow().createBashJob("somatic_pileup");
         Command cmd = somaticPileup.getCommand();
         cmd.addArgument(this.java);
@@ -336,73 +316,72 @@ public class WorkflowClient extends OicrWorkflow {
         somaticPileup.setQueue(getOptionalProperty("queue", ""));
         return somaticPileup;
     }
-    
-    private Job varscanIndels(){
+
+    private Job varscanIndels() {
         Job vsIndels = getWorkflow().createBashJob("varscan_indels");
         Command cmd = vsIndels.getCommand();
         cmd.addArgument(this.java);
         cmd.addArgument(this.javaMem);
-        cmd.addArgument("-jar "+this.varscan);
+        cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("processSomatic");
         cmd.addArgument(this.indelFile);
         vsIndels.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         vsIndels.setQueue(getOptionalProperty("queue", ""));
         return vsIndels;
     }
-    
-    private Job varscanSNP(){
+
+    private Job varscanSNP() {
         Job vsSNP = getWorkflow().createBashJob("varscan_snps");
         Command cmd = vsSNP.getCommand();
         cmd.addArgument(this.java);
         cmd.addArgument(this.javaMem);
-        cmd.addArgument("-jar "+this.varscan);
+        cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("processSomatic");
         cmd.addArgument(this.snpFile);
         vsSNP.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         vsSNP.setQueue(getOptionalProperty("queue", ""));
         return vsSNP;
     }
-    
-    private Job varscanCNA(){
+
+    private Job varscanCNA() {
         Job vsCNA = getWorkflow().createBashJob("varscan_cna");
         Command cmd = vsCNA.getCommand();
         cmd.addArgument(this.java);
         cmd.addArgument(this.javaMem);
-        cmd.addArgument("-jar "+this.varscan);
+        cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("copynumber");
-        cmd.addArgument(this.tmpDir+this.outputFilenamePrefix+".pileup");
+        cmd.addArgument(this.mpileupFile);
         cmd.addArgument(this.copyNumberFile);
         cmd.addArgument("--mpileup 1");
         vsCNA.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         vsCNA.setQueue(getOptionalProperty("queue", ""));
         return vsCNA;
     }
-    
-    private Job varscanCNACaller(){
+
+    private Job varscanCNACaller() {
         Job vsCNAcall = getWorkflow().createBashJob("varscan_cna_call");
         Command cmd = vsCNAcall.getCommand();
         cmd.addArgument(this.java);
         cmd.addArgument(this.javaMem);
-        cmd.addArgument("-jar "+this.varscan);
+        cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("copyCaller");
         cmd.addArgument(this.cnvFile);
-        cmd.addArgument("--output-file "+this.varscanCopycallFile);
+        cmd.addArgument("--output-file " + this.varscanCopycallFile);
         cmd.addArgument("--mpileup 1");
         vsCNAcall.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         vsCNAcall.setQueue(getOptionalProperty("queue", ""));
         return vsCNAcall;
     }
-    
-    
-    private Job runSequenzaSingleSampleV2(){
+
+    private Job runSequenzaSingleSampleV2() {
         Job seqzJob = getWorkflow().createBashJob("sequenzav2");
         Command cmd = seqzJob.getCommand();
         cmd.addArgument("export R_LIBS=" + rLib + ";");
         cmd.addArgument(this.rScript);
         cmd.addArgument(this.sequenzav2Script);
-        cmd.addArgument("--snp_file "+ this.snpFile);
-        cmd.addArgument("--cnv_file "+this.cnvFile);
-        cmd.addArgument("--out_dir "+this.outDir);
+        cmd.addArgument("--snp_file " + this.snpFile);
+        cmd.addArgument("--cnv_file " + this.cnvFile);
+        cmd.addArgument("--out_dir " + this.outDir);
         seqzJob.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         seqzJob.setQueue(getOptionalProperty("queue", ""));
         return seqzJob;
