@@ -19,17 +19,5 @@
 
     <properties>
         <workflow-name>Sequenza</workflow-name>
-        <varscan-version>2.3.9</varscan-version>
     </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>VarScan</groupId>
-            <artifactId>VarScan</artifactId>
-            <version>${varscan-version}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
 </project>
