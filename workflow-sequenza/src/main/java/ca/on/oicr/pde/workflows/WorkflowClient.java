@@ -191,25 +191,31 @@ public class WorkflowClient extends OicrWorkflow {
         parentJob = mpileup;
 
         Job somaticMpileup = getSomaticPileup();
+        somaticMpileup.addParent(parentJob);
         parentJob = somaticMpileup;
 
         Job varscanIndels = varscanIndels();
-        parentJob = varscanIndels;
+        varscanIndels.addParent(parentJob);
+//        parentJob = varscanIndels;
 //        parentJob = varscanIndels;
 
         Job varscanSNP = varscanSNP();
+        varscanSNP.addParent(parentJob);
 //        parentJob = somaticMpileup;
-        parentJob = varscanSNP;
+//        parentJob = varscanSNP;
 
         Job varscanCNA = varscanCNA();
+        varscanCNA.addParent(parentJob);
 //        parentJob = somaticMpileup;
         parentJob = varscanCNA;
 
         Job varscanCNACaller = varscanCNACaller();
+        varscanCNACaller.addParent(parentJob);
         parentJob = varscanCNACaller;
 //        parentJob = varscanCNACaller;
 
         Job sequenzaJobV2 = runSequenzaSingleSampleV2();
+        sequenzaJobV2.addParent(parentJob);
         parentJob = sequenzaJobV2;
 
         Job zipOutput = iterOutputDir(this.outDir);
