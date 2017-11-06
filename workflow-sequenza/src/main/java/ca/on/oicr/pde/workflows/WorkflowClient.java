@@ -313,8 +313,8 @@ public class WorkflowClient extends OicrWorkflow {
         cmd.addArgument("-f "+this.refFasta);
         cmd.addArgument("-l "+ this.intervalFile);
         cmd.addArgument("-B -d 1000000");
-        cmd.addArgument(getFiles().get("tumor").getProvisionedPath());
         cmd.addArgument(getFiles().get("normal").getProvisionedPath());
+        cmd.addArgument(getFiles().get("tumor").getProvisionedPath());
         cmd.addArgument("> "+this.mpileupFile);
         mpileup.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         mpileup.setQueue(getOptionalProperty("queue", ""));
