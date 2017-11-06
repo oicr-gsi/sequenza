@@ -331,7 +331,7 @@ public class WorkflowClient extends OicrWorkflow {
         cmd.addArgument("somatic");
         cmd.addArgument(this.mpileupFile);
         cmd.addArgument(this.somaticPileupFile);
-        cmd.addArgument("--mplieup 1");
+        cmd.addArgument("--mpileup 1");
         somaticPileup.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         somaticPileup.setQueue(getOptionalProperty("queue", ""));
         return somaticPileup;
