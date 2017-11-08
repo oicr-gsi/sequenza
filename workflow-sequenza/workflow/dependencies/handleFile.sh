@@ -8,8 +8,6 @@ model=$inPath/model-fit; mkdir $model
 for f in $( ls ); do
 	if [[ -d $f ]]; then
 		if [[ $f != "model-fit" ]]; then
-			cd $f;
-			cp ${extid}_genome_view.pdf ../${extid}_genome_view_${f}.pdf;
 			cd $inPath
 			mv $f $model
 		fi
