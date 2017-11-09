@@ -72,7 +72,6 @@ public class WorkflowClient extends OicrWorkflow {
     private Map<String, SqwFile> tempFiles;
 
     // meta-types
-    private final static String PDF_METATYPE = "application/pdf";
     private final static String TXT_METATYPE = "text/plain";
     private final static String TAR_GZ_METATYPE = "application/tar-gzip";
 
@@ -89,8 +88,6 @@ public class WorkflowClient extends OicrWorkflow {
             //Ext id
             outputFilenamePrefix = getProperty("external_name");
 
-//            //bin data 
-//            sequenzaGCData = getProperty("sequenza_bin_data_hg19");
             //samtools
             samtools = getProperty("samtools");
             java = getProperty("java");
@@ -103,15 +100,11 @@ public class WorkflowClient extends OicrWorkflow {
             //r path
             rScript = getProperty("rpath") + "/bin/Rscript";
             rLib = getProperty("rLib");
-//            pypy = getProperty("pypy");
             manualOutput = Boolean.parseBoolean(getProperty("manual_output"));
             queue = getOptionalProperty("queue", "");
 
             // sequenza
-//            sequenzaUtil = getProperty("sequenza_utils_script");
-//            sequenzaRscript = getProperty("sequenza_rscript");
             sequenzav2Script = getProperty("sequenza_v2");
-//            sequenzaUtilMem = Integer.parseInt(getProperty("sequenza_utils_mem"));
             sequenzaRscriptMem = Integer.parseInt(getProperty("sequenza_rscript_mem"));
 
         } catch (Exception e) {
@@ -166,10 +159,6 @@ public class WorkflowClient extends OicrWorkflow {
         // workflow : read inputs tumor and normal bam; run sequenza-utils; write the output to temp directory; 
         // run sequenzaR; handle output; provision files (3) -- model-fit.zip; text/plain; text/plain
         Job parentJob = null;
-//        String intermediateFilePath;
-//        String inputTumorBamFilePath = getFiles().get("tumor").getProvisionedPath();
-//        String inputNormalBamFilePath = getFiles().get("normal").getProvisionedPath();
-//        String externalIdentifier = this.outputFilenamePrefix;
         this.outDir = this.outputFilenamePrefix + "_output";
         this.snpFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic.snp";
         this.cnvFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyNumber.copynumber";
@@ -179,14 +168,6 @@ public class WorkflowClient extends OicrWorkflow {
         this.copyNumberFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyNumber";
         this.somaticPileupFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic";
 
-//        String sample_name = inputTumorBamFilePath.substring(inputTumorBamFilePath.lastIndexOf("/") + 1, inputTumorBamFilePath.lastIndexOf(".bam"));
-//        intermediateFilePath = tempDir + sample_name + "seqz.bin50.gz";
-//        Job sequenzaUtilJob = getSequenzaUtilsJob(intermediateFilePath, inputTumorBamFilePath, inputNormalBamFilePath);
-        //sequenzaUtilJob.addParent(parentJob);
-//        parentJob = sequenzaUtilJob;
-//        Job runSequenzaR = runSequenzaRJob(intermediateFilePath);
-//        runSequenzaR.addParent(parentJob);
-//        parentJob = runSequenzaR;
         Job mpileup = runMpileup();
         parentJob = mpileup;
 
@@ -196,23 +177,17 @@ public class WorkflowClient extends OicrWorkflow {
 
         Job varscanIndels = varscanIndels();
         varscanIndels.addParent(parentJob);
-//        parentJob = varscanIndels;
-//        parentJob = varscanIndels;
 
         Job varscanSNP = varscanSNP();
         varscanSNP.addParent(parentJob);
-//        parentJob = somaticMpileup;
-//        parentJob = varscanSNP;
 
         Job varscanCNA = varscanCNA();
         varscanCNA.addParent(parentJob);
-//        parentJob = somaticMpileup;
         parentJob = varscanCNA;
 
         Job varscanCNACaller = varscanCNACaller();
         varscanCNACaller.addParent(parentJob);
         parentJob = varscanCNACaller;
-//        parentJob = varscanCNACaller;
 
         Job sequenzaJobV2 = runSequenzaSingleSampleV2();
         sequenzaJobV2.addParent(parentJob);
@@ -221,56 +196,17 @@ public class WorkflowClient extends OicrWorkflow {
         Job zipOutput = iterOutputDir(this.outDir);
         zipOutput.addParent(parentJob);
 
-        // Provision *.pdf, .seg, model-fit.tar.gz files
+        // Provision .seg, model-fit.tar.gz files
         String segFile = this.outputFilenamePrefix + ".varscanSomatic_Total_CN.seg";
-//        String pdfFile = this.outputFilenamePrefix + "_genome_view.pdf";
         SqwFile cnSegFile = createOutputFile(this.outDir + "/" + segFile, TXT_METATYPE, this.manualOutput);
         cnSegFile.getAnnotations().put("segment data from the tool ", "Sequenza ");
         zipOutput.addFile(cnSegFile);
-
-//        SqwFile cnImage = createOutputFile(this.outDir + "/" + pdfFile, PDF_METATYPE, this.manualOutput);
-//        cnImage.getAnnotations().put("copy number view ", "Sequenza ");
-//        zipOutput.addFile(cnImage);
 
         SqwFile zipFile = createOutputFile(this.outDir + "/" + "model-fit.tar.gz", TAR_GZ_METATYPE, this.manualOutput);
         zipFile.getAnnotations().put("Other files ", "Sequenza ");
         zipOutput.addFile(zipFile);
     }
 
-    // create Job function for the sequenza steps - pre-step
-//    private Job getSequenzaUtilsJob(String intFilePath, String inputTumorBamFilePath, String inputNormalBamFilePath) {
-//        Job jobSequenzaUtils = getWorkflow().createBashJob("sequenza-utils");
-//        Command command = jobSequenzaUtils.getCommand();
-//        command.addArgument(pypy);
-//        command.addArgument(sequenzaUtil);
-//        command.addArgument("bam2seqz");
-//        command.addArgument("--fasta " + refFasta);
-//        command.addArgument("-n " + inputNormalBamFilePath);
-//        command.addArgument("-t " + inputTumorBamFilePath);
-//        command.addArgument("-gc " + sequenzaGCData);
-//        command.addArgument("-S " + samtools + " |");
-//        command.addArgument(pypy);
-//        command.addArgument(sequenzaUtil);
-//        command.addArgument("seqz-binning");
-//        command.addArgument("-s -");
-//        command.addArgument("-w 50 | gzip > " + intFilePath);
-//        jobSequenzaUtils.setMaxMemory(Integer.toString(sequenzaUtilMem * 1024));
-//        jobSequenzaUtils.setQueue(getOptionalProperty("queue", ""));
-//        return jobSequenzaUtils;
-//    }
-//    private Job runSequenzaRJob(String intFilePath, String outDir) {
-//        Job jobSequenzaR = getWorkflow().createBashJob("sequenza_R");
-//        Command cmd = jobSequenzaR.getCommand();
-//        cmd.addArgument("export R_LIBS=" + rLib + ";");
-//        cmd.addArgument(rScript);
-//        cmd.addArgument(sequenzaRscript);
-//        cmd.addArgument(outDir);
-//        cmd.addArgument(intFilePath);
-//        cmd.addArgument(outputFilenamePrefix);
-//        jobSequenzaR.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
-//        jobSequenzaR.setQueue(getOptionalProperty("queue", ""));
-//        return jobSequenzaR;
-//    }
     private Job iterOutputDir(String outDir) {
         /**
          * Method to handle file from the output directory All provision files
