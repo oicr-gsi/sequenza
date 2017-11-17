@@ -24,10 +24,7 @@ public class SequenzaDecider extends OicrDecider {
     private Map<String, BeSmall> fileSwaToSmall;
 
     private String templateType = "EX";
-    private String output_prefix = "./";
     private String queue = "";
-    private String output_dir = "seqware-results";
-    private String manual_output = "false";
     private String externalID;
 
     private final static String BAM_METATYPE = "application/bam";
@@ -38,14 +35,8 @@ public class SequenzaDecider extends OicrDecider {
         super();
         fileSwaToSmall = new HashMap<String, BeSmall>();
         parser.acceptsAll(Arrays.asList("ini-file"), "Optional: the location of the INI file.").withRequiredArg();
-        parser.accepts("manual-output", "Optional*. Set the manual output "
-                + "either to true or false").withRequiredArg();
         parser.accepts("template-type", "Required. Set the template type to limit the workflow run "
                 + "so that it runs on data only of this template type").withRequiredArg();
-        parser.accepts("output-path", "Optional: the path where the files should be copied to "
-                + "after analysis. Corresponds to output-prefix in INI file. Default: ./").withRequiredArg();
-        parser.accepts("output-folder", "Optional: the name of the folder to put the output into relative to "
-                + "the output-path. Corresponds to output-dir in INI file. Default: seqware-results").withRequiredArg();
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
     }
@@ -80,27 +71,6 @@ public class SequenzaDecider extends OicrDecider {
                     rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
                 }
             }
-        }
-
-        if (this.options.has("manual-output")) {
-            this.manual_output = options.valueOf("manual_output").toString();
-            Log.debug("Setting manual output, default is false and needs to be set only in special cases");
-        }
-
-        if (this.options.has("tumor-type")) {
-            this.tumorType = options.valueOf("tumor-type").toString();
-            Log.debug("Setting tumor type to " + this.tumorType + " as requested");
-        }
-
-        if (this.options.has("output-path")) {
-            this.output_prefix = options.valueOf("output-path").toString();
-            if (!this.output_prefix.endsWith("/")) {
-                this.output_prefix += "/";
-            }
-        }
-
-        if (this.options.has("output-folder")) {
-            this.output_dir = options.valueOf("output-folder").toString();
         }
 
         return rv;
@@ -263,9 +233,8 @@ public class SequenzaDecider extends OicrDecider {
         StringBuilder tubeId = new StringBuilder();
         StringBuilder groupDescription = new StringBuilder();
         ReturnValue rv = new ReturnValue();
-        
+
         this.externalID = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
-        
 
         for (String p : filePaths) {
             if (null != this.duplicates && this.duplicates.contains(p)) {
@@ -304,8 +273,8 @@ public class SequenzaDecider extends OicrDecider {
             Log.error("THE DONOR does not have data to run the workflow");
             abortSchedulingOfCurrentWorkflowRun();
         }
-        
-        if (this.externalID != null){
+
+        if (this.externalID != null) {
             String[] pathsplit = inputTumrFiles.toString().split("/");
             Integer n = pathsplit.length;
             String name = pathsplit[n - 1];
@@ -321,10 +290,6 @@ public class SequenzaDecider extends OicrDecider {
         iniFileMap.put("input_files_tumor", inputTumrFiles.toString());
         iniFileMap.put("data_dir", "data");
         iniFileMap.put("template_type", this.templateType);
-
-        iniFileMap.put("output_prefix", this.output_prefix);
-        iniFileMap.put("output_dir", this.output_dir);
-        iniFileMap.put("manual_output", this.manual_output);
         iniFileMap.put("external_name", this.externalID);
 
         if (!this.queue.isEmpty()) {

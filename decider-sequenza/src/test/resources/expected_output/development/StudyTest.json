@@ -13,6 +13,7 @@
   "workflowRuns" : [ {
     "workflowIni" : {
       "data_dir" : "data",
+      "external_name" : "null",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/58263846/TGL05_0001_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/58263846/TGL05_0001_Bd_P_EX.sorted.filter.deduped.realign.recal.bam",
       "interval_bed" : "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed",
@@ -112,6 +113,7 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
+      "external_name" : "null",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/17063221/TGL05_0002_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/17063221/TGL05_0002_Co_P_EX.sorted.filter.deduped.realign.recal.bam",
       "interval_bed" : "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed",
@@ -211,6 +213,7 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
+      "external_name" : "null",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/68739040/TGL05_0004_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/68739040/TGL05_0004_Co_P_EX.sorted.filter.deduped.realign.recal.bam",
       "interval_bed" : "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed",
@@ -310,6 +313,7 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
+      "external_name" : "null",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/47342630/TGL05_0005_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/47342630/TGL05_0005_Pt_P_EX.sorted.filter.deduped.realign.recal.bam",
       "interval_bed" : "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed",
@@ -409,6 +413,7 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
+      "external_name" : "null",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/72249522/TGL05_0006_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/72249522/TGL05_0006_Ov_P_EX.sorted.filter.deduped.realign.recal.bam",
       "interval_bed" : "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed",
@@ -508,6 +513,7 @@
   }, {
     "workflowIni" : {
       "data_dir" : "data",
+      "external_name" : "null",
       "input_files_normal" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/95271390/TGL05_0007_Pb_R_EX.sorted.filter.deduped.realign.recal.bam",
       "input_files_tumor" : "/.mounts/labs/TGL/production2/seqware-results/BamMergePreprocessing_1.1/95271390/TGL05_0007_Np_P_EX.sorted.filter.deduped.realign.recal.bam",
       "interval_bed" : "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed",
