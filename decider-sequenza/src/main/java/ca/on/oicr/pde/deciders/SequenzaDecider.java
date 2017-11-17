@@ -265,6 +265,7 @@ public class SequenzaDecider extends OicrDecider {
         ReturnValue rv = new ReturnValue();
         
         this.externalID = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
+        
 
         for (String p : filePaths) {
             if (null != this.duplicates && this.duplicates.contains(p)) {
@@ -302,6 +303,16 @@ public class SequenzaDecider extends OicrDecider {
         if (inputNormFiles.length() == 0 || inputTumrFiles.length() == 0) {
             Log.error("THE DONOR does not have data to run the workflow");
             abortSchedulingOfCurrentWorkflowRun();
+        }
+        
+        if (this.externalID != null){
+            String[] pathsplit = inputTumrFiles.toString().split("/");
+            Integer n = pathsplit.length;
+            String name = pathsplit[n - 1];
+            String[] names = name.split("\\.");
+            this.externalID = names[0];
+        } else {
+            this.externalID = this.externalID;
         }
 
         Map<String, String> iniFileMap = new TreeMap<String, String>();
