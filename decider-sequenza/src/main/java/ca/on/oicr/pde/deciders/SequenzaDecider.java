@@ -28,6 +28,7 @@ public class SequenzaDecider extends OicrDecider {
     private String queue = "";
     private String output_dir = "seqware-results";
     private String manual_output = "false";
+    private String externalID;
 
     private final static String BAM_METATYPE = "application/bam";
     private String tumorType;
@@ -261,6 +262,9 @@ public class SequenzaDecider extends OicrDecider {
         String[] filePaths = commaSeparatedFilePaths.split(",");
         StringBuilder tubeId = new StringBuilder();
         StringBuilder groupDescription = new StringBuilder();
+        ReturnValue rv = new ReturnValue();
+        
+        this.externalID = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
 
         for (String p : filePaths) {
             if (null != this.duplicates && this.duplicates.contains(p)) {
@@ -310,6 +314,7 @@ public class SequenzaDecider extends OicrDecider {
         iniFileMap.put("output_prefix", this.output_prefix);
         iniFileMap.put("output_dir", this.output_dir);
         iniFileMap.put("manual_output", this.manual_output);
+        iniFileMap.put("external_name", this.externalID);
 
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
