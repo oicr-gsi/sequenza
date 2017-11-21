@@ -1,0 +1,28 @@
+{
+    "defaults": {
+        "description": "Sequenza decider test",
+        "metricsResources": "/expected_output/development/",
+        "parameters": {
+            "--parent-wf-accessions": "9532886,10237604"
+        },
+        "iniExclusions": ["parent-accessions", "json_metadata_file", "workflow_run_accession", "workflow-run-accession",
+            "unique_string", "parent_accessions", "parent_accession", "input_file", "input_files", "workflow_bundle_dir",
+            "output_prefix", "samstats_script"]
+    },
+    "tests": [
+        {
+            "id": "study test",
+            "parameters": {
+                "--study-name": "TGL05",
+                "--before-date": "2017-07-31"
+            }
+        },
+        {
+            "id": "TGL08_study test",
+            "parameters": {
+                "--study-name": "TGL08",
+                "--before-date": "2017-07-31"
+            }
+        }
+    ]
+}
