@@ -290,6 +290,7 @@ public class SequenzaDecider extends OicrDecider {
         iniFileMap.put("data_dir", "data");
         iniFileMap.put("template_type", this.templateType);
         iniFileMap.put("external_name", this.externalID);
+//        iniFileMap.put("library", )
 
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
