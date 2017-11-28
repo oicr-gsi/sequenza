@@ -282,7 +282,8 @@ public class SequenzaDecider extends OicrDecider {
             this.externalID = extName.toString();
         }
 
-        Map<String, String> iniFileMap = new TreeMap<String, String>();
+        Map<String, String> iniFileMap = super.modifyIniFile(commaSeparatedFilePaths, commaSeparatedParentAccessions);
+//        Map<String, String> iniFileMap = new TreeMap<String, String>();
 
         iniFileMap.put("input_files_normal", inputNormFiles.toString());
         iniFileMap.put("input_files_tumor", inputTumrFiles.toString());
