@@ -272,15 +272,15 @@ public class SequenzaDecider extends OicrDecider {
             abortSchedulingOfCurrentWorkflowRun();
         }
         
-        if (extName == null) {
-            String[] pathsplit = inputTumrFiles.toString().split("/");
-            Integer n = pathsplit.length;
-            String name = pathsplit[n - 1];
-            String[] names = name.split("\\.");
-            this.externalID = names[0];
-        } else {
-            this.externalID = extName.toString();
-        }
+//        if (extName == null) {
+        String[] pathsplit = inputTumrFiles.toString().split("/");
+        Integer n = pathsplit.length;
+        String name = pathsplit[n - 1];
+        String[] names = name.split("\\.");
+        this.externalID = names[0];
+//        } else {
+//            this.externalID = extName.toString();
+//        }
 
         Map<String, String> iniFileMap = super.modifyIniFile(commaSeparatedFilePaths, commaSeparatedParentAccessions);
 //        Map<String, String> iniFileMap = new TreeMap<String, String>();
