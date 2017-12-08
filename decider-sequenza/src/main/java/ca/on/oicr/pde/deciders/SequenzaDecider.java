@@ -230,11 +230,9 @@ public class SequenzaDecider extends OicrDecider {
         StringBuilder inputTumrFiles = new StringBuilder();
         StringBuilder groupIds = new StringBuilder();
         String[] filePaths = commaSeparatedFilePaths.split(",");
-        StringBuilder tubeId = new StringBuilder();
+        StringBuilder extName = new StringBuilder();
         StringBuilder groupDescription = new StringBuilder();
-        ReturnValue rv = new ReturnValue();
 
-        this.externalID = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
 
         for (String p : filePaths) {
             if (null != this.duplicates && this.duplicates.contains(p)) {
@@ -259,12 +257,12 @@ public class SequenzaDecider extends OicrDecider {
                         // group_ids recoreded using info from tumor entries, normal files do not have group_ids
                         groupIds.append(",");
                         groupDescription.append(",");
-                        tubeId.append(",");
+                        extName.append(",");
                     }
                     inputTumrFiles.append(p);
                     groupIds.append(bs.getGroupID());
                     groupDescription.append(bs.getGroupDescription());
-                    tubeId.append(bs.getTubeId());
+                    extName.append(bs.getExtName());
                 }
             }
         }
@@ -273,24 +271,26 @@ public class SequenzaDecider extends OicrDecider {
             Log.error("THE DONOR does not have data to run the workflow");
             abortSchedulingOfCurrentWorkflowRun();
         }
+        
+//        if (extName == null) {
+        String[] pathsplit = inputTumrFiles.toString().split("/");
+        Integer n = pathsplit.length;
+        String name = pathsplit[n - 1];
+        String[] names = name.split("\\.");
+        this.externalID = names[0];
+//        } else {
+//            this.externalID = extName.toString();
+//        }
 
-        if (this.externalID != null) {
-            String[] pathsplit = inputTumrFiles.toString().split("/");
-            Integer n = pathsplit.length;
-            String name = pathsplit[n - 1];
-            String[] names = name.split("\\.");
-            this.externalID = names[0];
-        } else {
-            this.externalID = this.externalID;
-        }
-
-        Map<String, String> iniFileMap = new TreeMap<String, String>();
+        Map<String, String> iniFileMap = super.modifyIniFile(commaSeparatedFilePaths, commaSeparatedParentAccessions);
+//        Map<String, String> iniFileMap = new TreeMap<String, String>();
 
         iniFileMap.put("input_files_normal", inputNormFiles.toString());
         iniFileMap.put("input_files_tumor", inputTumrFiles.toString());
         iniFileMap.put("data_dir", "data");
         iniFileMap.put("template_type", this.templateType);
         iniFileMap.put("external_name", this.externalID);
+//        iniFileMap.put("library", )
 
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
@@ -318,7 +318,7 @@ public class SequenzaDecider extends OicrDecider {
         private String groupByAttribute = null;
         private String tissueType = null;
         private String path = null;
-        private String tubeID = null;
+        private String extName = null;
         private String groupID = null;
         private String groupDescription = null;
 
@@ -332,10 +332,10 @@ public class SequenzaDecider extends OicrDecider {
             FileAttributes fa = new FileAttributes(rv, rv.getFiles().get(0));
             iusDetails = fa.getLibrarySample() + fa.getSequencerRun() + fa.getLane() + fa.getBarcode();
             tissueType = fa.getLimsValue(Lims.TISSUE_TYPE);
-            tubeID = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
+            extName = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
             //fa.getLimsValue(Lims.TUBE_ID);
-            if (null == tubeID || tubeID.isEmpty()) {
-                tubeID = "NA";
+            if (null == extName || extName.isEmpty()) {
+                extName = "NA";
             }
             groupID = fa.getLimsValue(Lims.GROUP_ID);
             if (null == groupID || groupID.isEmpty()) {
@@ -381,8 +381,8 @@ public class SequenzaDecider extends OicrDecider {
             return path;
         }
 
-        public String getTubeId() {
-            return tubeID;
+        public String getExtName() {
+            return extName;
         }
 
         public String getGroupID() {
