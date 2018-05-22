@@ -12,7 +12,7 @@ for f in $( ls ); do
 			mv $f $model
 		fi
 	else
-		if [[ ${f: -4} != ".seg" ]]; then
+		if [[ ${f: -4} != ".seg" ]] && [[ ${f: -15} !="confints_CP.txt"]]; then
 			mv $f $model
 		fi
 	fi
