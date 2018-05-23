@@ -5,6 +5,7 @@ extid=$1
 inPath=$wdPath/$2
 cd $inPath
 model=model-fit; mkdir $model
+
 for f in $( ls ); do
 	if [[ -d $f ]]; then
 		if [[ $f != "model-fit" ]]; then
@@ -12,13 +13,12 @@ for f in $( ls ); do
 			mv $f $model
 		fi
 	else
-		if [[ ${f: -4} != ".seg" ]] && [[ ${f: -15} !="confints_CP.txt"]]; then
-			mv $f $model
-		fi
+		if [[ ${f: -4} != ".seg" ]] && [[ ${f: -15} != "confints_CP.txt" ]]; then	
+                         mv $f $model
+		fi 
 	fi
 done
 
 cd $model
-cp ${extid}_genome_vie*.pdf $inPath
 cd $inPath
 tar -zcvf ${model}.tar.gz $model
