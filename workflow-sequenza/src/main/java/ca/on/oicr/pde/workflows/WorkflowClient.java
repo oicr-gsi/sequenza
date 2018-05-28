@@ -196,12 +196,17 @@ public class WorkflowClient extends OicrWorkflow {
         Job zipOutput = iterOutputDir(this.outDir);
         zipOutput.addParent(parentJob);
 
-        // Provision .seg, model-fit.tar.gz files
+        // Provision .seg, .varscanSomatic_confints_CP.txt, model-fit.tar.gz files
         String segFile = this.outputFilenamePrefix + ".varscanSomatic_Total_CN.seg";
         SqwFile cnSegFile = createOutputFile(this.outDir + "/" + segFile, TXT_METATYPE, this.manualOutput);
         cnSegFile.getAnnotations().put("segment data from the tool ", "Sequenza ");
         zipOutput.addFile(cnSegFile);
 
+        String ploidyFile = this.outputFilenamePrefix + ".varscanSomatic_confints_CP.txt";
+        SqwFile ploidy2File = createOutputFile(this.outDir + "/" + ploidyFile, TXT_METATYPE, this.manualOutput);
+        ploidy2File.getAnnotations().put("ploidy data from the tool ", "Sequenza ");
+        zipOutput.addFile(ploidy2File);
+        
         SqwFile zipFile = createOutputFile(this.outDir + "/" + "model-fit.tar.gz", TAR_GZ_METATYPE, this.manualOutput);
         zipFile.getAnnotations().put("Other files ", "Sequenza ");
         zipOutput.addFile(zipFile);
