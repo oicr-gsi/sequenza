@@ -13,6 +13,7 @@ import net.sourceforge.seqware.common.hibernate.FindAllTheFiles.Header;
 import net.sourceforge.seqware.common.module.FileMetadata;
 import net.sourceforge.seqware.common.module.ReturnValue;
 import net.sourceforge.seqware.common.util.Log;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -273,15 +274,19 @@ public class SequenzaDecider extends OicrDecider {
         }
         
 //        if (extName == null) {
-        String[] pathsplit = inputTumrFiles.toString().split("/");
-        Integer n = pathsplit.length;
-        String name = pathsplit[n - 1];
-        String[] names = name.split("\\.");
-        this.externalID = names[0];
-//        } else {
-//            this.externalID = extName.toString();
-//        }
-
+        Log.debug(inputTumrFiles);
+        ArrayList<String> names = new ArrayList<String>();
+        for (int i=0; i < inputTumrFiles.toString().split(",").length; i++){
+                String[] pathsplit = inputTumrFiles.toString().split("/");
+                Integer n = pathsplit.length;
+                String name = pathsplit[n - 1];
+                if (!names.contains(name)){
+                names.add(name.split("\\.")[0]);
+                }
+        }
+        this.externalID = StringUtils.join(names, ',');
+        Log.debug(this.externalID);
+        
         Map<String, String> iniFileMap = super.modifyIniFile(commaSeparatedFilePaths, commaSeparatedParentAccessions);
 //        Map<String, String> iniFileMap = new TreeMap<String, String>();
 

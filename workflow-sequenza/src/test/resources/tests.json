@@ -14,6 +14,14 @@
                 "input_files_normal": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/TGL01_0001_Pb_R_PE_466_EX.sorted.filter.deduped.realign.recal.bam",
                 "external_name": "INS-D-004-ST"
             }
+        },
+        {
+            "id": "workflow_test_02",
+            "parameters": {
+                "input_files_tumor": "/.mounts/labs/TGL/production3/seqware-results/BamMergePreprocessing_1.1/59092497/TGL17_0001_Co_P_EX_180416.sorted.filter.deduped.realign.recal.bam,/.mounts/labs/TGL/production3/seqware-results/BamMergePreprocessing_1.1/59092497/TGL17_0001_Lv_M_EX_0102SURT2.sorted.filter.deduped.realign.recal.bam,/.mounts/labs/TGL/production3/seqware-results/BamMergePreprocessing_1.1/59092497/TGL17_0001_Lv_M_EX_0102SURT1.sorted.filter.deduped.realign.recal.bam",
+                "input_files_normal": "/.mounts/labs/TGL/production3/seqware-results/BamMergePreprocessing_1.1/59092497/TGL17_0001_Pb_R_EX_180416.sorted.filter.deduped.realign.recal.bam",
+                "external_name": "TGL17_0001_Lv_M_EX_0102SURT1,TGL17_0001_Lv_M_EX_0102SURT1,TGL17_0001_Lv_M_EX_0102SURT1"
+            }
         }
     ]
 }

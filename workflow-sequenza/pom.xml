@@ -6,7 +6,7 @@
     <parent>
         <groupId>ca.on.oicr.gsi</groupId>
         <artifactId>pipedev-workflow-parent</artifactId>
-        <version>2.2</version>
+        <version>2.4.1</version>
         <relativePath/>
     </parent>
     
