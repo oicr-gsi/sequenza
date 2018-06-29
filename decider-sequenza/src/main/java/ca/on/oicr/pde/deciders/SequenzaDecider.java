@@ -32,9 +32,7 @@ public class SequenzaDecider extends OicrDecider {
 
     private String templateType = "EX";
     private String queue = "";
-    private String externalID;
-    private Set<String> normalTissueTypes = Sets.newHashSet("R");
-    private Set<String> tumorTissueTypes = Sets.newHashSet("P", "C", "X", "M", "B", "T");
+    private String sampleName;
     private Boolean groupByAligner = true;
 
     private final static String BAM_METATYPE = "application/bam";
@@ -45,7 +43,6 @@ public class SequenzaDecider extends OicrDecider {
     private String commaSeparatedFilePaths;
     private String commaSeparatedParentAccessions;
     
-    private Map<String, String> tumNormPair = new HashMap<String, String> ();
 
     public SequenzaDecider() {
         super();
@@ -327,7 +324,7 @@ public class SequenzaDecider extends OicrDecider {
     protected Map<String, String> modifyIniFile(String commaSeparatedFilePaths, String commaSeparatedParentAccessions) {
         String inputNormFile = this.normalFilePath;
         String inputTumrFile = this.tumourFilePath;
-        this.externalID = FilenameUtils.getBaseName(inputTumrFile);
+        this.sampleName = FilenameUtils.getBaseName(inputTumrFile);
 
         Map<String, String> iniFileMap = super.modifyIniFile(this.commaSeparatedFilePaths, this.commaSeparatedParentAccessions);
 
@@ -337,7 +334,7 @@ public class SequenzaDecider extends OicrDecider {
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
                 }
-        iniFileMap.put("external_name", this.externalID);
+        iniFileMap.put("external_name", this.sampleName);
         return iniFileMap;
     }
 
@@ -403,14 +400,6 @@ public class SequenzaDecider extends OicrDecider {
             if (null != trs && !trs.isEmpty()) {
                 gba.append(":").append(trs);
             }
-
-            //Aligner information
-//            if (groupByAligner) {
-//                String aligner = rv.getAttribute(ALIGNER_TOKEN);
-//                if (null != aligner && !aligner.isEmpty()) {
-//                    gba.append(":").append(aligner);
-//                }
-//            }
 
             groupByAttribute = gba.toString() + ":" + tissueType;
             path = rv.getFiles().get(0).getFilePath() + "";
