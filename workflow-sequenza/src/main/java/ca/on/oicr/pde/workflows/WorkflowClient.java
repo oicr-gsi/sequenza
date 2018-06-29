@@ -40,11 +40,6 @@ public class WorkflowClient extends OicrWorkflow {
     private String copyNumberFile;
     private String somaticPileupFile;
 
-    // Output check
-//    private boolean isFolder = true;
-    //Scripts 
-//    private String sequenzaUtil;
-//    private String sequenzaRscript;
     private String sequenzav2Script;
     //Tools
     private String samtools;
@@ -57,19 +52,16 @@ public class WorkflowClient extends OicrWorkflow {
 
     //path to bin
     private String bin;
-//    private String pypy;
     private String rScript;
     private String rLib;
 
     //ref Data
     private String refFasta;
     private String intervalFile;
-//    private String sequenzaGCData;
 
     private boolean manualOutput;
     private static final Logger logger = Logger.getLogger(WorkflowClient.class.getName());
     private String queue;
-    private Map<String, SqwFile> tempFiles;
 
     // meta-types
     private final static String TXT_METATYPE = "text/plain";
@@ -159,7 +151,7 @@ public class WorkflowClient extends OicrWorkflow {
         // workflow : read inputs tumor and normal bam; run sequenza-utils; write the output to temp directory; 
         // run sequenzaR; handle output; provision files (3) -- model-fit.zip; text/plain; text/plain
         Job parentJob = null;
-        this.outDir = this.outputFilenamePrefix + "_output";
+        this.outDir = this.dataDir;
         this.snpFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic.snp";
         this.cnvFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyNumber.copynumber";
         this.indelFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic.indel";
