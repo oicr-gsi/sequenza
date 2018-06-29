@@ -1,11 +1,8 @@
 package ca.on.oicr.pde.workflows;
 
 import ca.on.oicr.pde.utilities.workflows.OicrWorkflow;
-import java.util.ArrayList;
-import static java.util.Collections.list;
 import java.util.Map;
 import java.util.logging.Logger;
-import net.sourceforge.seqware.common.util.Log;
 import net.sourceforge.seqware.pipeline.workflowV2.model.Command;
 import net.sourceforge.seqware.pipeline.workflowV2.model.Job;
 import net.sourceforge.seqware.pipeline.workflowV2.model.SqwFile;
@@ -30,8 +27,7 @@ public class WorkflowClient extends OicrWorkflow {
     private String outDir;
 
     // Input Data
-    ArrayList<String> tumorBams = new ArrayList<String>(); 
-    private String inputBamsTumor;
+    private String tumorBam;
     private String normalBam;
     private String outputFilenamePrefix;
 
@@ -86,7 +82,7 @@ public class WorkflowClient extends OicrWorkflow {
             tmpDir = getProperty("tmp_dir");
 
             // input samples 
-            inputBamsTumor = getProperty("input_files_tumor");
+            tumorBam = getProperty("input_files_tumor");
             normalBam = getProperty("input_files_normal");
 
             //Ext id
@@ -131,29 +127,14 @@ public class WorkflowClient extends OicrWorkflow {
 
     @Override
     public Map<String, SqwFile> setupFiles() {
-        SqwFile file0 = this.createFile("normal");
-        file0.setSourcePath(normalBam);
+        SqwFile file0 = this.createFile("tumor");
+        file0.setSourcePath(tumorBam);
         file0.setType("application/bam");
         file0.setIsInput(true);
-        
-        if (inputBamsTumor.contains(",")){
-            String[] pathDesc = inputBamsTumor.split(",");
-            for (int id=0; id < pathDesc.length; id++ ){  
-                String inPth = pathDesc[id];
-//                Log.stdout(inPth);
-                SqwFile file1 = this.createFile("tumour" + Integer.toString(id+1));
-                file1.setSourcePath(inPth);
-                file1.setType("chemical/seq-na-fastq-gzip");
-                file1.setIsInput(true);
-                tumorBams.add(file1.getProvisionedPath());
-            }
-        } else {
-        SqwFile file1 = this.createFile("tumor1");
-        file1.setSourcePath(inputBamsTumor);
+        SqwFile file1 = this.createFile("normal");
+        file1.setSourcePath(normalBam);
         file1.setType("application/bam");
-        file1.setIsInput(true); 
-        tumorBams.add(file1.getProvisionedPath());
-        }
+        file1.setIsInput(true);
         return this.getFiles();
     }
 
@@ -176,67 +157,59 @@ public class WorkflowClient extends OicrWorkflow {
          * outputFile, model-fit.zip
          */
         // workflow : read inputs tumor and normal bam; run sequenza-utils; write the output to temp directory; 
-        // run sequenzaR; handle output; provision files (3) -- model-fit.zip; text/plain; text/plain   
-//        Log.stdout(this.inputBamsTumor);
+        // run sequenzaR; handle output; provision files (3) -- model-fit.zip; text/plain; text/plain
         Job parentJob = null;
-        String[] extNames = this.outputFilenamePrefix.split(",");
-        String[] tumBams = this.tumorBams.toArray(new String[0]);
-        for (int i=0; i < tumorBams.size(); i++){
-            String tumorFile = tumBams[i];
-            Log.stdout(tumorFile);
-            String extName = extNames[i];
-            this.outDir = extName + "_output";
-            this.snpFile = this.tmpDir + extName + ".varscanSomatic.snp";
-            this.cnvFile = this.tmpDir + extName + ".VarScan.CopyNumber.copynumber";
-            this.indelFile = this.tmpDir + extName + ".varscanSomatic.indel";
-            this.mpileupFile = this.tmpDir + extName + ".mpileup";
-            this.varscanCopycallFile = this.tmpDir + extName + ".VarScan.CopyCaller";
-            this.copyNumberFile = this.tmpDir + extName + ".VarScan.CopyNumber";
-            this.somaticPileupFile = this.tmpDir + extName + ".varscanSomatic";
+        this.outDir = this.outputFilenamePrefix + "_output";
+        this.snpFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic.snp";
+        this.cnvFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyNumber.copynumber";
+        this.indelFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic.indel";
+        this.mpileupFile = this.tmpDir + this.outputFilenamePrefix + ".mpileup";
+        this.varscanCopycallFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyCaller";
+        this.copyNumberFile = this.tmpDir + this.outputFilenamePrefix + ".VarScan.CopyNumber";
+        this.somaticPileupFile = this.tmpDir + this.outputFilenamePrefix + ".varscanSomatic";
 
-            Job mpileup = runMpileup(tumorFile);
-            parentJob = mpileup;
+        Job mpileup = runMpileup();
+        parentJob = mpileup;
 
-            Job somaticMpileup = getSomaticPileup();
-            somaticMpileup.addParent(parentJob);
-            parentJob = somaticMpileup;
+        Job somaticMpileup = getSomaticPileup();
+        somaticMpileup.addParent(parentJob);
+        parentJob = somaticMpileup;
 
-            Job varscanIndels = varscanIndels();
-            varscanIndels.addParent(parentJob);
+        Job varscanIndels = varscanIndels();
+        varscanIndels.addParent(parentJob);
 
-            Job varscanSNP = varscanSNP();
-            varscanSNP.addParent(parentJob);
+        Job varscanSNP = varscanSNP();
+        varscanSNP.addParent(parentJob);
 
-            Job varscanCNA = varscanCNA();
-            varscanCNA.addParent(parentJob);
-            parentJob = varscanCNA;
+        Job varscanCNA = varscanCNA();
+        varscanCNA.addParent(parentJob);
+        parentJob = varscanCNA;
 
-            Job varscanCNACaller = varscanCNACaller();
-            varscanCNACaller.addParent(parentJob);
-            parentJob = varscanCNACaller;
+        Job varscanCNACaller = varscanCNACaller();
+        varscanCNACaller.addParent(parentJob);
+        parentJob = varscanCNACaller;
 
-            Job sequenzaJobV2 = runSequenzaSingleSampleV2();
-            sequenzaJobV2.addParent(parentJob);
-            parentJob = sequenzaJobV2;
+        Job sequenzaJobV2 = runSequenzaSingleSampleV2();
+        sequenzaJobV2.addParent(parentJob);
+        parentJob = sequenzaJobV2;
 
-            Job zipOutput = iterOutputDir(this.outDir);
-            zipOutput.addParent(parentJob);
+        Job zipOutput = iterOutputDir(this.outDir);
+        zipOutput.addParent(parentJob);
 
-            // Provision .seg, .varscanSomatic_confints_CP.txt, model-fit.tar.gz files
-            String segFile = this.outputFilenamePrefix + ".varscanSomatic_Total_CN.seg";
-            SqwFile cnSegFile = createOutputFile(this.outDir + "/" + segFile, TXT_METATYPE, this.manualOutput);
-            cnSegFile.getAnnotations().put("segment data from the tool ", "Sequenza ");
-            zipOutput.addFile(cnSegFile);
+        // Provision .seg, .varscanSomatic_confints_CP.txt, model-fit.tar.gz files
+        String segFile = this.outputFilenamePrefix + ".varscanSomatic_Total_CN.seg";
+        SqwFile cnSegFile = createOutputFile(this.outDir + "/" + segFile, TXT_METATYPE, this.manualOutput);
+        cnSegFile.getAnnotations().put("segment data from the tool ", "Sequenza ");
+        zipOutput.addFile(cnSegFile);
 
-            String ploidyFile = this.outputFilenamePrefix + ".varscanSomatic_confints_CP.txt";
-            SqwFile ploidy2File = createOutputFile(this.outDir + "/" + ploidyFile, TXT_METATYPE, this.manualOutput);
-            ploidy2File.getAnnotations().put("ploidy data from the tool ", "Sequenza ");
-            zipOutput.addFile(ploidy2File);
-
-            SqwFile zipFile = createOutputFile(this.outDir + "/" + "model-fit.tar.gz", TAR_GZ_METATYPE, this.manualOutput);
-            zipFile.getAnnotations().put("Other files ", "Sequenza ");
-            zipOutput.addFile(zipFile);
-        }
+        String ploidyFile = this.outputFilenamePrefix + ".varscanSomatic_confints_CP.txt";
+        SqwFile ploidy2File = createOutputFile(this.outDir + "/" + ploidyFile, TXT_METATYPE, this.manualOutput);
+        ploidy2File.getAnnotations().put("ploidy data from the tool ", "Sequenza ");
+        zipOutput.addFile(ploidy2File);
+        
+        SqwFile zipFile = createOutputFile(this.outDir + "/" + "model-fit.tar.gz", TAR_GZ_METATYPE, this.manualOutput);
+        zipFile.getAnnotations().put("Other files ", "Sequenza ");
+        zipOutput.addFile(zipFile);
     }
 
     private Job iterOutputDir(String outDir) {
@@ -259,7 +232,7 @@ public class WorkflowClient extends OicrWorkflow {
         return iterOutput;
     }
 
-    private Job runMpileup(String tumrFile) {
+    private Job runMpileup() {
         Job mpileup = getWorkflow().createBashJob("mpileup");
         Command cmd = mpileup.getCommand();
         cmd.addArgument(this.samtools);
@@ -268,7 +241,7 @@ public class WorkflowClient extends OicrWorkflow {
         cmd.addArgument("-l " + this.intervalFile);
         cmd.addArgument("-B -d 1000000");
         cmd.addArgument(getFiles().get("normal").getProvisionedPath());
-        cmd.addArgument(tumrFile);
+        cmd.addArgument(getFiles().get("tumor").getProvisionedPath());
         cmd.addArgument("> " + this.mpileupFile);
         mpileup.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
         mpileup.setQueue(getOptionalProperty("queue", ""));
