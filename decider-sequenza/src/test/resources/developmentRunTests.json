@@ -29,6 +29,12 @@
             "parameters": {
                 "--study-name": "TGL17"
             }
+        },
+        {
+            "id": "TGL17_0002 root sample test",
+            "parameters": {
+                "--root-sample-name": "TGL17_002"
+            }
         }
     ]
 }

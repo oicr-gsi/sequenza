@@ -337,7 +337,7 @@ public class SequenzaDecider extends OicrDecider {
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
                 }
-        iniFileMap.put("external_id", this.externalID);
+        iniFileMap.put("external_name", this.externalID);
         return iniFileMap;
     }
 
