@@ -42,6 +42,7 @@ public class SequenzaDecider extends OicrDecider {
     private String normalFilePath;
     private String commaSeparatedFilePaths;
     private String commaSeparatedParentAccessions;
+    private String intervalBed;
     
 
     public SequenzaDecider() {
@@ -52,6 +53,7 @@ public class SequenzaDecider extends OicrDecider {
                 + "so that it runs on data only of this template type").withRequiredArg();
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
+        parser.accepts("interval-bed", "Required: Specify the path to interval bed file").withRequiredArg();
     }
 
     @Override
@@ -83,6 +85,16 @@ public class SequenzaDecider extends OicrDecider {
                     Log.stderr("NOTE THAT ONLY EX template-type SUPPORTED, WE CANNOT GUARANTEE MEANINGFUL RESULTS WITH OTHER TEMPLATE TYPES");
                     rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
                 }
+            }
+        }
+        
+        if(this.options.has("interval-bed")) {
+            if (!options.hasArgument("interval-bed")){
+                Log.error("--interval-bed empty; requires the path to interval bed file");
+                rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
+                return rv;
+            } else {
+                this.intervalBed = options.valueOf("interval-bed").toString();
             }
         }
 
@@ -331,6 +343,7 @@ public class SequenzaDecider extends OicrDecider {
         iniFileMap.put("input_files_normal", inputNormFile);
         iniFileMap.put("input_files_tumor", inputTumrFile);
         iniFileMap.put("data_dir", "data");
+        iniFileMap.put("interval_bed", this.intervalBed);
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
                 }

@@ -14,26 +14,30 @@
             "id": "study test",
             "parameters": {
                 "--study-name": "TGL05",
-                "--before-date": "2017-07-31"
+                "--before-date": "2017-07-31",
+                "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
             }
         },
         {
             "id": "TGL08_study test",
             "parameters": {
                 "--study-name": "TGL08",
-                "--before-date": "2017-07-31"
+                "--before-date": "2017-07-31",
+                "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
             }
         },
         {
             "id": "TGL17_study test",
             "parameters": {
-                "--study-name": "TGL17"
+                "--study-name": "TGL17",
+                "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
             }
         },
         {
             "id": "TGL17_0002 root sample test",
             "parameters": {
-                "--root-sample-name": "TGL17_002"
+                "--root-sample-name": "TGL17_002",
+                "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
             }
         }
     ]
