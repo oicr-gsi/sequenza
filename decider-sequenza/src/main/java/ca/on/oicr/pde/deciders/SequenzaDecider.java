@@ -43,6 +43,7 @@ public class SequenzaDecider extends OicrDecider {
     private String commaSeparatedFilePaths;
     private String commaSeparatedParentAccessions;
     private String intervalBed;
+    private String refGenome;
     
 
     public SequenzaDecider() {
@@ -54,6 +55,7 @@ public class SequenzaDecider extends OicrDecider {
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
         parser.accepts("interval-bed", "Required: Specify the path to interval bed file").withRequiredArg();
+        parser.accepts("ref-fasta", "Optional: Specify the path to reference human genome fasta").withOptionalArg();
     }
 
     @Override
@@ -86,6 +88,9 @@ public class SequenzaDecider extends OicrDecider {
                     rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
                 }
             }
+        }
+        if (this.options.has("ref-fasta")) {
+            this.refGenome = options.valueOf("ref-fasta").toString();
         }
         
         if(this.options.has("interval-bed")) {
@@ -348,6 +353,7 @@ public class SequenzaDecider extends OicrDecider {
             iniFileMap.put("queue", this.queue);
                 }
         iniFileMap.put("external_name", this.sampleName);
+        iniFileMap.put("ref_fasta", this.refGenome);
         return iniFileMap;
     }
 
