@@ -19,6 +19,5 @@ for f in $( ls ); do
 	fi
 done
 
-cd $model
-cd $inPath
+cd $inPath;
 tar -zcvf ${model}.tar.gz $model
