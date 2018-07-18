@@ -18,6 +18,7 @@
     <properties>
         <workflow-version>1.0.1</workflow-version>
         <main-class>ca.on.oicr.pde.deciders.SequenzaDecider</main-class>
+        <runTestThreads>20</runTestThreads>
     </properties>
     
     <dependencies>
