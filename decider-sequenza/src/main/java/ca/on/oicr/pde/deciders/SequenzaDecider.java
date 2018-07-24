@@ -43,7 +43,9 @@ public class SequenzaDecider extends OicrDecider {
     private String commaSeparatedFilePaths;
     private String commaSeparatedParentAccessions;
     private String intervalBed;
-    private String refGenome;
+    private String refGenome = "/.mounts/labs/PDE/data/gatkAnnotationResources/hg19_random.fa";
+    private String rsConfigXMLPath = "/.mounts/labs/PDE/data/rsconfig.xml";
+    private Rsconfig rs;
     
 
     public SequenzaDecider() {
@@ -51,11 +53,12 @@ public class SequenzaDecider extends OicrDecider {
         fileSwaToSmall = new HashMap<String, BeSmall>();
         parser.acceptsAll(Arrays.asList("ini-file"), "Optional: the location of the INI file.").withRequiredArg();
         parser.accepts("template-type", "Required. Set the template type to limit the workflow run "
-                + "so that it runs on data only of this template type").withRequiredArg();
+                + "so that it runs on data only of this template type. Default: "+this.templateType).withOptionalArg();
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
-        parser.accepts("interval-bed", "Required: Specify the path to interval bed file").withRequiredArg();
-        parser.accepts("ref-fasta", "Optional: Specify the path to reference human genome fasta").withOptionalArg();
+        parser.accepts("interval-bed", "Optional: Specify the path to interval bed file. Default: parsed from " + this.rsConfigXMLPath).withOptionalArg();
+        parser.accepts("ref-fasta", "Optional: Specify the path to reference human genome fasta. Default: "+this.refGenome).withOptionalArg();
+        parser.accepts("rsconfig-file", "Optional: specify location of .xml file which should be used to cinfigure references. Default: "+this.rsConfigXMLPath).withOptionalArg();
     }
 
     @Override
@@ -79,8 +82,6 @@ public class SequenzaDecider extends OicrDecider {
         if (this.options.has("template-type")) {
             if (!options.hasArgument("template-type")) {
                 Log.error("--template-type requires an argument, EX");
-                rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
-                return rv;
             } else {
                 this.templateType = options.valueOf("template-type").toString();
                 if (!this.templateType.equals("EX")) {
@@ -94,13 +95,10 @@ public class SequenzaDecider extends OicrDecider {
         }
         
         if(this.options.has("interval-bed")) {
-            if (!options.hasArgument("interval-bed")){
-                Log.error("--interval-bed empty; requires the path to interval bed file");
-                rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
-                return rv;
-            } else {
-                this.intervalBed = options.valueOf("interval-bed").toString();
+            this.intervalBed = options.valueOf("interval-bed").toString();
             }
+        if(this.options.has("rsconfig-file")){
+            this.rsConfigXMLPath = options.valueOf("rsconfig-file").toString();
         }
 
         return rv;
@@ -216,6 +214,8 @@ public class SequenzaDecider extends OicrDecider {
         Log.debug("CHECK FILE DETAILS:" + fm);
         String currentTtype = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
         String currentTissueType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
+        String resequencingType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_targeted_resequencing");
+        String target_bed = null;
 
         if (null == currentTissueType) {
             return false; // we need only those which have their tissue type set
@@ -233,6 +233,13 @@ public class SequenzaDecider extends OicrDecider {
             if (!currentTissueType.equals("R") && !currentTissueType.equals(this.tumorType)) {
                 return false;
             }
+        }
+        
+        target_bed = rs.get(templateType, resequencingType, "interval_file");
+        if (target_bed != null){
+            this.intervalBed = target_bed;
+        } else {
+            Log.error("please re-try with --interval-bed to manually provide an interval file");
         }
 
         return super.checkFileDetails(returnValue, fm);
@@ -342,6 +349,7 @@ public class SequenzaDecider extends OicrDecider {
         String inputNormFile = this.normalFilePath;
         String inputTumrFile = this.tumourFilePath;
         this.sampleName = FilenameUtils.getBaseName(inputTumrFile);
+//        String intervalBed = this.rs.get(this.templateType, templateType, queue)
 
         Map<String, String> iniFileMap = super.modifyIniFile(this.commaSeparatedFilePaths, this.commaSeparatedParentAccessions);
 
@@ -420,7 +428,7 @@ public class SequenzaDecider extends OicrDecider {
                 gba.append(":").append(trs);
             }
 
-            groupByAttribute = gba.toString() + ":" + tissueType;
+            groupByAttribute = gba.toString() + ":" + tissueType + ":" + extName;
             path = rv.getFiles().get(0).getFilePath() + "";
   
         }

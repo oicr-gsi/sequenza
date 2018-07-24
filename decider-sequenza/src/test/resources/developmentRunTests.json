@@ -23,14 +23,6 @@
                 "--study-name": "TGL17",
                 "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
             }
-        },
-,
-        {
-            "id": "TGL17_0001_sample test",
-            "parameters": {
-                "--root-sample-name": "TGL17",
-                "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
-            }
         }
     ]
 }
