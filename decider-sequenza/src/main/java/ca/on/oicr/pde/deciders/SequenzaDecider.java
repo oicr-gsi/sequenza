@@ -179,7 +179,7 @@ public class SequenzaDecider extends OicrDecider {
                     }
                 }
             } else {
-                Log.debug("move to next");
+//                Log.debug("move to next");
                 continue;
             }
         }
@@ -219,7 +219,7 @@ public class SequenzaDecider extends OicrDecider {
 
     @Override
     protected boolean checkFileDetails(ReturnValue returnValue, FileMetadata fm) {
-        Log.debug("CHECK FILE DETAILS:" + fm);
+//        Log.debug("CHECK FILE DETAILS:" + fm);
         String currentTtype = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
         String currentTissueType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
         String resequencingType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_targeted_resequencing");
@@ -435,7 +435,7 @@ public class SequenzaDecider extends OicrDecider {
                 gba.append(":").append(trs);
             }
 
-            groupByAttribute = gba.toString() + ":" + extName; // grouping issue sequenza decider; generates correct ini file but lists too many files
+            groupByAttribute = gba.toString() + ":" + extName + ":" + groupID; // grouping issue sequenza decider; generates correct ini file but lists too many files
             path = rv.getFiles().get(0).getFilePath() + "";
 
         }
