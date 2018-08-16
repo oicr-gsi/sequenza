@@ -304,6 +304,7 @@ public class SequenzaDecider extends OicrDecider {
         //only use those files that entered into the iusDeetsToRV
         //since it's a map, only the most recent values
         List<ReturnValue> newValues = new ArrayList<ReturnValue>(iusDeetsToRV.values());
+        Map<String, List<ReturnValue>> map = new HashMap<String, List<ReturnValue>>();
         /**
          * *
          * GP-1627: Updated to handle multiple tumour files matching to single
@@ -312,34 +313,86 @@ public class SequenzaDecider extends OicrDecider {
          *
          *
          */
-        Map<String, List<ReturnValue>> tnPair = new HashMap<String, List<ReturnValue>>();
-        List<ReturnValue> normalAttr = new ArrayList<ReturnValue>();
-        List<ReturnValue> tumourAttr = new ArrayList<ReturnValue>();
-        // GP-1627: for a group two separate lists for tumour and normal bams
-        for (ReturnValue r : newValues) {
-            String key = r.getAttribute(Header.SAMPLE_NAME.getTitle());
-            if (key.contains("R")) {
-                normalAttr.add(r);
+        // get allTumourOnlyFiles
+        Map<String, List<ReturnValue>> tnMap = getTumorNormalMap(newValues);
+        return tnMap;
+    }
+    
+    protected List<ReturnValue> getTumourRVs(List<ReturnValue> newValues){
+        List<ReturnValue> tumourMap = new ArrayList<ReturnValue> ();
+        for (ReturnValue rV : newValues){
+//            String sampleName = rV.getAttribute(Header.SAMPLE_NAME.getTitle());
+//            ArrayList<FileMetadata> fileMetadata = rV.getFiles();
+//            String currentTemplatetype = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
+            String currentTissueType = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
+//            String rootSampleName = rV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+            if (!currentTissueType.equals("R")){
+                tumourMap.add(rV);
+            }
+        }
+        return tumourMap;
+    }
+    
+    
+    protected List<ReturnValue> getNormalRVs(List<ReturnValue> newValues){
+        List<ReturnValue> normalMap = new ArrayList<ReturnValue> ();
+        for (ReturnValue rV : newValues){
+//            String sampleName = rV.getAttribute(Header.SAMPLE_NAME.getTitle());
+//            ArrayList<FileMetadata> fileMetadata = rV.getFiles();
+            String currentTissueType = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
+//            String rootSampleName = rV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+            if (currentTissueType.equals("R")){
+                normalMap.add(rV);
+            }
+        }
+        return normalMap;
+    }
+    
+    protected Map<String, List<ReturnValue>> getTumorNormalMap(List<ReturnValue> newValues){
+        Map<String, List<ReturnValue>> tnMap = new HashMap<String, List<ReturnValue>> ();
+        List<ReturnValue> normalBamAttr = getNormalRVs(newValues);
+        List<ReturnValue> tumorBamAttr = getTumourRVs(newValues);
+        for (ReturnValue tRV : tumorBamAttr){
+            // define sample name
+            String tumourSampleName = tRV.getAttribute(Header.SAMPLE_NAME.getTitle());
+            String tumourRootSampleName = tRV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+            for (ReturnValue nRV : normalBamAttr){
+                String normalSampleName = nRV.getAttribute(Header.SAMPLE_NAME.getTitle());
+                String normalRootSampleName = nRV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+                if (normalRootSampleName.equals(tumourRootSampleName)){
+                    String mapKey = normalSampleName+"_"+tumourSampleName;
+                    List<ReturnValue> tnList = new ArrayList<ReturnValue> ();
+                    tnList.add(tRV);
+                    tnList.add(nRV);
+                    tnMap.put(mapKey, tnList);
+                }
+            }
+        }
+        return tnMap;
+        
+    }
+    
+    protected ArrayList<ReturnValue> getTumourSampleMap(List<ReturnValue> newValues, String normalFileRootSampleName){
+        ArrayList<ReturnValue> tumours = new ArrayList<ReturnValue> ();
+        for (ReturnValue rV : newValues){
+            ArrayList<FileMetadata> fileMetadata = rV.getFiles();
+//            String currentTemplatetype = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
+            String currentTissueType = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
+            if (!currentTissueType.equals("R")){
+                String tumourFileRootSampleName = rV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+                if (tumourFileRootSampleName.equals(normalFileRootSampleName)){
+                    for (FileMetadata fm : fileMetadata){
+                        String tumourSampleName = rV.getAttribute(Header.SAMPLE_NAME.getTitle());
+                        tumours.add(rV);
+                    }
+                } else {
+                    continue;
+                }
             } else {
-                tumourAttr.add(r);
+                continue;
             }
         }
-
-        // GP-1627: for each tumour file in the list; 
-        //iterate over all normal bams; 
-        //group files as tumour-normal list
-        for (ReturnValue rt : tumourAttr) {
-            String keyTum = rt.getAttribute(Header.SAMPLE_NAME.getTitle());
-            List<ReturnValue> vsl = new ArrayList<ReturnValue>();
-            vsl.add(rt);
-            //group files according to the tumour-normal pair
-            for (ReturnValue rn : normalAttr) {
-                String keyNorm = fileSwaToSmall.get(rn.getAttribute(Header.FILE_SWA.getTitle())).getGroupByAttribute();
-                vsl.add(rn);
-            }
-            tnPair.put(keyTum, vsl);
-        }
-        return tnPair;
+        return tumours;
     }
 
     @Override
