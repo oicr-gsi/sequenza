@@ -12,7 +12,7 @@
     
     <groupId>ca.on.oicr.pde.workflows</groupId>
     <artifactId>workflow-sequenza</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <url>http://maven.apache.org</url>

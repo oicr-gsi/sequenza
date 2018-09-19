@@ -199,7 +199,7 @@ public class WorkflowClient extends OicrWorkflow {
         ploidy2File.getAnnotations().put("ploidy data from the tool ", "Sequenza ");
         zipOutput.addFile(ploidy2File);
         
-        SqwFile zipFile = createOutputFile(this.outDir + "/" + "model-fit.tar.gz", TAR_GZ_METATYPE, this.manualOutput);
+        SqwFile zipFile = createOutputFile(this.outDir + "/" + this.outputFilenamePrefix + "_" + "model-fit.tar.gz", TAR_GZ_METATYPE, this.manualOutput);
         zipFile.getAnnotations().put("Other files ", "Sequenza ");
         zipOutput.addFile(zipFile);
     }

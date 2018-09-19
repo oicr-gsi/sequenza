@@ -4,7 +4,7 @@ echo $wdPath
 extid=$1
 inPath=$wdPath/$2
 cd $inPath
-model=model-fit; mkdir $model
+model=${extid}_model-fit; mkdir $model
 
 for f in $( ls ); do
 	if [[ -d $f ]]; then
