@@ -244,11 +244,15 @@ public class SequenzaDecider extends OicrDecider {
         }
 
 //        Log.debug(rs.get(resequencingType, currentTtype, "interval_file"));
-        target_bed = rs.get(currentTtype, resequencingType, "interval_file").toString();
-        if (target_bed != null) {
-            this.intervalBed = target_bed;
-        } else {
-            Log.error("please re-try with --interval-bed to manually provide an interval file");
+        try {
+            target_bed = rs.get(currentTtype, resequencingType, "interval_file").toString();
+            if (target_bed != null) {
+                this.intervalBed = target_bed;
+            } else {
+                Log.info("No interval file found for this run; Please re-try with --interval-bed <path to interval file>");
+            }
+        } catch (Exception NullPointerException) {
+            Log.info("No interval file found for this run; Please re-try with --interval-bed <path to interval file>");
         }
 
         return super.checkFileDetails(returnValue, fm);
@@ -337,10 +341,7 @@ public class SequenzaDecider extends OicrDecider {
     protected List<ReturnValue> getNormalRVs(List<ReturnValue> newValues){
         List<ReturnValue> normalMap = new ArrayList<ReturnValue> ();
         for (ReturnValue rV : newValues){
-//            String sampleName = rV.getAttribute(Header.SAMPLE_NAME.getTitle());
-//            ArrayList<FileMetadata> fileMetadata = rV.getFiles();
             String currentTissueType = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
-//            String rootSampleName = rV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
             if (currentTissueType.equals("R")){
                 normalMap.add(rV);
             }
@@ -370,29 +371,6 @@ public class SequenzaDecider extends OicrDecider {
         }
         return tnMap;
         
-    }
-    
-    protected ArrayList<ReturnValue> getTumourSampleMap(List<ReturnValue> newValues, String normalFileRootSampleName){
-        ArrayList<ReturnValue> tumours = new ArrayList<ReturnValue> ();
-        for (ReturnValue rV : newValues){
-            ArrayList<FileMetadata> fileMetadata = rV.getFiles();
-//            String currentTemplatetype = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
-            String currentTissueType = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
-            if (!currentTissueType.equals("R")){
-                String tumourFileRootSampleName = rV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
-                if (tumourFileRootSampleName.equals(normalFileRootSampleName)){
-                    for (FileMetadata fm : fileMetadata){
-                        String tumourSampleName = rV.getAttribute(Header.SAMPLE_NAME.getTitle());
-                        tumours.add(rV);
-                    }
-                } else {
-                    continue;
-                }
-            } else {
-                continue;
-            }
-        }
-        return tumours;
     }
 
     @Override
