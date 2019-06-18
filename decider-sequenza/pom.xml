@@ -6,7 +6,7 @@
     <parent>
         <groupId>ca.on.oicr.gsi</groupId>
         <artifactId>pipedev-decider-parent</artifactId>
-        <version>2.4.1</version>
+        <version>2.5.1</version>
         <relativePath/>
     </parent>
 
@@ -16,7 +16,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <workflow-version>1.0.2</workflow-version>
+        <workflow-version>1.1</workflow-version>
         <main-class>ca.on.oicr.pde.deciders.SequenzaDecider</main-class>
         <runTestThreads>20</runTestThreads>
         <testSuite>target/test-classes/development.xml</testSuite>
