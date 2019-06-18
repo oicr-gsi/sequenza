@@ -46,6 +46,13 @@ public class SequenzaDecider extends OicrDecider {
     private String intervalBed;
     private String refGenome = "/.mounts/labs/PDE/data/gatkAnnotationResources/hg19_random.fa";
     private String rsConfigXMLPath = "/.mounts/labs/PDE/data/rsconfig.xml";
+    private String samtools = "/oicr/local/analysis/sw//samtools/samtools-0.1.18/samtools";
+    private String sequenzaRscriptMem = "24";
+    private String sequenzaRscript = "/.mounts/labs/PDE/Modules/modulefiles/sequenza/SequenzaSingleSample_v2.1.R";
+    private String varscanJar = "/.mounts/labs/PDE/Modules/sw/sequenza/VarScan.v2.3.9.jar";
+    private String javaPath = "/.mounts/labs/PDE/Modules/sw/jvm/jdk1.8.0_91/bin/java";
+    private String rpath = "/.mounts/labs/PDE/Modules/sw/R/R-3.3.0";
+    private String rLib = "/.mounts/labs/gsiprojects/gsi/tools/R_libs";
     private Rsconfig rs;
 
     public SequenzaDecider() {
@@ -59,6 +66,13 @@ public class SequenzaDecider extends OicrDecider {
         parser.accepts("interval-bed", "Optional: Specify the path to interval bed file. Default: parsed from " + this.rsConfigXMLPath).withOptionalArg();
         parser.accepts("ref-fasta", "Optional: Specify the path to reference human genome fasta. Default: " + this.refGenome).withOptionalArg();
         parser.accepts("rsconfig-file", "Optional: specify location of .xml file which should be used to cinfigure references. Default: " + this.rsConfigXMLPath).withOptionalArg();
+        parser.accepts("sequenza-rscript", "Optional: specify the path to sequenza Rscript. Default: " + this.sequenzaRscript).withOptionalArg();
+        parser.accepts("sequenza-rscript-mem", "Optional: specify the memory requirements for running this workflow. Default: " + this.sequenzaRscriptMem).withOptionalArg();
+        parser.accepts("samtools-path", "Optional: specify the path of samtools. Default: " + this.samtools).withOptionalArg();
+        parser.accepts("varscan-jar", "Optional: specify the path to varscan.jar . Default: " + this.varscanJar).withOptionalArg();
+        parser.accepts("r-path", "Optional: specify the path to R. Default: " + this.rpath).withOptionalArg();
+        parser.accepts("java-path", "Provide the path to java. Default: " + this.javaPath).withOptionalArg();
+        parser.accepts("rlib-path", "Provide the path to java. Default: " + this.rLib).withOptionalArg();
     }
 
     @Override
@@ -80,16 +94,13 @@ public class SequenzaDecider extends OicrDecider {
         }
 
         if (this.options.has("template-type")) {
-            if (!options.hasArgument("template-type")) {
-                Log.error("--template-type requires an argument, EX");
-            } else {
-                this.templateType = options.valueOf("template-type").toString();
-                if (!this.templateType.equals("EX")) {
-                    Log.stderr("NOTE THAT ONLY EX template-type SUPPORTED, WE CANNOT GUARANTEE MEANINGFUL RESULTS WITH OTHER TEMPLATE TYPES");
-                    rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
-                }
-            }
+            this.templateType = options.valueOf("template-type").toString();
+        } else {
+            Log.error("--template-type requires an argument, EX");
+            rv.setExitStatus(ReturnValue.FAILURE);
+            return rv;
         }
+            
         if (this.options.has("ref-fasta")) {
             this.refGenome = options.valueOf("ref-fasta").toString();
         }
@@ -100,6 +111,35 @@ public class SequenzaDecider extends OicrDecider {
         if (this.options.has("rsconfig-file")) {
             this.rsConfigXMLPath = options.valueOf("rsconfig-file").toString();
         }
+        /// #####
+        if (this.options.has("samtools-path")) {
+            this.samtools = options.valueOf("samtools-path").toString();
+        }
+        
+        if (this.options.has("sequenza-rscript-mem")) {
+            this.sequenzaRscriptMem = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("sequenza-rscript")) {
+            this.sequenzaRscript = options.valueOf("ref-fasta").toString();
+        }
+        if (this.options.has("varscan-jar")) {
+            this.varscanJar = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("java-path")) {
+            this.javaPath = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("r-path")) {
+            this.rpath = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("rlib-path")) {
+            this.rLib = options.valueOf("ref-fasta").toString();
+        }
+        
+        /// #####
 
         try {
             rs = new Rsconfig(new File(this.rsConfigXMLPath));
@@ -401,6 +441,13 @@ public class SequenzaDecider extends OicrDecider {
         }
         iniFileMap.put("external_name", this.sampleName);
         iniFileMap.put("ref_fasta", this.refGenome);
+        iniFileMap.put("samtools", this.samtools);
+        iniFileMap.put("java", this.javaPath);
+        iniFileMap.put("rpath", this.rpath);
+        iniFileMap.put("rLib", this.rLib);
+        iniFileMap.put("varscan", this.varscanJar);
+        iniFileMap.put("sequenza_rscript_mem", this.sequenzaRscriptMem);
+        iniFileMap.put("sequenza_v2", this.sequenzaRscript);
         return iniFileMap;
     }
 
