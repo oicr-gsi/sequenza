@@ -1,18 +1,26 @@
 package ca.on.oicr.pde.deciders;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import net.sourceforge.seqware.common.hibernate.FindAllTheFiles.Header;
 import net.sourceforge.seqware.common.module.FileMetadata;
 import net.sourceforge.seqware.common.module.ReturnValue;
 import net.sourceforge.seqware.common.util.Log;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -25,20 +33,46 @@ public class SequenzaDecider extends OicrDecider {
 
     private String templateType = "EX";
     private String queue = "";
-    private String externalID;
+    private String sampleName;
+    private Boolean groupByAligner = true;
 
     private final static String BAM_METATYPE = "application/bam";
     private String tumorType;
     private List<String> duplicates;
+    private String tumourFilePath;
+    private String normalFilePath;
+    private String commaSeparatedFilePaths;
+    private String commaSeparatedParentAccessions;
+    private String intervalBed;
+    private String refGenome = "/.mounts/labs/PDE/data/gatkAnnotationResources/hg19_random.fa";
+    private String rsConfigXMLPath = "/.mounts/labs/PDE/data/rsconfig.xml";
+    private String samtools = "/oicr/local/analysis/sw//samtools/samtools-0.1.18/samtools";
+    private String sequenzaRscriptMem = "24";
+    private String sequenzaRscript = "/.mounts/labs/PDE/Modules/modulefiles/sequenza/SequenzaSingleSample_v2.1.R";
+    private String varscanJar = "/.mounts/labs/PDE/Modules/sw/sequenza/VarScan.v2.3.9.jar";
+    private String javaPath = "/.mounts/labs/PDE/Modules/sw/jvm/jdk1.8.0_91/bin/java";
+    private String rpath = "/.mounts/labs/PDE/Modules/sw/R/R-3.3.0";
+    private String rLib = "/.mounts/labs/gsiprojects/gsi/tools/R_libs";
+    private Rsconfig rs;
 
     public SequenzaDecider() {
         super();
         fileSwaToSmall = new HashMap<String, BeSmall>();
         parser.acceptsAll(Arrays.asList("ini-file"), "Optional: the location of the INI file.").withRequiredArg();
         parser.accepts("template-type", "Required. Set the template type to limit the workflow run "
-                + "so that it runs on data only of this template type").withRequiredArg();
+                + "so that it runs on data only of this template type. Default: " + this.templateType).withOptionalArg();
         parser.accepts("queue", "Optional: Set the queue (Default: not set)").withRequiredArg();
         parser.accepts("tumor-type", "Optional: Set tumor tissue type to something other than primary tumor (P), i.e. X . Default: Not set (All)").withRequiredArg();
+        parser.accepts("interval-bed", "Optional: Specify the path to interval bed file. Default: parsed from " + this.rsConfigXMLPath).withOptionalArg();
+        parser.accepts("ref-fasta", "Optional: Specify the path to reference human genome fasta. Default: " + this.refGenome).withOptionalArg();
+        parser.accepts("rsconfig-file", "Optional: specify location of .xml file which should be used to cinfigure references. Default: " + this.rsConfigXMLPath).withOptionalArg();
+        parser.accepts("sequenza-rscript", "Optional: specify the path to sequenza Rscript. Default: " + this.sequenzaRscript).withOptionalArg();
+        parser.accepts("sequenza-rscript-mem", "Optional: specify the memory requirements for running this workflow. Default: " + this.sequenzaRscriptMem).withOptionalArg();
+        parser.accepts("samtools-path", "Optional: specify the path of samtools. Default: " + this.samtools).withOptionalArg();
+        parser.accepts("varscan-jar", "Optional: specify the path to varscan.jar . Default: " + this.varscanJar).withOptionalArg();
+        parser.accepts("r-path", "Optional: specify the path to R. Default: " + this.rpath).withOptionalArg();
+        parser.accepts("java-path", "Provide the path to java. Default: " + this.javaPath).withOptionalArg();
+        parser.accepts("rlib-path", "Provide the path to java. Default: " + this.rLib).withOptionalArg();
     }
 
     @Override
@@ -60,17 +94,59 @@ public class SequenzaDecider extends OicrDecider {
         }
 
         if (this.options.has("template-type")) {
-            if (!options.hasArgument("template-type")) {
-                Log.error("--template-type requires an argument, EX");
-                rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
-                return rv;
-            } else {
-                this.templateType = options.valueOf("template-type").toString();
-                if (!this.templateType.equals("EX")) {
-                    Log.stderr("NOTE THAT ONLY EX template-type SUPPORTED, WE CANNOT GUARANTEE MEANINGFUL RESULTS WITH OTHER TEMPLATE TYPES");
-                    rv.setExitStatus(ReturnValue.INVALIDARGUMENT);
-                }
-            }
+            this.templateType = options.valueOf("template-type").toString();
+        } else {
+            Log.error("--template-type requires an argument, EX");
+            rv.setExitStatus(ReturnValue.FAILURE);
+            return rv;
+        }
+            
+        if (this.options.has("ref-fasta")) {
+            this.refGenome = options.valueOf("ref-fasta").toString();
+        }
+
+        if (this.options.has("interval-bed")) {
+            this.intervalBed = options.valueOf("interval-bed").toString();
+        }
+        if (this.options.has("rsconfig-file")) {
+            this.rsConfigXMLPath = options.valueOf("rsconfig-file").toString();
+        }
+        /// #####
+        if (this.options.has("samtools-path")) {
+            this.samtools = options.valueOf("samtools-path").toString();
+        }
+        
+        if (this.options.has("sequenza-rscript-mem")) {
+            this.sequenzaRscriptMem = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("sequenza-rscript")) {
+            this.sequenzaRscript = options.valueOf("ref-fasta").toString();
+        }
+        if (this.options.has("varscan-jar")) {
+            this.varscanJar = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("java-path")) {
+            this.javaPath = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("r-path")) {
+            this.rpath = options.valueOf("ref-fasta").toString();
+        }
+        
+        if (this.options.has("rlib-path")) {
+            this.rLib = options.valueOf("ref-fasta").toString();
+        }
+        
+        /// #####
+
+        try {
+            rs = new Rsconfig(new File(this.rsConfigXMLPath));
+        } catch (Exception e) {
+            Log.error("Rsconfg file did not load properly, exception stack trace:\n" + e.getStackTrace());
+            rv.setExitStatus(ReturnValue.FAILURE);
+            return rv;
         }
 
         return rv;
@@ -87,12 +163,14 @@ public class SequenzaDecider extends OicrDecider {
     @Override
     protected ReturnValue doFinalCheck(String commaSeparatedFilePaths, String commaSeparatedParentAccessions) {
         String[] filePaths = commaSeparatedFilePaths.split(",");
+        /**
+         * GP-1627: Update to handle multiple tumour bams matching to one normal
+         *
+         */
         boolean haveNorm = false;
         boolean haveTumr = false;
-
-        // Check for duplicate file names and exclude them from analysis
-        this.duplicates = detectDuplicates(commaSeparatedFilePaths);
-
+        String extTum = null;
+        List<String> match = new ArrayList<String>(); // array list to contain one tumour normal pair
         for (String p : filePaths) {
             if (null != this.duplicates && this.duplicates.contains(p)) {
                 Log.stderr("File [" + p + "] has a name that cannot be disambiguated in current set, will skip it");
@@ -102,19 +180,78 @@ public class SequenzaDecider extends OicrDecider {
                 if (!bs.getPath().equals(p)) {
                     continue;
                 }
-                String tt = bs.getTissueType();
-
-                if (!tt.isEmpty() && tt.equals("R")) {
-                    haveNorm = true;
-                } else if (!tt.isEmpty()) {
+                String tt = bs.tissueType;
+                if (!tt.isEmpty() && !tt.equals("R")) {
+                    extTum = bs.getRootSampleName();
+                    this.tumourFilePath = p;
+                    match.add(p); // GP-1627:first element of match array list contains tumour bam file path
                     haveTumr = true;
+                    break;
                 }
             }
         }
-        if (haveNorm && haveTumr) {
-            return super.doFinalCheck(commaSeparatedFilePaths, commaSeparatedParentAccessions);
+
+        // Check for duplicate file names and exclude them from analysis
+        this.duplicates = detectDuplicates(commaSeparatedFilePaths);
+
+        for (String p : filePaths) {
+            if (null != this.duplicates && this.duplicates.contains(p)) {
+                Log.stderr("File [" + p + "] has a name that cannot be disambiguated in current set, will skip it");
+                continue;
+            }
+            if (p != this.tumourFilePath) { // check if this path is not tumour bam
+
+                for (BeSmall bs : fileSwaToSmall.values()) {
+                    if (!bs.getPath().equals(p)) {
+                        continue;
+                    }
+                    if (bs.getPath().equals(this.tumourFilePath)) { // check if this path is not tumour bam
+                        continue;
+                    }
+
+                    String rootSampleName = bs.getRootSampleName();
+                    String tt = bs.getTissueType();
+                    // GP-1627: update match list with normal bam if, root-sample-name for normal == tumour 
+                    if (!tt.isEmpty() && tt.equals("R") && rootSampleName.equals(extTum)) {
+                        this.normalFilePath = p;
+                        match.add(this.normalFilePath);
+                        haveNorm = true;
+                    }
+                }
+            } else {
+//                Log.debug("move to next");
+                continue;
+            }
+        }
+        // size of match list should be exactly == 2
+        if (match.size() != 2) {
+            Log.error("Does not contain a Tumour Normal pair " + match.size());
         }
 
+        if (haveNorm && haveTumr) {
+            // GP-1627: check if match contains a tumour-normal pair
+            List<String> accessions = Arrays.asList(commaSeparatedParentAccessions.split(","));
+            List<String> files = Arrays.asList(filePaths);
+            Map<String, String> fileAccessionMap = new HashMap<String, String>();
+            Iterator<String> i1 = files.iterator();
+            Iterator<String> i2 = accessions.iterator();
+            while (i1.hasNext() && i2.hasNext()) {
+                fileAccessionMap.put(i1.next(), i2.next());
+            }
+            Iterator<String> m = match.iterator();
+            List<String> newCommaSeparatedFileArray = new ArrayList<String>();
+            List<String> newCommaSeparatedParentAccessionArray = new ArrayList<String>();
+            while (m.hasNext()) {
+                int index = files.indexOf(m.next());
+                newCommaSeparatedFileArray.add(files.get(index));
+                newCommaSeparatedParentAccessionArray.add(accessions.get(index));
+            }
+            // GP-1627: update commaSeparatedFilePaths and commaSeparatedParentAccessions
+            this.commaSeparatedFilePaths = String.join(",", newCommaSeparatedFileArray);
+            this.commaSeparatedParentAccessions = String.join(",", newCommaSeparatedParentAccessionArray);
+            // GP-1627: return the updated tumour-normal filepaths and accessions
+            return super.doFinalCheck(this.commaSeparatedFilePaths, this.commaSeparatedParentAccessions);
+        }
         String absent = haveNorm ? "Tumor" : "Normal";
         Log.error("Data for " + absent + " tissue are not available, WON'T RUN");
         return new ReturnValue(ReturnValue.INVALIDPARAMETERS);
@@ -122,9 +259,11 @@ public class SequenzaDecider extends OicrDecider {
 
     @Override
     protected boolean checkFileDetails(ReturnValue returnValue, FileMetadata fm) {
-        Log.debug("CHECK FILE DETAILS:" + fm);
+//        Log.debug("CHECK FILE DETAILS:" + fm);
         String currentTtype = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
         String currentTissueType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
+        String resequencingType = returnValue.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_targeted_resequencing");
+        String target_bed = null;
 
         if (null == currentTissueType) {
             return false; // we need only those which have their tissue type set
@@ -142,6 +281,18 @@ public class SequenzaDecider extends OicrDecider {
             if (!currentTissueType.equals("R") && !currentTissueType.equals(this.tumorType)) {
                 return false;
             }
+        }
+
+//        Log.debug(rs.get(resequencingType, currentTtype, "interval_file"));
+        try {
+            target_bed = rs.get(currentTtype, resequencingType, "interval_file").toString();
+            if (target_bed != null) {
+                this.intervalBed = target_bed;
+            } else {
+                Log.info("No interval file found for this run; Please re-try with --interval-bed <path to interval file>");
+            }
+        } catch (Exception NullPointerException) {
+            Log.info("No interval file found for this run; Please re-try with --interval-bed <path to interval file>");
         }
 
         return super.checkFileDetails(returnValue, fm);
@@ -198,19 +349,68 @@ public class SequenzaDecider extends OicrDecider {
         //since it's a map, only the most recent values
         List<ReturnValue> newValues = new ArrayList<ReturnValue>(iusDeetsToRV.values());
         Map<String, List<ReturnValue>> map = new HashMap<String, List<ReturnValue>>();
-
-        //group files according to the designated header (e.g. sample SWID)
-        for (ReturnValue r : newValues) {
-            String currVal = fileSwaToSmall.get(r.getAttribute(Header.FILE_SWA.getTitle())).getGroupByAttribute();
-            List<ReturnValue> vs = map.get(currVal);
-            if (vs == null) {
-                vs = new ArrayList<ReturnValue>();
+        /**
+         * *
+         * GP-1627: Updated to handle multiple tumour files matching to single
+         * normal bam Logic: 1. iterate over all tumour bams: 2. For each tumour
+         * bam create a list with [tumour bam, normal1, normal2, normal3 .. ]
+         *
+         *
+         */
+        // get allTumourOnlyFiles
+        Map<String, List<ReturnValue>> tnMap = getTumorNormalMap(newValues);
+        return tnMap;
+    }
+    
+    protected List<ReturnValue> getTumourRVs(List<ReturnValue> newValues){
+        List<ReturnValue> tumourMap = new ArrayList<ReturnValue> ();
+        for (ReturnValue rV : newValues){
+//            String sampleName = rV.getAttribute(Header.SAMPLE_NAME.getTitle());
+//            ArrayList<FileMetadata> fileMetadata = rV.getFiles();
+//            String currentTemplatetype = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_library_source_template_type");
+            String currentTissueType = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
+//            String rootSampleName = rV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+            if (!currentTissueType.equals("R")){
+                tumourMap.add(rV);
             }
-            vs.add(r);
-            map.put(currVal, vs);
         }
-
-        return map;
+        return tumourMap;
+    }
+    
+    
+    protected List<ReturnValue> getNormalRVs(List<ReturnValue> newValues){
+        List<ReturnValue> normalMap = new ArrayList<ReturnValue> ();
+        for (ReturnValue rV : newValues){
+            String currentTissueType = rV.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_tissue_type");
+            if (currentTissueType.equals("R")){
+                normalMap.add(rV);
+            }
+        }
+        return normalMap;
+    }
+    
+    protected Map<String, List<ReturnValue>> getTumorNormalMap(List<ReturnValue> newValues){
+        Map<String, List<ReturnValue>> tnMap = new HashMap<String, List<ReturnValue>> ();
+        List<ReturnValue> normalBamAttr = getNormalRVs(newValues);
+        List<ReturnValue> tumorBamAttr = getTumourRVs(newValues);
+        for (ReturnValue tRV : tumorBamAttr){
+            // define sample name
+            String tumourSampleName = tRV.getAttribute(Header.SAMPLE_NAME.getTitle());
+            String tumourRootSampleName = tRV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+            for (ReturnValue nRV : normalBamAttr){
+                String normalSampleName = nRV.getAttribute(Header.SAMPLE_NAME.getTitle());
+                String normalRootSampleName = nRV.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
+                if (normalRootSampleName.equals(tumourRootSampleName)){
+                    String mapKey = normalSampleName+"_"+tumourSampleName;
+                    List<ReturnValue> tnList = new ArrayList<ReturnValue> ();
+                    tnList.add(tRV);
+                    tnList.add(nRV);
+                    tnMap.put(mapKey, tnList);
+                }
+            }
+        }
+        return tnMap;
+        
     }
 
     @Override
@@ -225,77 +425,29 @@ public class SequenzaDecider extends OicrDecider {
 
     @Override
     protected Map<String, String> modifyIniFile(String commaSeparatedFilePaths, String commaSeparatedParentAccessions) {
+        String inputNormFile = this.normalFilePath;
+        String inputTumrFile = this.tumourFilePath;
+        this.sampleName = FilenameUtils.getBaseName(inputTumrFile);
+//        String intervalBed = this.rs.get(this.templateType, templateType, queue)
 
-        StringBuilder inputNormFiles = new StringBuilder();
-        StringBuilder inputTumrFiles = new StringBuilder();
-        StringBuilder groupIds = new StringBuilder();
-        String[] filePaths = commaSeparatedFilePaths.split(",");
-        StringBuilder extName = new StringBuilder();
-        StringBuilder groupDescription = new StringBuilder();
+        Map<String, String> iniFileMap = super.modifyIniFile(this.commaSeparatedFilePaths, this.commaSeparatedParentAccessions);
 
-
-        for (String p : filePaths) {
-            if (null != this.duplicates && this.duplicates.contains(p)) {
-                Log.stderr("Will not include file [" + p + "] since there is an ambiguity in names that cannot be resolved");
-                continue;
-            }
-
-            for (BeSmall bs : fileSwaToSmall.values()) {
-                if (!bs.getPath().equals(p)) {
-                    continue;
-                }
-
-                String tt = bs.getTissueType();
-                if (!tt.isEmpty() && tt.equals("R")) {
-                    if (inputNormFiles.length() != 0) {
-                        inputNormFiles.append(",");
-                    }
-                    inputNormFiles.append(p);
-                } else if (!tt.isEmpty()) {
-                    if (inputTumrFiles.length() != 0) {
-                        inputTumrFiles.append(",");
-                        // group_ids recoreded using info from tumor entries, normal files do not have group_ids
-                        groupIds.append(",");
-                        groupDescription.append(",");
-                        extName.append(",");
-                    }
-                    inputTumrFiles.append(p);
-                    groupIds.append(bs.getGroupID());
-                    groupDescription.append(bs.getGroupDescription());
-                    extName.append(bs.getExtName());
-                }
-            }
-        }
-
-        if (inputNormFiles.length() == 0 || inputTumrFiles.length() == 0) {
-            Log.error("THE DONOR does not have data to run the workflow");
-            abortSchedulingOfCurrentWorkflowRun();
-        }
-        
-//        if (extName == null) {
-        String[] pathsplit = inputTumrFiles.toString().split("/");
-        Integer n = pathsplit.length;
-        String name = pathsplit[n - 1];
-        String[] names = name.split("\\.");
-        this.externalID = names[0];
-//        } else {
-//            this.externalID = extName.toString();
-//        }
-
-        Map<String, String> iniFileMap = super.modifyIniFile(commaSeparatedFilePaths, commaSeparatedParentAccessions);
-//        Map<String, String> iniFileMap = new TreeMap<String, String>();
-
-        iniFileMap.put("input_files_normal", inputNormFiles.toString());
-        iniFileMap.put("input_files_tumor", inputTumrFiles.toString());
+        iniFileMap.put("input_files_normal", inputNormFile);
+        iniFileMap.put("input_files_tumor", inputTumrFile);
         iniFileMap.put("data_dir", "data");
-        iniFileMap.put("template_type", this.templateType);
-        iniFileMap.put("external_name", this.externalID);
-//        iniFileMap.put("library", )
-
+        iniFileMap.put("interval_bed", this.intervalBed);
         if (!this.queue.isEmpty()) {
             iniFileMap.put("queue", this.queue);
         }
-
+        iniFileMap.put("external_name", this.sampleName);
+        iniFileMap.put("ref_fasta", this.refGenome);
+        iniFileMap.put("samtools", this.samtools);
+        iniFileMap.put("java", this.javaPath);
+        iniFileMap.put("rpath", this.rpath);
+        iniFileMap.put("rLib", this.rLib);
+        iniFileMap.put("varscan", this.varscanJar);
+        iniFileMap.put("sequenza_rscript_mem", this.sequenzaRscriptMem);
+        iniFileMap.put("sequenza_v2", this.sequenzaRscript);
         return iniFileMap;
     }
 
@@ -318,9 +470,16 @@ public class SequenzaDecider extends OicrDecider {
         private String groupByAttribute = null;
         private String tissueType = null;
         private String path = null;
+        private String tubeID = null;
+
         private String extName = null;
         private String groupID = null;
         private String groupDescription = null;
+        private String rootSampleName = null;
+
+        public String getRootSampleName() {
+            return rootSampleName;
+        }
 
         public BeSmall(ReturnValue rv) {
             try {
@@ -333,9 +492,10 @@ public class SequenzaDecider extends OicrDecider {
             iusDetails = fa.getLibrarySample() + fa.getSequencerRun() + fa.getLane() + fa.getBarcode();
             tissueType = fa.getLimsValue(Lims.TISSUE_TYPE);
             extName = rv.getAttribute(Header.SAMPLE_TAG_PREFIX.getTitle() + "geo_external_name");
+            rootSampleName = rv.getAttribute(Header.ROOT_SAMPLE_NAME.getTitle());
             //fa.getLimsValue(Lims.TUBE_ID);
             if (null == extName || extName.isEmpty()) {
-                extName = "NA";
+                extName = rootSampleName;
             }
             groupID = fa.getLimsValue(Lims.GROUP_ID);
             if (null == groupID || groupID.isEmpty()) {
@@ -345,8 +505,17 @@ public class SequenzaDecider extends OicrDecider {
             if (null == groupDescription || groupDescription.isEmpty()) {
                 groupDescription = "NA";
             }
-            groupByAttribute = fa.getDonor() + ":" + fa.getLimsValue(Lims.LIBRARY_TEMPLATE_TYPE);
+            StringBuilder gba = new StringBuilder(fa.getDonor());
+            gba.append(":").append(fa.getLimsValue(Lims.LIBRARY_TEMPLATE_TYPE));
+
+            String trs = fa.getLimsValue(Lims.TARGETED_RESEQUENCING);
+            if (null != trs && !trs.isEmpty()) {
+                gba.append(":").append(trs);
+            }
+
+            groupByAttribute = gba.toString() + ":" + extName + ":" + groupID; // grouping issue sequenza decider; generates correct ini file but lists too many files
             path = rv.getFiles().get(0).getFilePath() + "";
+
         }
 
         public Date getDate() {
@@ -379,6 +548,10 @@ public class SequenzaDecider extends OicrDecider {
 
         public String getPath() {
             return path;
+        }
+
+        public String getTubeID() {
+            return tubeID;
         }
 
         public String getExtName() {

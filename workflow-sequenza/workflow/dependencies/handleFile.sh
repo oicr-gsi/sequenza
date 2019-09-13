@@ -4,7 +4,7 @@ echo $wdPath
 extid=$1
 inPath=$wdPath/$2
 cd $inPath
-model=model-fit; mkdir $model
+model=${extid}_model-fit; mkdir $model
 
 for f in $( ls ); do
 	if [[ -d $f ]]; then
@@ -19,6 +19,5 @@ for f in $( ls ); do
 	fi
 done
 
-cd $model
-cd $inPath
+cd $inPath;
 tar -zcvf ${model}.tar.gz $model

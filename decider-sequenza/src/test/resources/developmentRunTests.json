@@ -11,17 +11,27 @@
     },
     "tests": [
         {
-            "id": "study test",
+            "id": "EX study test",
             "parameters": {
                 "--study-name": "TGL05",
-                "--before-date": "2017-07-31"
+                "--template-type": "EX",
+                "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
             }
         },
         {
-            "id": "TGL08_study test",
+            "id": "TGL17_EX study test",
             "parameters": {
-                "--study-name": "TGL08",
-                "--before-date": "2017-07-31"
+                "--study-name": "TGL17",
+                "--template-type": "EX",
+                "--interval-bed": "/.mounts/labs/PDE/data/sequenza/Agilent_SureSelectXT_Human_All_Exon_V5_UTRs.bed"
+            }
+        },
+        {
+            "id": "HALT_WG study test",
+            "parameters": {
+                "--study-name": "HALT",
+                "--template-type": "WG",
+                "--interval-bed": "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
             }
         }
     ]
