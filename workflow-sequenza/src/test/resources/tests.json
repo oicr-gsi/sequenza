@@ -12,7 +12,8 @@
             "parameters": {
                 "input_files_tumor": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/chr21_Co_P_EX.bam",
                 "input_files_normal": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/chr21_Pb_R_EX.bam",
-                "external_name": "Co_P_EX"
+                "external_name": "Co_P_EX",
+                "sequenza_v2": "/.mounts/labs/gsi/testdata/sequenza/script_fix/SequenzaSingleSample_v2.1.1.R"
             }
         },
         {
@@ -20,7 +21,8 @@
             "parameters": {
                 "input_files_tumor": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/chr21_Co_P_EX.bam,/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/chr21_Lv_M_EX_0102SURT1.bam,/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/chr21_Lv_M_EX_0102SURT2.bam",
                 "input_files_normal": "/.mounts/labs/PDE/data/testdata/genomic/bam/TGL_test/Sequenza/chr21_Pb_R_EX.bam",
-                "external_name": "Co_P_EX,Lv_M_EX_0102SURT1,Lv_M_EX_0102SURT2"
+                "external_name": "Co_P_EX,Lv_M_EX_0102SURT1,Lv_M_EX_0102SURT2",
+                "sequenza_v2": "/.mounts/labs/gsi/testdata/sequenza/script_fix/SequenzaSingleSample_v2.1.1.R"
             }
         },
         {
@@ -28,7 +30,8 @@
             "parameters": {
                 "input_files_tumor": "/.mounts/labs/PDE/data/testdata/genomic/bam/HALT_test/HALT_0001_Pb_P_WG_31000931_chr21.bam,/.mounts/labs/PDE/data/testdata/genomic/bam/HALT_test/HALT_0001_Pb_P_WG_31000932_chr21.bam",
                 "input_files_normal": "/.mounts/labs/PDE/data/testdata/genomic/bam/HALT_test/HALT_0001_Pb_R_WG_31000933_chr21.bam",
-                "external_name": "HALT_0001_WG"
+                "external_name": "HALT_0001_WG",
+                "sequenza_v2": "/.mounts/labs/gsi/testdata/sequenza/script_fix/SequenzaSingleSample_v2.1.1.R"
             }
         }
     ]
