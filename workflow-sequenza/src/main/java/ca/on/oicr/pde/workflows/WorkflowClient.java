@@ -48,7 +48,10 @@ public class WorkflowClient extends OicrWorkflow {
 
     //Memory allocation
     private Integer sequenzaRscriptMem;
-    private String javaMem = "-Xmx8g";
+    private Integer javaMem;
+    private Integer javaMemBuffer;
+    private Integer iterOutputMem;
+    private Integer runMpileupMem;
 
     //path to bin
     private String bin;
@@ -97,7 +100,13 @@ public class WorkflowClient extends OicrWorkflow {
 
             // sequenza
             sequenzav2Script = getProperty("sequenza_v2");
+
+            // memory settings
             sequenzaRscriptMem = Integer.parseInt(getProperty("sequenza_rscript_mem"));
+            javaMem = Integer.parseInt(getProperty("java_mem"));
+            javaMemBuffer = Integer.parseInt(getProperty("java_mem_buffer"));
+            iterOutputMem = Integer.parseInt(getProperty("iter_output_mem"));
+            runMpileupMem = Integer.parseInt(getProperty("run_mpileup_mem"));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -219,7 +228,7 @@ public class WorkflowClient extends OicrWorkflow {
         cmd.addArgument("bash -x " + getWorkflowBaseDir() + "/dependencies/handleFile.sh");
         cmd.addArgument(this.outputFilenamePrefix);
         cmd.addArgument(outDir);
-        iterOutput.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
+        iterOutput.setMaxMemory(Integer.toString(iterOutputMem * 1024));
         iterOutput.setQueue(getOptionalProperty("queue", ""));
         return iterOutput;
     }
@@ -235,7 +244,7 @@ public class WorkflowClient extends OicrWorkflow {
         cmd.addArgument(getFiles().get("normal").getProvisionedPath());
         cmd.addArgument(getFiles().get("tumor").getProvisionedPath());
         cmd.addArgument("> " + this.mpileupFile);
-        mpileup.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
+        mpileup.setMaxMemory(Integer.toString(runMpileupMem * 1024));
         mpileup.setQueue(getOptionalProperty("queue", ""));
         return mpileup;
     }
@@ -244,14 +253,14 @@ public class WorkflowClient extends OicrWorkflow {
         Job somaticPileup = getWorkflow().createBashJob("somatic_pileup");
         Command cmd = somaticPileup.getCommand();
         cmd.addArgument(this.java);
-        cmd.addArgument(this.javaMem);
+        cmd.addArgument("-Xmx" + javaMem + "g");
         cmd.addArgument("-jar");
         cmd.addArgument(this.varscan);
         cmd.addArgument("somatic");
         cmd.addArgument(this.mpileupFile);
         cmd.addArgument(this.somaticPileupFile);
         cmd.addArgument("--mpileup 1");
-        somaticPileup.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
+        somaticPileup.setMaxMemory(Integer.toString((javaMem + javaMemBuffer) * 1024));
         somaticPileup.setQueue(getOptionalProperty("queue", ""));
         return somaticPileup;
     }
@@ -260,11 +269,11 @@ public class WorkflowClient extends OicrWorkflow {
         Job vsIndels = getWorkflow().createBashJob("varscan_indels");
         Command cmd = vsIndels.getCommand();
         cmd.addArgument(this.java);
-        cmd.addArgument(this.javaMem);
+        cmd.addArgument("-Xmx" + javaMem + "g");
         cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("processSomatic");
         cmd.addArgument(this.indelFile);
-        vsIndels.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
+        vsIndels.setMaxMemory(Integer.toString((javaMem + javaMemBuffer) * 1024));
         vsIndels.setQueue(getOptionalProperty("queue", ""));
         return vsIndels;
     }
@@ -273,11 +282,11 @@ public class WorkflowClient extends OicrWorkflow {
         Job vsSNP = getWorkflow().createBashJob("varscan_snps");
         Command cmd = vsSNP.getCommand();
         cmd.addArgument(this.java);
-        cmd.addArgument(this.javaMem);
+        cmd.addArgument("-Xmx" + javaMem + "g");
         cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("processSomatic");
         cmd.addArgument(this.snpFile);
-        vsSNP.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
+        vsSNP.setMaxMemory(Integer.toString((javaMem + javaMemBuffer) * 1024));
         vsSNP.setQueue(getOptionalProperty("queue", ""));
         return vsSNP;
     }
@@ -286,13 +295,13 @@ public class WorkflowClient extends OicrWorkflow {
         Job vsCNA = getWorkflow().createBashJob("varscan_cna");
         Command cmd = vsCNA.getCommand();
         cmd.addArgument(this.java);
-        cmd.addArgument(this.javaMem);
+        cmd.addArgument("-Xmx" + javaMem + "g");
         cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("copynumber");
         cmd.addArgument(this.mpileupFile);
         cmd.addArgument(this.copyNumberFile);
         cmd.addArgument("--mpileup 1");
-        vsCNA.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
+        vsCNA.setMaxMemory(Integer.toString((javaMem + javaMemBuffer) * 1024));
         vsCNA.setQueue(getOptionalProperty("queue", ""));
         return vsCNA;
     }
@@ -301,13 +310,13 @@ public class WorkflowClient extends OicrWorkflow {
         Job vsCNAcall = getWorkflow().createBashJob("varscan_cna_call");
         Command cmd = vsCNAcall.getCommand();
         cmd.addArgument(this.java);
-        cmd.addArgument(this.javaMem);
+        cmd.addArgument("-Xmx" + javaMem + "g");
         cmd.addArgument("-jar " + this.varscan);
         cmd.addArgument("copyCaller");
         cmd.addArgument(this.cnvFile);
         cmd.addArgument("--output-file " + this.varscanCopycallFile);
         cmd.addArgument("--mpileup 1");
-        vsCNAcall.setMaxMemory(Integer.toString(sequenzaRscriptMem * 1024));
+        vsCNAcall.setMaxMemory(Integer.toString((javaMem + javaMemBuffer) * 1024));
         vsCNAcall.setQueue(getOptionalProperty("queue", ""));
         return vsCNAcall;
     }

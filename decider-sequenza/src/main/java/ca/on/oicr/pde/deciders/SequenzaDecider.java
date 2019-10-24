@@ -96,7 +96,7 @@ public class SequenzaDecider extends OicrDecider {
         if (this.options.has("template-type")) {
             this.templateType = options.valueOf("template-type").toString();
         } else {
-            Log.error("--template-type requires an argument, EX");
+            Log.error("--template-type requires an argument");
             rv.setExitStatus(ReturnValue.FAILURE);
             return rv;
         }

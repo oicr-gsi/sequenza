@@ -27,8 +27,9 @@
             }
         },
         {
-            "id": "HALT_WG study test",
+            "id": "WG study test",
             "parameters": {
+                "--parent-wf-accessions": "13262061",
                 "--study-name": "HALT",
                 "--template-type": "WG",
                 "--interval-bed": "/oicr/data/genomes/homo_sapiens/UCSC/Genomic/UCSC_hg19_random/hg19_random.genome.sizes.bed"
