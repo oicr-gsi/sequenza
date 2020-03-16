@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="WorkflowTests" parallel="instances" thread-count="20">
-    <test name="WorkflowRunTests">
-        <classes>
-            <parameter name="testDefinition" value="/tests.json"/>
-            <class name="ca.on.oicr.pde.testing.WorkflowRunTestFactory"/>
-        </classes>
-    </test>
-</suite>
