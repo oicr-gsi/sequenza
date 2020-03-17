@@ -31,7 +31,7 @@ Paramter|Value
 ---|---
 gammaRange | Array[String] (optional, default = range 50-2000 with step of 100)
 ploidyFile | String (optional, default $SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata)
-modules | String, used by multiple tasks. Default modules: 
+modules | String, used by multiple tasks. Default modules: sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2
 
 ## Required Inputs:
 
