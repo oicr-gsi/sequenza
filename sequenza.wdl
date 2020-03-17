@@ -59,7 +59,6 @@ parameter_meta {
 }
 
 command <<<
-  module load ~{modules} 
   ~{rScript} ~{preprocessScript} -s ~{snpFile} -c ~{cnvFile} -y TRUE -p ~{prefix}
 >>>
 
@@ -103,7 +102,6 @@ parameter_meta {
 }
 
 command <<<
- module load ~{modules} 
  ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -p ~{prefix}
  zip -qj "~{prefix}_results.zip" ~{prefix}*
 >>>
