@@ -23,3 +23,29 @@ Pipeline is run with two wrapper scripts (one for pre-processing data and anothe
 
 ```
 
+## Optional Parameters with default values:
+
+Paramter|Value
+---|---
+gammaRange | Array[String] (optional, default = range 50-2000 with step of 100)
+ploidyFile | String (optional, default $SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata)
+modules | String, used by multiple tasks. Default modules: 
+
+## Required Inputs:
+
+Paramter|Value
+---|---
+cnvFile | File (data file with CNV calls from Varscan)
+snpFile | File (data file with SNV calls from Varscan)
+preprocessScript | R script for preprocessing Varscan calls
+sequenzaScript | R script for wrapping sequenza
+
+
+## Outputs
+
+```
+  resultZip          - all results from sequenza runs using gamma sweep
+
+  resultJson         - combined json file with ploidy and contamination data
+
+```
