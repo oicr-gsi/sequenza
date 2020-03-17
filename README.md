@@ -5,6 +5,8 @@ frequency and depth ratio.
 
 ## Usage
 
+![sequenza outputs](docs/Screenshot_Sequenza_PDFs.png)
+
 ## Cromwell
 
 ``` 
