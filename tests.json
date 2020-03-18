@@ -3,7 +3,7 @@
     "description": "Sequenza workflow test",
     "metrics_calculate": "calculate.sh",
     "metrics_compare": "compare.sh",
-    "output_metrics_dir": "/.mounts/labs/PDE/data/RegressionTests/Sequenza/workflow/development/output_expectation/",
+    "output_metrics_dir": "/.mounts/labs/gsi/testdata/sequenza/output_metrics/",
     "parameters": {
       "wdl_options": {
         "write_to_cache": false,
