@@ -6,10 +6,10 @@ input {
     File snpFile
     File cnvFile
     Array[String] gammaRange = ["50","100","200","300","400","500","600","700","800","900","1000","1250","1500","2000"]
-    String? outputFileNamePrefix = ""
+    String outputFileNamePrefix = ""
 }
 
-String? sampleID = if outputFileNamePrefix=="" then basename(snpFile, ".snp") else outputFileNamePrefix
+String sampleID = if outputFileNamePrefix=="" then basename(snpFile, ".snp") else outputFileNamePrefix
 
 # Preprocess VarScan data
 call preprocessInputs { input: snpFile = snpFile, cnvFile = cnvFile, prefix = sampleID }
@@ -40,12 +40,12 @@ task preprocessInputs {
 input {
   File snpFile
   File cnvFile
-  String? prefix = "SEQUENZA"
-  String? rScript = "$RSTATS_ROOT/bin/Rscript"
+  String prefix = "SEQUENZA"
+  String rScript = "$RSTATS_ROOT/bin/Rscript"
   String preprocessScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"
-  String? modules = "sequenza/2.1.2 sequenza-scripts/2.1.2"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2"
   Int  timeout = 20
-  Int? jobMemory = 10
+  Int jobMemory = 10
 }
 
 parameter_meta {
@@ -82,13 +82,13 @@ input {
   File seqzFile
   # Parameters
   String gamma = "80"
-  String? rScript = "$RSTATS_ROOT/bin/Rscript"
-  String? prefix = "SEQUENZA"
+  String rScript = "$RSTATS_ROOT/bin/Rscript"
+  String prefix = "SEQUENZA"
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
   String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
-  String? modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
   Int  timeout = 20
-  Int? jobMemory = 10
+  Int jobMemory = 10
 }
 
 parameter_meta {
@@ -114,7 +114,7 @@ runtime {
 
 output {
   File outZip = "~{prefix}_results.zip"
-  String gammaOut = "~{gamma}" 
+  String gammaOut = "~{gamma}"
   File altSolutions = "~{prefix}_alternative_solutions.txt"
 }
 }
@@ -124,16 +124,16 @@ output {
 # ================================================
 task formatJson {
 input {
-  String? prefix = "SEQUENZA"
+  String prefix = "SEQUENZA"
   Array[File] txtPaths
   Array[File] zips
   Array[String] gammaValues
-  Int? jobMemory = 8
+  Int jobMemory = 8
 }
 
 parameter_meta {
  txtPaths: "List of files which need to be processed"
- zips: "List of zip files from runSequenza" 
+ zips: "List of zip files from runSequenza"
  gammaValues: "List of gamma values for the used range"
  jobMemory: "Memory allocated for this job"
 }
