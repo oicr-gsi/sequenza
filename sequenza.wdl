@@ -6,10 +6,10 @@ input {
     File snpFile
     File cnvFile
     Array[String] gammaRange = ["50","100","200","300","400","500","600","700","800","900","1000","1250","1500","2000"]
-    String? outputFileNamePrefix = ""
+    String outputFileNamePrefix = ""
 }
 
-String? sampleID = if outputFileNamePrefix=="" then basename(snpFile, ".snp") else outputFileNamePrefix
+String sampleID = if outputFileNamePrefix=="" then basename(snpFile, ".snp") else outputFileNamePrefix
 
 # Preprocess VarScan data
 call preprocessInputs { input: snpFile = snpFile, cnvFile = cnvFile, prefix = sampleID }
@@ -20,10 +20,35 @@ scatter (g in gammaRange) {
 # Format combined json and re-zip results in a single zip
 call formatJson { input: txtPaths = runSequenza.altSolutions, zips = runSequenza.outZip,  gammaValues = runSequenza.gammaOut }
 
+parameter_meta {
+  snpFile: "File (data file with CNV calls from Varscan)."
+  cnvFile: " File (data file with SNV calls from Varscan)."
+  gammaRange: "List of gamma parameters for tuning Sequenza seqmentation step, used by copynumber package."
+  outputFileNamePrefix: "Output prefix to prefix output file names with."
+}
+
 meta {
   author: "Peter Ruzanov"
   email: "peter.ruzanov@oicr.on.ca"
-  description: "Sequenza 2.0"
+  description: "Sequenza workflow, Given a pair of cellularity and ploidy parameters, the function returns the most likely allele-specific copy numbers with the corresponding log-posterior probability of the fit, for given values of B-allele frequency and depth ratio."
+  dependencies: [
+      {
+        name: "sequenza/2.1.2",
+        url: "https://sequenzatools.bitbucket.io"
+      },
+      {
+        name: "sequenza-scripts/2.1.2",
+        url: "https://github.com/oicr-gsi/sequenza"
+      },
+      {
+        name: "sequenza-res/2.1.2",
+        url: "http://api.gdc.cancer.gov/data/dea893cd-9189-4091-9611-e761a1d31ebe"
+      }
+  ]
+  output_meta: {
+    resultZip: "All results from sequenza runs using gamma sweep.",
+    resultJson: "Combined json file with ploidy and contamination data."
+  }
 }
 
 output {
@@ -40,12 +65,12 @@ task preprocessInputs {
 input {
   File snpFile
   File cnvFile
-  String? prefix = "SEQUENZA"
-  String? rScript = "$RSTATS_ROOT/bin/Rscript"
+  String prefix = "SEQUENZA"
+  String rScript = "$RSTATS_ROOT/bin/Rscript"
   String preprocessScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"
-  String? modules = "sequenza/2.1.2 sequenza-scripts/2.1.2"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2"
   Int  timeout = 20
-  Int? jobMemory = 10
+  Int jobMemory = 10
 }
 
 parameter_meta {
@@ -82,13 +107,13 @@ input {
   File seqzFile
   # Parameters
   String gamma = "80"
-  String? rScript = "$RSTATS_ROOT/bin/Rscript"
-  String? prefix = "SEQUENZA"
+  String rScript = "$RSTATS_ROOT/bin/Rscript"
+  String prefix = "SEQUENZA"
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
   String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
-  String? modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
   Int  timeout = 20
-  Int? jobMemory = 10
+  Int jobMemory = 10
 }
 
 parameter_meta {
@@ -114,7 +139,7 @@ runtime {
 
 output {
   File outZip = "~{prefix}_results.zip"
-  String gammaOut = "~{gamma}" 
+  String gammaOut = "~{gamma}"
   File altSolutions = "~{prefix}_alternative_solutions.txt"
 }
 }
@@ -124,16 +149,16 @@ output {
 # ================================================
 task formatJson {
 input {
-  String? prefix = "SEQUENZA"
+  String prefix = "SEQUENZA"
   Array[File] txtPaths
   Array[File] zips
   Array[String] gammaValues
-  Int? jobMemory = 8
+  Int jobMemory = 8
 }
 
 parameter_meta {
  txtPaths: "List of files which need to be processed"
- zips: "List of zip files from runSequenza" 
+ zips: "List of zip files from runSequenza"
  gammaValues: "List of gamma values for the used range"
  jobMemory: "Memory allocated for this job"
 }
@@ -187,4 +212,3 @@ output {
   File combinedZip = "~{prefix}_results.zip"
 }
 }
-
