@@ -144,9 +144,9 @@ output {
 }
 }
 
-# ================================================
-#    a placeholder for .json - generating code ()
-# ================================================
+# ============================================================
+#   .json - generating code, produce a combined report here
+# ============================================================
 task formatJson {
 input {
   String prefix = "SEQUENZA"
