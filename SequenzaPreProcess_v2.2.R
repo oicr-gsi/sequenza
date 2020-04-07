@@ -41,6 +41,10 @@ snp<-subset(snp,chrom!="chrY")
 cnv<-subset(cnv,chrom!="chrY")
 }
 
+##### Adjust for filtered data, if needed
+cnv<-cnv[,1:8]
+colnames(cnv)[7]="log2_ratio"
+
 ##### prepare sequenza data file
 seqz.data <- VarScan2seqz(varscan.somatic = snp, 
                           varscan.copynumber = cnv)
