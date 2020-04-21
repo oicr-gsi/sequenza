@@ -1,0 +1,26 @@
+{
+  "defaults": {
+    "description": "Sequenza workflow test",
+    "metrics_calculate": "calculate.sh",
+    "metrics_compare": "compare.sh",
+    "output_metrics_dir": "/.mounts/labs/gsi/testdata/sequenza/output_metrics/",
+    "parameters": {
+      "wdl_options": {
+        "write_to_cache": false,
+        "read_from_cache": false
+      }
+    }
+  },
+  "tests": [
+    {
+      "id": "VARSCAN_OUTPUTS_PCSI_CHR22",
+      "parameters": {
+        "wdl_inputs": {
+          "sequenza.cnvFile": "/.mounts/labs/gsi/testdata/sequenza/input_data/VARTEST.copynumber",
+          "sequenza.snpFile": "/.mounts/labs/gsi/testdata/sequenza/input_data/VARTEST.snp",
+          "sequenza.outputFileNamePrefix": "TESTING"
+        }
+      }
+    }
+  ]
+}
