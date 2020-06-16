@@ -112,6 +112,7 @@ input {
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
   String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
   String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
+  Int windowSize = 100000
   Int  timeout = 20
   Int jobMemory = 10
 }
@@ -119,6 +120,7 @@ input {
 parameter_meta {
  seqzFile:  ".seqz file from preprocessing step"
  gamma: "parameter for tuning Sequenza seqmentation step, used by copynumber package"
+ windowSize: "parameter to define window size for segmentation"
  rScript: "Path to Rscript"
  sequenzaScript: "Sequenza wrapper script, instructions for running the pipeline"
  modules: "Names and versions of modules"
@@ -127,7 +129,7 @@ parameter_meta {
 }
 
 command <<<
- ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -p ~{prefix}
+ ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -p ~{prefix}
  zip -qj "~{prefix}_results.zip" ~{prefix}*
 >>>
 
