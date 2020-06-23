@@ -49,6 +49,7 @@ Parameter|Value|Default|Description
 `runSequenza.sequenzaScript`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"|Sequenza wrapper script, instructions for running the pipeline
 `runSequenza.windowSize`|Int|100000|Window size for CNV segmentation
 `runSequenza.ploidyFile`|String|"$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"|
+`runSequenza.windowSize`|Int|100000|Window size for CNV segmentation
 `runSequenza.modules`|String|"sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"|Names and versions of modules
 `runSequenza.timeout`|Int|20|Timeout in hours, needed to override imposed limits
 `runSequenza.jobMemory`|Int|10|Memory allocated for this job
