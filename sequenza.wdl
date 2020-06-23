@@ -129,7 +129,7 @@ parameter_meta {
 }
 
 command <<<
- ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -p ~{prefix}
+ ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix}
  zip -qj "~{prefix}_results.zip" ~{prefix}*
 >>>
 
