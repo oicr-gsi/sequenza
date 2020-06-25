@@ -18,7 +18,7 @@ scatter (g in gammaRange) {
   call runSequenza { input: seqzFile = preprocessInputs.seqzFile, gamma = g }
 }
 # Format combined json and re-zip results in a single zip
-call formatJson { input: txtPaths = runSequenza.altSolutions, zips = runSequenza.outZip,  gammaValues = runSequenza.gammaOut }
+call formatJson { input: txtPaths = select_all(runSequenza.altSolutions), zips = runSequenza.outZip,  gammaValues = runSequenza.gammaOut }
 
 parameter_meta {
   snpFile: "File (data file with CNV calls from Varscan)."
@@ -53,7 +53,7 @@ meta {
 
 output {
  File resultZip = formatJson.combinedZip
- File resultJson = formatJson.outputJson
+ File? resultJson = formatJson.outputJson
 }
 
 }
@@ -112,6 +112,8 @@ input {
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
   String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
   String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
+  String? female
+  String? cancerType
   Int windowSize = 100000
   Int  timeout = 20
   Int jobMemory = 24
@@ -121,6 +123,8 @@ parameter_meta {
  seqzFile:  ".seqz file from preprocessing step"
  gamma: "parameter for tuning Sequenza seqmentation step, used by copynumber package"
  windowSize: "parameter to define window size for segmentation"
+ female: "logical, TRUE or FALSE. default is TRUE"
+ cancerType: "acronym for cancer type (from ploidy table)"
  rScript: "Path to Rscript"
  sequenzaScript: "Sequenza wrapper script, instructions for running the pipeline"
  modules: "Names and versions of modules"
@@ -129,7 +133,7 @@ parameter_meta {
 }
 
 command <<<
- ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix}
+ ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} ~{"-f " + female} ~{"-t " + cancerType}
  zip -qj "~{prefix}_results.zip" ~{prefix}*
 >>>
 
@@ -142,7 +146,7 @@ runtime {
 output {
   File outZip = "~{prefix}_results.zip"
   String gammaOut = "~{gamma}"
-  File altSolutions = "~{prefix}_alternative_solutions.txt"
+  File? altSolutions = "~{prefix}_alternative_solutions.txt"
 }
 }
 
@@ -169,6 +173,7 @@ command <<<
  python <<CODE
  import json
  import os
+ from os.path import isfile
  pts = "~{sep=' ' txtPaths}"
  paths = pts.split()
  gms = "~{sep=' ' gammaValues}"
@@ -178,16 +183,18 @@ command <<<
  json_name = "~{prefix}_alternative_solutions.json"
  jsonDict = {}
 
- for p in range(0, len(paths)):
-     gamma = gammas[p]
+ for g in range(0, len(gms)):
+     gamma = gammas[g]
      os.popen("mkdir -p gammas/" + gamma)
-     os.popen("unzip " + zips[p] + " -d gammas/" + gamma + "/")
+     os.popen("unzip " + zips[g] + " -d gammas/" + gamma + "/")
      chunk = {
          'cellularity': [],
          'ploidy': [],
          'SLPP': []
-     }
-     with open(paths[p]) as f:
+      }
+     if not isfile(paths[g]):
+        continue
+     with open(paths[g]) as f:
          for line in f:
              if line.find("cellularity") > 0:
                  continue
@@ -198,9 +205,10 @@ command <<<
              chunk['SLPP'].append(tmp[2])
      f.close()
      jsonDict[gamma] = chunk
-
- with open(json_name, 'w') as json_file:
-     json.dump(jsonDict, json_file)
+ 
+ if len(jsonDict.keys()) > 0: 
+     with open(json_name, 'w') as json_file:
+         json.dump(jsonDict, json_file)
  CODE
  zip -qr "~{prefix}_results.zip" gammas/*
 >>>
@@ -210,7 +218,7 @@ runtime {
 }
 
 output {
-  File outputJson = "~{prefix}_alternative_solutions.json"
+  File? outputJson = "~{prefix}_alternative_solutions.json"
   File combinedZip = "~{prefix}_results.zip"
 }
 }
