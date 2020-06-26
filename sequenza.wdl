@@ -15,10 +15,10 @@ String sampleID = if outputFileNamePrefix=="" then basename(snpFile, ".snp") els
 call preprocessInputs { input: snpFile = snpFile, cnvFile = cnvFile, prefix = sampleID }
 # Configure and run Sequenza
 scatter (g in gammaRange) {
-  call runSequenza { input: seqzFile = preprocessInputs.seqzFile, gamma = g }
+  call runSequenza { input: seqzFile = preprocessInputs.seqzFile, prefix = sampleID, gamma = g }
 }
 # Format combined json and re-zip results in a single zip
-call formatJson { input: txtPaths = select_all(runSequenza.altSolutions), zips = runSequenza.outZip,  gammaValues = runSequenza.gammaOut }
+call formatJson { input: txtPaths = select_all(runSequenza.altSolutions), zips = runSequenza.outZip,  gammaValues = runSequenza.gammaOut, prefix = sampleID }
 
 parameter_meta {
   snpFile: "File (data file with CNV calls from Varscan)."
@@ -70,7 +70,7 @@ input {
   String preprocessScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"
   String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2"
   Int  timeout = 20
-  Int jobMemory = 10
+  Int jobMemory = 38
 }
 
 parameter_meta {
@@ -114,8 +114,10 @@ input {
   String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
   String? female
   String? cancerType
+  Float? minReadsNormal
+  Int? minReadsBaf
   Int windowSize = 100000
-  Int  timeout = 20
+  Int timeout = 20
   Int jobMemory = 24
 }
 
@@ -125,6 +127,8 @@ parameter_meta {
  windowSize: "parameter to define window size for segmentation"
  female: "logical, TRUE or FALSE. default is TRUE"
  cancerType: "acronym for cancer type (from ploidy table)"
+ minReadsNormal: "threshold of minimum number of observation of depth ratio in a segment"
+ minReadsBaf: "threshold of minimum number of observation of B-allele frequency in a segment"
  rScript: "Path to Rscript"
  sequenzaScript: "Sequenza wrapper script, instructions for running the pipeline"
  modules: "Names and versions of modules"
@@ -133,8 +137,9 @@ parameter_meta {
 }
 
 command <<<
- ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} ~{"-f " + female} ~{"-t " + cancerType}
- zip -qj "~{prefix}_results.zip" ~{prefix}*
+ ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} \
+            ~{"-f " + female} ~{"-t " + cancerType} ~{"-n " + minReadsNormal} ~{"-a " + minReadsBaf}
+ zip -qjr "~{prefix}_results.zip sol* " ~{prefix}*
 >>>
 
 runtime {
@@ -163,6 +168,7 @@ input {
 }
 
 parameter_meta {
+ prefix: "a String for prefixing all result files"
  txtPaths: "List of files which need to be processed"
  zips: "List of zip files from runSequenza"
  gammaValues: "List of gamma values for the used range"
@@ -183,7 +189,7 @@ command <<<
  json_name = "~{prefix}_alternative_solutions.json"
  jsonDict = {}
 
- for g in range(0, len(gms)):
+ for g in range(0, len(gammas)):
      gamma = gammas[g]
      os.popen("mkdir -p gammas/" + gamma)
      os.popen("unzip " + zips[g] + " -d gammas/" + gamma + "/")
