@@ -4,19 +4,29 @@ library(optparse)
 ## For now, test if commands are in original, trailing format, or new opt-parse format
 option_list = list(
   make_option(c("-s", "--seqz_file"), type="character", default=NULL,
-              help="varscan snp file name", metavar="character"),
+           help="varscan snp file name", metavar="character"),
+  make_option(c("-b", "--breaks_method"), type="character", default="het",
+           help="breaks method for segmentation [default= %default]", metavar="character"),
+  make_option(c("-i", "--fit_method"), type="character", default="baf",
+           help="fit method [default= %default]", metavar="character"),
   make_option(c("-l", "--ploidy_file"), type="character", default=NULL,
-              help="ploidy file name", metavar="character"),
+           help="ploidy file name", metavar="character"),
   make_option(c("-p", "--prefix"), type="character", default=NULL,
-            help="Output prefix for result files [default= %default]", metavar="character"),
+           help="Output prefix for result files [default= %default]", metavar="character"),
   make_option(c("-g", "--gamma"), type="integer", default=80,
-            help="Gamma parameter for data extraction [default= %default]", metavar="integer"),
+           help="Gamma parameter for data extraction [default= %default]", metavar="integer"),
   make_option(c("-f", "--female"), type="logical", default=TRUE,
-            help="Female Sex flag [default= %default]", metavar="logical"),
+           help="Female Sex flag [default= %default]", metavar="logical"),
   make_option(c("-w", "--window"), type="integer", default=50,
-            help="Window for detection of CNVs [default= %default]", metavar="integer"),
-  make_option(c("-t", "--type"), type="character", default="PCPG",
-            help="Window for detection of CNVs [default= %default]", metavar="character")
+           help="Window for detection of CNVs [default= %default]", metavar="integer"),
+  make_option(c("-t", "--type"), type="character", default="all",
+           help="Cancer type for customization of ploidy data [default= %default]", metavar="character"),
+  make_option(c("-x", "--maxvar"), type="integer", default="20",
+           help="Max Copy Number change to consider [default= %default]", metavar="integer"),
+  make_option(c("-n", "--min.reads.normal"), type="double", default=10,
+           help="min reads to make genotype call [default= %default]", metavar="double"),
+  make_option(c("-a", "--min.reads.baf"), type="integer", default=1,
+           help="Threshold on the depth of the positions included to calculate the average BAF for segment. Set to extreme value (ex. 1x10^6) to exclude BAF from calculations [default= %default]", metavar="integer")
  );
 
 opt_parser = OptionParser(option_list=option_list);
@@ -29,6 +39,35 @@ GAMMA  <- opt$gamma
 FEMALE <- opt$female
 WINDOW <- opt$window
 TYPE   <- opt$type
+BREAKS <- opt$breaks_method
+FIT    <- opt$fit_method
+MAXVAR <- opt$maxvar
+min_read_normal <- opt$min.reads.normal
+min_read_baf <- opt$min.reads.baf
+
+#############
+# FUNCTIONS #
+#############
+alternative.cp.solutions <- function(cp.table) {
+  ci <- get.ci(cp.table)
+  p.alt <- which(diff(sign(diff(ci$values.ploidy$y))) == -2) + 1
+  get.alt <- function(idx.p, cp.table) {
+    idx.c <- which.max(cp.table$lpp[idx.p,])
+    c(cellularity = cp.table$cellularity[idx.c],
+      ploidy = cp.table$ploidy[idx.p],
+      SLPP = cp.table$lpp[idx.p, idx.c])
+  }
+  res <- lapply(p.alt, FUN = function (x) get.alt(x, cp.table))
+  res <- as.data.frame(do.call(rbind, res))
+  if (nrow(res) > 0 ){
+    res[order(res$SLPP, decreasing = TRUE), ]
+  } else {
+    data.frame(cellularity = ci$max.cellularity,
+               ploidy = ci$max.ploidy,
+               SLPP =  cp.table$lpp[which(cp.table$ploidy == ci$max.ploidy),
+                                    which(cp.table$cellularity == ci$max.cellularity)])
+  }
+}
 
 # ======================= OVERRIDE THIS SEQUENZA FUNCTION =================
 
@@ -195,31 +234,99 @@ sequenza.extract <- function(file, gz = TRUE, window = 1e6, overlap = 1, gamma =
 
 # ======================= PREPROCESSING ===================================
 EXTR  <- sequenza.extract(FILE, gz = FALSE,
-                          breaks.method = "het",
+                          breaks.method = BREAKS,
                           window = WINDOW,       # expose
                           gamma  = GAMMA,        # expose
-                          min.reads.normal = 10, 
-                          min.reads.baf = 1)     
+                          min.reads.normal = min_read_normal, 
+                          min.reads.baf = min_read_baf)     
 
 print("Extract Ok")
 ratio_priority = FALSE
 
+# ======================= FITTING ===========================================
 load(file=PLOIDY) # goes to module
-priors <- subset(ploidy_table,cancer_type==toupper(TYPE))[c("CN","value")]
-CP.example <- sequenza.fit(EXTR,
-                           priors.table = priors,
-                           method = "mufreq",          
-                           ratio.priority = ratio_priority,
-                           chromosome.list = 1:22)
+priors <- subset(ploidy_table,cancer_type==TYPE)[c("CN","value")]
 
-print("Fit Ok")
-sequenza.results(EXTR, 
-                 cp.table = CP.example, 
-                 SAMPLE, 
+# run sequenza.fit in a tryCatch block
+CP <- tryCatch({
+ value<-sequenza.fit(EXTR,
+                     priors.table = priors,
+                     ratio.priority = ratio_priority,
+                     method = FIT,
+                     XY = c(X = "chrX", Y = "chrY"),
+                     chromosome.list = 1:23)
+ 
+ value
+}, error = function(err) {
+   # error handling: switch fo mufreq and try again
+   message("Error fitting with baf, trying mufreq")
+   value <- tryCatch({
+         value <- sequenza.fit(EXTR,
+                        priors.table = priors,
+                        ratio.priority = ratio_priority,
+                        method = "mufreq",
+                        XY = c(X = "chrX", Y = "chrY"),
+                        chromosome.list = 1:23)
+         value
+   }, error = function(err) {
+      message("Fitting with mufreq failed")
+      return(NA)
+   }) # END of inner tryCatch
+}) # END of outer tryCatch
+
+print(ifelse(!is.na(CP),"Fit Ok","Fit Failed"))
+## output series of results files (images and text files)
+sequenza.results(EXTR,
+                 cp.table = CP,
+                 SAMPLE,
                  out.dir = getwd(),
-                 female = FEMALE,     # expose
-                 CNt.max = 20,
-                 ratio.priority = ratio_priority, 
+                 female = FEMALE,
+                 CNt.max = MAXVAR,
+                 ratio.priority = ratio_priority,
                  XY = c(X = "chrX", Y = "chrY"),
-                 chromosome.list = 1:22)
+                 chromosome.list = 1:23)
+
 print("Results Ok")
+print ("Getting alternative purity solutions");
+
+alt <- alternative.cp.solutions(CP);
+
+purities <- alt$cellularity;
+ploidies <- alt$ploidy;
+
+## output series of results files (images and text files) for the alternative purity solutions
+## index starts at 2 because the first solution is already output as the top hit.
+## add another output directory for user defined purity
+if(length(purities)>1){ ## bug fix to not run alt solutions if there are no alt solutions.
+ for (i in 2:length(purities)){
+   print (paste("Creating new directories and printing solution:", i, sep = " "));
+   output_alt <- paste(getwd(),"/sol",i,"_",purities[i],"/",sep="")
+   output_udp <- paste(getwd(),"/output_udp_",purities[i],"/",sep="")
+   dir.create(output_udp, showWarnings = FALSE, recursive=TRUE)
+   sequenza.results(EXTR,
+                    cp.table = CP,
+                    SAMPLE,
+                    out.dir = output_alt,
+                    XY = c(X = "chrX", Y = "chrY"),
+                    chromosome.list = 1:23,
+                    cellularity = purities[i],
+                    ploidy = ploidies[i])
+ }
+}
+
+
+## Ouput a total Copy-number seg file for viewing in IGV etc.
+
+data.seg <-EXTR$segments[[1]]
+if (length(EXTR$segments) >= 2) {
+  for (i in 2:length(EXTR$segments)) {
+    data.seg <- rbind(data.seg,EXTR$segments[[i]])
+  }
+}
+
+colnames(data.seg)<-c("chrom","loc.start","loc.end","Bf","N.BAF","sd.BAF","seg.mean","num.mark","sd.ratio")
+data.seg$seg.mean<-log2(data.seg$seg.mean)
+data.seg$ID<-rep(SAMPLE,nrow(data.seg))
+data.seg<-data.seg[,c("ID","chrom","loc.start","loc.end","num.mark","seg.mean")]
+
+write.table(data.seg,paste(SAMPLE,"_Total_CN.seg",sep=""),row.names=FALSE,quote=FALSE,sep="\t")
