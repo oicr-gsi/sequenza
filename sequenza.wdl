@@ -139,7 +139,7 @@ parameter_meta {
 command <<<
  ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} \
             ~{"-f " + female} ~{"-t " + cancerType} ~{"-n " + minReadsNormal} ~{"-a " + minReadsBaf}
- zip -qjr "~{prefix}_results.zip sol* " ~{prefix}*
+ zip -qr ~{prefix}_results.zip sol* ~{prefix}*
 >>>
 
 runtime {
@@ -216,7 +216,7 @@ command <<<
      with open(json_name, 'w') as json_file:
          json.dump(jsonDict, json_file)
  CODE
- zip -qr "~{prefix}_results.zip" gammas/*
+ zip -qr ~{prefix}_results.zip gammas/*
 >>>
 
 runtime {
