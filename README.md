@@ -47,12 +47,17 @@ Parameter|Value|Default|Description
 `runSequenza.rScript`|String|"$RSTATS_ROOT/bin/Rscript"|Path to Rscript
 `runSequenza.prefix`|String|"SEQUENZA"|
 `runSequenza.sequenzaScript`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"|Sequenza wrapper script, instructions for running the pipeline
-`runSequenza.ploidyFile`|String|"$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"|
+`runSequenza.windowSize`|Int|100000|Window size for CNV segmentation
+`runSequenza.female`|String?|TRUE|logical, TRUE or FALSE. default is TRUE
+`runSequenza.cancerType`|String?|acronym for cancer type (from ploidy table)
+`runSequenza.minReadsNormal`|Float?|10.0|threshold of minimum number of observation of depth ratio in a segment
+`runSequenza.minReadsBaf`|Int?|1|threshold of minimum number of observation of B-allele frequency in a segment
+`runSequenza.ploidyFile`|String|"$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
 `runSequenza.windowSize`|Int|100000|Window size for CNV segmentation
 `runSequenza.modules`|String|"sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"|Names and versions of modules
 `runSequenza.timeout`|Int|20|Timeout in hours, needed to override imposed limits
 `runSequenza.jobMemory`|Int|10|Memory allocated for this job
-`formatJson.prefix`|String|"SEQUENZA"|
+`formatJson.prefix`|String|"SEQUENZA"|Prefix for outputs
 `formatJson.jobMemory`|Int|8|Memory allocated for this job
 
 
@@ -61,7 +66,7 @@ Parameter|Value|Default|Description
 Output | Type | Description
 ---|---|---
 `resultZip`|File|All results from sequenza runs using gamma sweep.
-`resultJson`|File|Combined json file with ploidy and contamination data.
+`resultJson`|File?|Combined json file with ploidy and contamination data.
 
 
 ## Niassa + Cromwell
