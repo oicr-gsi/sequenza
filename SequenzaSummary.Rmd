@@ -1,0 +1,41 @@
+---
+title: "Sequenza Run: gamma effect"
+output: pdf_document
+params:
+  sample: "TEST"
+  summaryImage: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(grid)
+library(optparse)
+library(png)
+```
+
+```{r title, echo=FALSE, results='asis'}
+  cat("#", (paste0("Sample: ",params$sample)), "\n")
+```
+
+```{r summary_plot, echo=FALSE, warning=FALSE}
+ 
+ img <- readPNG(params$summaryImage)
+ grid.raster(img)
+
+```
+
+```{r gamma_plots, echo=FALSE, warning=FALSE}
+
+ DIRS<-dir("gammas/")
+ DIRS<-as.integer(DIRS)
+ BY_INCREASE = order(DIRS)
+
+ gamma = DIRS[BY_INCREASE]
+ for (g in gamma) {
+  grid.newpage()
+  img <- readPNG(paste0("gammas/",g,"/",params$sample,"_gammaPanel_",g,".png"))
+  grid.raster(img)
+ }
+
+```
