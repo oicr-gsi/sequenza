@@ -5,6 +5,8 @@ library(optparse)
 option_list = list(
   make_option(c("-s", "--seqz_file"), type="character", default=NULL,
            help="varscan snp file name", metavar="character"),
+  make_option(c("-r", "--ref_file"), type="character", default="hg19",
+           help="reference assembly id", metavar="character"),
   make_option(c("-b", "--breaks_method"), type="character", default="het",
            help="breaks method for segmentation [default= %default]", metavar="character"),
   make_option(c("-i", "--fit_method"), type="character", default="baf",
@@ -26,13 +28,18 @@ option_list = list(
   make_option(c("-n", "--min.reads.normal"), type="double", default=10,
            help="min reads to make genotype call [default= %default]", metavar="double"),
   make_option(c("-a", "--min.reads.baf"), type="integer", default=1,
-           help="Threshold on the depth of the positions included to calculate the average BAF for segment. Set to extreme value (ex. 1x10^6) to exclude BAF from calculations [default= %default]", metavar="integer")
+           help="Threshold on the depth of the positions included to calculate the average BAF for segment. Set to extreme value (ex. 1x10^6) to exclude BAF from calculations [default= %default]", metavar="integer"),
+  make_option(c("-h", "--height"), type="integer", default="440",
+           help="height of the png image [default= %default]", metavar="integer"),
+  make_option(c("-d", "--width"), type="integer", default="1440",
+           help="width of the png image [default= %default]", metavar="integer")
  );
 
-opt_parser = OptionParser(option_list=option_list);
+opt_parser = OptionParser(option_list=option_list, add_help_option=FALSE);
 opt = parse_args(opt_parser);
 
 FILE   <- opt$seqz_file
+REF    <- opt$ref_file
 SAMPLE <- opt$prefix
 PLOIDY <- opt$ploidy_file
 GAMMA  <- opt$gamma
@@ -42,6 +49,8 @@ TYPE   <- opt$type
 BREAKS <- opt$breaks_method
 FIT    <- opt$fit_method
 MAXVAR <- opt$maxvar
+WIDTH  <- opt$width
+HEIGHT <- opt$height 
 min_read_normal <- opt$min.reads.normal
 min_read_baf <- opt$min.reads.baf
 
@@ -175,8 +184,8 @@ sequenza.extract <- function(file, gz = TRUE, window = 1e6, overlap = 1, gamma =
         breaks <- breaks.all[breaks.all$chrom == chr, ]
       }
       if (!is.null(breaks) && class(breaks) == "data.frame" && nrow(breaks) > 0){
-        seg.s1    <- segment.breaks(seqz.tab = seqz.data, breaks = breaks,
-                                    min.reads.baf = min.reads.baf, weighted.mean = weighted.mean)            
+        seg.s1 <- segment.breaks(seqz.tab = seqz.data, breaks = breaks,
+                                 min.reads.baf = min.reads.baf, weighted.mean = weighted.mean)            
       } else {
         seg.s1 <- segment.breaks(seqz.data,
                                  breaks = data.frame(chrom = chr,
@@ -237,6 +246,7 @@ EXTR  <- sequenza.extract(FILE, gz = FALSE,
                           breaks.method = BREAKS,
                           window = WINDOW,       # expose
                           gamma  = GAMMA,        # expose
+                          assembly = REF,
                           min.reads.normal = min_read_normal, 
                           min.reads.baf = min_read_baf)     
 
@@ -316,7 +326,6 @@ if(length(purities)>1){ ## bug fix to not run alt solutions if there are no alt 
 
 
 ## Ouput a total Copy-number seg file for viewing in IGV etc.
-
 data.seg <-EXTR$segments[[1]]
 if (length(EXTR$segments) >= 2) {
   for (i in 2:length(EXTR$segments)) {
@@ -330,3 +339,27 @@ data.seg$ID<-rep(SAMPLE,nrow(data.seg))
 data.seg<-data.seg[,c("ID","chrom","loc.start","loc.end","num.mark","seg.mean")]
 
 write.table(data.seg,paste(SAMPLE,"_Total_CN.seg",sep=""),row.names=FALSE,quote=FALSE,sep="\t")
+
+# ====================== PLOTTING =============================================================
+SEGS<-read.table(paste0(SAMPLE,"_segments.txt"), header=TRUE)
+PNGFILE = paste0(SAMPLE,"_gammaPanel_",GAMMA,".png")
+png(filename = PNGFILE, width = WIDTH, height = HEIGHT, units = "px", pointsize = 12, type = "cairo", bg = "white")
+
+par(mfrow=c(1,1))
+layout(matrix(c(2,1,2,3), 2, 2, byrow = TRUE),
+       widths=c(2,4), heights=c(2,1))
+
+par(mar=c(2,4,2,2))
+genome.view(seg.cn = SEGS, 
+            info.type = "AB")
+par(mar=c(6,6,2,2))
+cp.plot(CP)
+cp.plot.contours(CP, add = TRUE,
+                 likThresh = c(0.999, 0.95),
+                 colFn = colorRampPalette(c('white', 'lightblue')),
+                 pch = 20)
+par(mar=c(2,2,2,2))
+plot.new()
+mtext(paste0("gamma = ", GAMMA), cex = 4, side=1, outer=FALSE, line=-1, adj = 0)
+dev.off()
+
