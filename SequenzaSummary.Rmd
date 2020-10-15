@@ -7,7 +7,8 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo=FALSE, dev = "cairo_pdf", dpi = 200)
+
 library(knitr)
 library(grid)
 library(optparse)
@@ -19,9 +20,8 @@ library(png)
 ```
 
 ```{r summary_plot, echo=FALSE, warning=FALSE}
- 
- img <- readPNG(params$summaryImage)
- grid.raster(img)
+ img <- readPNG(params$summaryImage, native = TRUE)
+ grid.raster(img, interpolate = TRUE)
 
 ```
 
@@ -32,10 +32,10 @@ library(png)
  BY_INCREASE = order(DIRS)
 
  gamma = DIRS[BY_INCREASE]
- for (g in gamma) {
+ for (g in 1:length(gamma)) {
   grid.newpage()
-  img <- readPNG(paste0("gammas/",g,"/",params$sample,"_gammaPanel_",g,".png"))
-  grid.raster(img)
+  img <- readPNG(paste0("gammas/",gamma[g],"/",params$sample,"_gammaPanel_",gamma[g],".png"), native = TRUE)
+  grid.raster(img, interpolate = TRUE)
  }
 
 ```
