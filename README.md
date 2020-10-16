@@ -9,7 +9,7 @@ Sequenza workflow, Given a pair of cellularity and ploidy parameters, the functi
 ## Dependencies
 
 * [sequenza 2.1.2](https://sequenzatools.bitbucket.io)
-* [sequenza-scripts 2.1.4](https://github.com/oicr-gsi/sequenza)
+* [sequenza-scripts 2.1.5](https://github.com/oicr-gsi/sequenza)
 * [sequenza-res 2.1.2](http://api.gdc.cancer.gov/data/dea893cd-9189-4091-9611-e761a1d31ebe)
 
 
@@ -41,13 +41,13 @@ Parameter|Value|Default|Description
 ---|---|---|---
 `preprocessInputs.rScript`|String|"$RSTATS_CAIRO_ROOT/bin/Rscript"|path to Rscript
 `preprocessInputs.preprocessScript`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"|Path to the preprocessing .R script
-`preprocessInputs.modules`|String|"sequenza/2.1.2 sequenza-scripts/2.1.4"|modules needed to run preprocessing step
+`preprocessInputs.modules`|String|"sequenza/2.1.2 sequenza-scripts/2.1.5"|modules needed to run preprocessing step
 `preprocessInputs.timeout`|Int|20|timeout for this step in Hr, default is 20
 `preprocessInputs.jobMemory`|Int|38|Memory allocated for this job
 `runSequenza.rScript`|String|"$RSTATS_CAIRO_ROOT/bin/Rscript"|Path to Rscript
 `runSequenza.sequenzaScript`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"|Sequenza wrapper script, instructions for running the pipeline
 `runSequenza.ploidyFile`|String|"$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"|Resource used by sequenza to infer ploidy value
-`runSequenza.modules`|String|"sequenza/2.1.2 sequenza-scripts/2.1.4 sequenza-res/2.1.2"|Names and versions of modules
+`runSequenza.modules`|String|"sequenza/2.1.2 sequenza-scripts/2.1.5 sequenza-res/2.1.2"|Names and versions of modules
 `runSequenza.female`|String?|None|logical, TRUE or FALSE. default is TRUE
 `runSequenza.cancerType`|String?|None|acronym for cancer type (from ploidy table)
 `runSequenza.minReadsNormal`|Float?|None|threshold of minimum number of observation of depth ratio in a segment
@@ -58,7 +58,7 @@ Parameter|Value|Default|Description
 `formatJson.jobMemory`|Int|8|Memory allocated for this job
 `formatJson.width`|Int|1200|width of the summary plot, default is 1200
 `formatJson.height`|Int|400|height of the summary plot, default is 400
-`formatJson.modules`|String|"sequenza-scripts/2.1.4 rmarkdown/0.1"|Names and versions of modules
+`formatJson.modules`|String|"sequenza-scripts/2.1.5 rmarkdown/0.1"|Names and versions of modules
 `formatJson.summaryPlotScript`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/plot_gamma_solutions.R"|service script for plotting data from gamma solutions file, summary plot
 `formatJson.sequenzaRmd`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaSummary.Rmd"|Path to rmarkdown file for producing a .pdf report
 `formatJson.rScript`|String|"$RSTATS_CAIRO_ROOT/bin/Rscript"|Path to Rscript
