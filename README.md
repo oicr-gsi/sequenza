@@ -56,8 +56,8 @@ Parameter|Value|Default|Description
 `runSequenza.timeout`|Int|20|Timeout in hours, needed to override imposed limits
 `runSequenza.jobMemory`|Int|24|Memory allocated for this job
 `formatJson.jobMemory`|Int|8|Memory allocated for this job
-`formatJson.width`|Int|1440|width of the summary plot, default is 1440
-`formatJson.height`|Int|440|height of the summary plot, default is 440
+`formatJson.width`|Int|1200|width of the summary plot, default is 1200
+`formatJson.height`|Int|400|height of the summary plot, default is 400
 `formatJson.modules`|String|"sequenza-scripts/2.1.4 rmarkdown/0.1"|Names and versions of modules
 `formatJson.summaryPlotScript`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/plot_gamma_solutions.R"|service script for plotting data from gamma solutions file, summary plot
 `formatJson.sequenzaRmd`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaSummary.Rmd"|Path to rmarkdown file for producing a .pdf report

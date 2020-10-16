@@ -37,7 +37,7 @@ meta {
         url: "https://sequenzatools.bitbucket.io"
       },
       {
-        name: "sequenza-scripts/2.1.4",
+        name: "sequenza-scripts/2.1.5",
         url: "https://github.com/oicr-gsi/sequenza"
       },
       {
@@ -72,7 +72,7 @@ input {
   String prefix = "SEQUENZA"
   String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
   String preprocessScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"
-  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.4"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.5"
   Int  timeout = 20
   Int jobMemory = 38
 }
@@ -115,7 +115,7 @@ input {
   String prefix = "SEQUENZA"
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
   String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
-  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.4 sequenza-res/2.1.2"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.5 sequenza-res/2.1.2"
   String? female
   String? cancerType
   Float? minReadsNormal
@@ -171,9 +171,9 @@ input {
   Array[File] zips
   Array[String] gammaValues
   Int jobMemory = 8
-  Int width = 1440
-  Int height = 440
-  String modules = "sequenza-scripts/2.1.4 rmarkdown/0.1"
+  Int width = 1200
+  Int height = 400
+  String modules = "sequenza-scripts/2.1.5 rmarkdown/0.1"
   String summaryPlotScript = "$SEQUENZA_SCRIPTS_ROOT/bin/plot_gamma_solutions.R"
   String sequenzaRmd = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaSummary.Rmd"
   String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
@@ -185,8 +185,8 @@ parameter_meta {
  zips: "List of zip files from runSequenza"
  gammaValues: "List of gamma values for the used range"
  jobMemory: "Memory allocated for this job"
- width: "width of the summary plot, default is 1440"
- height: "height of the summary plot, default is 440"
+ width: "width of the summary plot, default is 1200"
+ height: "height of the summary plot, default is 400"
  summaryPlotScript: "service script for plotting data from gamma solutions file, summary plot"
  sequenzaRmd: "Path to rmarkdown file for producing a .pdf report"
  rScript: "Path to Rscript"
