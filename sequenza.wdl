@@ -219,7 +219,7 @@ command <<<
      'SLPP': []
    }
    if not isfile(paths[g]):
-     Gcontinue
+     continue
    with open(paths[g]) as f:
      for line in f:
        if line.find("cellularity") > 0:
