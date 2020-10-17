@@ -37,7 +37,7 @@ meta {
         url: "https://sequenzatools.bitbucket.io"
       },
       {
-        name: "sequenza-scripts/2.1.2",
+        name: "sequenza-scripts/2.1.5",
         url: "https://github.com/oicr-gsi/sequenza"
       },
       {
@@ -47,13 +47,17 @@ meta {
   ]
   output_meta: {
     resultZip: "All results from sequenza runs using gamma sweep.",
-    resultJson: "Combined json file with ploidy and contamination data."
+    resultJson: "Combined json file with ploidy and contamination data.",
+    gammaSummaryPlot: "png for summary plot showing the effect of different gamma values",
+    gammaMarkdownPdf: "rmarkdown pdf with all gamma-specific panels along with gamma effect summary plot"
   }
 }
 
 output {
  File resultZip = formatJson.combinedZip
  File? resultJson = formatJson.outputJson
+ File gammaSummaryPlot = formatJson.gammaSummaryPlot
+ File gammaMarkdownPdf = formatJson.gammaMarkdownPdf
 }
 
 }
@@ -66,9 +70,9 @@ input {
   File snpFile
   File cnvFile
   String prefix = "SEQUENZA"
-  String rScript = "$RSTATS_ROOT/bin/Rscript"
+  String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
   String preprocessScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"
-  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.5"
   Int  timeout = 20
   Int jobMemory = 38
 }
@@ -107,11 +111,11 @@ input {
   File seqzFile
   # Parameters
   String gamma = "80"
-  String rScript = "$RSTATS_ROOT/bin/Rscript"
+  String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
   String prefix = "SEQUENZA"
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
   String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
-  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.2 sequenza-res/2.1.2"
+  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.5 sequenza-res/2.1.2"
   String? female
   String? cancerType
   Float? minReadsNormal
@@ -131,12 +135,14 @@ parameter_meta {
  minReadsBaf: "threshold of minimum number of observation of B-allele frequency in a segment"
  rScript: "Path to Rscript"
  sequenzaScript: "Sequenza wrapper script, instructions for running the pipeline"
+ ploidyFile: "Resource used by sequenza to infer ploidy value"
  modules: "Names and versions of modules"
  timeout: "Timeout in hours, needed to override imposed limits"
  jobMemory: "Memory allocated for this job"
 }
 
 command <<<
+ set -euo pipefail 
  ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} \
             ~{"-f " + female} ~{"-t " + cancerType} ~{"-n " + minReadsNormal} ~{"-a " + minReadsBaf}
  zip -qr ~{prefix}_results.zip sol* ~{prefix}*
@@ -165,6 +171,12 @@ input {
   Array[File] zips
   Array[String] gammaValues
   Int jobMemory = 8
+  Int width = 1200
+  Int height = 400
+  String modules = "sequenza-scripts/2.1.5 rmarkdown/0.1"
+  String summaryPlotScript = "$SEQUENZA_SCRIPTS_ROOT/bin/plot_gamma_solutions.R"
+  String sequenzaRmd = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaSummary.Rmd"
+  String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
 }
 
 parameter_meta {
@@ -173,12 +185,20 @@ parameter_meta {
  zips: "List of zip files from runSequenza"
  gammaValues: "List of gamma values for the used range"
  jobMemory: "Memory allocated for this job"
+ width: "width of the summary plot, default is 1200"
+ height: "height of the summary plot, default is 400"
+ summaryPlotScript: "service script for plotting data from gamma solutions file, summary plot"
+ sequenzaRmd: "Path to rmarkdown file for producing a .pdf report"
+ rScript: "Path to Rscript"
+ modules: "Names and versions of modules"
 }
 
 command <<<
- python <<CODE
+ set -euo pipefail
+ python3<<CODE
  import json
  import os
+ import pandas as pd
  from os.path import isfile
  pts = "~{sep=' ' txtPaths}"
  paths = pts.split()
@@ -190,41 +210,68 @@ command <<<
  jsonDict = {}
 
  for g in range(0, len(gammas)):
-     gamma = gammas[g]
-     os.popen("mkdir -p gammas/" + gamma)
-     os.popen("unzip " + zips[g] + " -d gammas/" + gamma + "/")
-     chunk = {
-         'cellularity': [],
-         'ploidy': [],
-         'SLPP': []
-      }
-     if not isfile(paths[g]):
-        continue
-     with open(paths[g]) as f:
-         for line in f:
-             if line.find("cellularity") > 0:
-                 continue
-             line = line.rstrip()
-             tmp = line.split("\t")
-             chunk['cellularity'].append(tmp[0])
-             chunk['ploidy'].append(tmp[1])
-             chunk['SLPP'].append(tmp[2])
-     f.close()
-     jsonDict[gamma] = chunk
+   gamma = gammas[g]
+   os.system("mkdir -p gammas/" + gamma)
+   os.system("unzip " + zips[g] + " -d gammas/" + gamma + "/")
+   chunk = {
+     'cellularity': [],
+     'ploidy': [],
+     'SLPP': []
+   }
+   if not isfile(paths[g]):
+     continue
+   with open(paths[g]) as f:
+     for line in f:
+       if line.find("cellularity") > 0:
+         continue
+       line = line.rstrip()
+       tmp = line.split("\t")
+       chunk['cellularity'].append(tmp[0])
+       chunk['ploidy'].append(tmp[1])
+       chunk['SLPP'].append(tmp[2])
+   f.close()
+   jsonDict[gamma] = chunk
  
  if len(jsonDict.keys()) > 0: 
-     with open(json_name, 'w') as json_file:
-         json.dump(jsonDict, json_file)
+   with open(json_name, 'w') as json_file:
+     json.dump(jsonDict, json_file)
+
+ cellularity = []
+ ploidy = []
+ no_segments = []
+
+ for g in gammas:
+   print(g)
+   solutions = pd.read_table(os.path.join("gammas", g, "~{prefix}" + '_alternative_solutions.txt'))
+   row = solutions.loc[solutions['SLPP'].idxmax()]
+   cellularity.append(float(row['cellularity']))
+   ploidy.append(float(row['ploidy']))
+   path_seg = os.path.join("gammas", g, "~{prefix}" + '_Total_CN.seg')
+   no_segments.append(len(open(path_seg).readlines()) - 1)
+ 
+ gamma_solutions = pd.DataFrame({"gamma": gammas,
+                                 "cellularity": cellularity,
+                                 "ploidy": ploidy,
+                                 "no_segments": no_segments})
+ gamma_solutions.to_csv('gamma_solutions.csv', index=False)
  CODE
+
+ ~{rScript} ~{summaryPlotScript} -f gamma_solutions.csv -o ~{prefix}_summary.png -w ~{width} -h ~{height}
+ cp ~{sequenzaRmd} .
+ ~{rScript} -e "rmarkdown::render('SequenzaSummary.Rmd', params = list(sample = '~{prefix}',summaryImage = '~{prefix}_summary.png'))"
+ mv SequenzaSummary.pdf ~{prefix}_summary.pdf
  zip -qr ~{prefix}_results.zip gammas/*
 >>>
 
 runtime {
   memory:  "~{jobMemory} GB"
+  modules: "~{modules}"
 }
 
 output {
   File? outputJson = "~{prefix}_alternative_solutions.json"
+  File gammaSummaryPlot = "~{prefix}_summary.png"
+  File gammaMarkdownPdf = "~{prefix}_summary.pdf"
   File combinedZip = "~{prefix}_results.zip"
 }
 }
