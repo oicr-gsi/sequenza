@@ -114,7 +114,7 @@ input {
   String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
   String prefix = "SEQUENZA"
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
-  String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
+  String? ploidyFile
   String modules = "sequenza/2.1.2 sequenza-scripts/2.1.5 sequenza-res/2.1.2"
   String? female
   String? cancerType
@@ -135,7 +135,7 @@ parameter_meta {
  minReadsBaf: "threshold of minimum number of observation of B-allele frequency in a segment"
  rScript: "Path to Rscript"
  sequenzaScript: "Sequenza wrapper script, instructions for running the pipeline"
- ploidyFile: "Resource used by sequenza to infer ploidy value"
+ ploidyFile: "Resource used by sequenza to infer ploidy value, optional"
  modules: "Names and versions of modules"
  timeout: "Timeout in hours, needed to override imposed limits"
  jobMemory: "Memory allocated for this job"
@@ -143,7 +143,7 @@ parameter_meta {
 
 command <<<
  set -euo pipefail 
- ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} \
+ ~{rScript} ~{sequenzaScript} -s ~{seqzFile} ~{"-l" + ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} \
             ~{"-f " + female} ~{"-t " + cancerType} ~{"-n " + minReadsNormal} ~{"-a " + minReadsBaf}
  zip -qr ~{prefix}_results.zip sol* ~{prefix}*
 >>>
