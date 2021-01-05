@@ -5,8 +5,10 @@ library(optparse)
 option_list = list(
   make_option(c("-s", "--seqz_file"), type="character", default=NULL,
            help="varscan snp file name", metavar="character"),
-  make_option(c("-r", "--ref_file"), type="character", default="hg19",
+  make_option(c("-r", "--ref_assembly"), type="character", default="hg19",
            help="reference assembly id", metavar="character"),
+  make_option(c("-z", "--genome_size"), type="integer", default=23,
+              help="genome siZe, as number of chromosomes to analyze [default= %default]", metavar="integer"),
   make_option(c("-b", "--breaks_method"), type="character", default="het",
            help="breaks method for segmentation [default= %default]", metavar="character"),
   make_option(c("-i", "--fit_method"), type="character", default="baf",
@@ -39,7 +41,7 @@ opt_parser = OptionParser(option_list=option_list, add_help_option=FALSE);
 opt = parse_args(opt_parser);
 
 FILE   <- opt$seqz_file
-REF    <- opt$ref_file
+REF    <- opt$ref_assembly
 SAMPLE <- opt$prefix
 PLOIDY <- opt$ploidy_file
 GAMMA  <- opt$gamma
@@ -50,7 +52,8 @@ BREAKS <- opt$breaks_method
 FIT    <- opt$fit_method
 MAXVAR <- opt$maxvar
 WIDTH  <- opt$width
-HEIGHT <- opt$height 
+HEIGHT <- opt$height
+SIZE   <- opt$genome_size
 min_read_normal <- opt$min.reads.normal
 min_read_baf <- opt$min.reads.baf
 
@@ -91,6 +94,7 @@ sequenza.extract <- function(file, gz = TRUE, window = 1e6, overlap = 1, gamma =
     gc.stats <- gc.sample.stats(file, gz = gz)
   }
   chr.vect <- as.character(gc.stats$file.metrics$chr)
+  print(chr.vect)
   if (normalization.method != "mean") {
     gc.vect  <- setNames(gc.stats$raw.median, gc.stats$gc.values)
   } else {
@@ -111,12 +115,13 @@ sequenza.extract <- function(file, gz = TRUE, window = 1e6, overlap = 1, gamma =
   } else {
     chromosome.list <- chromosome.list[chromosome.list %in% chr.vect]
   }
+  print(paste0("Cromosome List: ",chromosome.list))
   for (chr in chromosome.list){
     if (verbose){
       message("Processing ", chr, ": ", appendLF = FALSE) 
     }
     file.lines <- gc.stats$file.metrics[which(chr.vect == chr), ]
-    seqz.data   <- read.seqz(file, gz = gz, n.lines = c(file.lines$start, file.lines$end))
+    seqz.data   <- read.seqz(file , gz = gz, n.lines = c(file.lines$start, file.lines$end))
     seqz.data$adjusted.ratio <- round(seqz.data$depth.ratio / gc.vect[as.character(seqz.data$GC.percent)], 3)
     seqz.hom <- seqz.data$zygosity.normal == 'hom'
     seqz.het <- seqz.data[!seqz.hom, ]
@@ -246,7 +251,7 @@ EXTR  <- sequenza.extract(FILE, gz = FALSE,
                           breaks.method = BREAKS,
                           window = WINDOW,       # expose
                           gamma  = GAMMA,        # expose
-                          assembly = REF,
+                          assembly = REF,        # expose
                           min.reads.normal = min_read_normal, 
                           min.reads.baf = min_read_baf)     
 
@@ -254,9 +259,11 @@ print("Extract Ok")
 ratio_priority = FALSE
 
 # ======================= FITTING ===========================================
-load(file=PLOIDY) # goes to module
-priors <- subset(ploidy_table,cancer_type==TYPE)[c("CN","value")]
-
+priors = data.frame(CN = 2, value = 2)
+if (!is.null(PLOIDY)) {
+ load(file=PLOIDY) # goes to module
+ priors <- subset(ploidy_table,cancer_type==TYPE)[c("CN","value")]
+}
 # run sequenza.fit in a tryCatch block
 CP <- tryCatch({
  value<-sequenza.fit(EXTR,
@@ -264,7 +271,7 @@ CP <- tryCatch({
                      ratio.priority = ratio_priority,
                      method = FIT,
                      XY = c(X = "chrX", Y = "chrY"),
-                     chromosome.list = 1:23)
+                     chromosome.list = 1:SIZE)
  
  value
 }, error = function(err) {
@@ -276,7 +283,7 @@ CP <- tryCatch({
                         ratio.priority = ratio_priority,
                         method = "mufreq",
                         XY = c(X = "chrX", Y = "chrY"),
-                        chromosome.list = 1:23)
+                        chromosome.list = 1:SIZE)
          value
    }, error = function(err) {
       message("Fitting with mufreq failed")
@@ -294,7 +301,7 @@ sequenza.results(EXTR,
                  CNt.max = MAXVAR,
                  ratio.priority = ratio_priority,
                  XY = c(X = "chrX", Y = "chrY"),
-                 chromosome.list = 1:23)
+                 chromosome.list = 1:SIZE)
 
 print("Results Ok")
 print ("Getting alternative purity solutions");
@@ -318,7 +325,7 @@ if(length(purities)>1){ ## bug fix to not run alt solutions if there are no alt 
                     SAMPLE,
                     out.dir = output_alt,
                     XY = c(X = "chrX", Y = "chrY"),
-                    chromosome.list = 1:23,
+                    chromosome.list = 1:SIZE,
                     cellularity = purities[i],
                     ploidy = ploidies[i])
  }
