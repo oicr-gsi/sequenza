@@ -33,11 +33,11 @@ meta {
   description: "Sequenza workflow, Given a pair of cellularity and ploidy parameters, the function returns the most likely allele-specific copy numbers with the corresponding log-posterior probability of the fit, for given values of B-allele frequency and depth ratio."
   dependencies: [
       {
-        name: "sequenza/2.1.2",
+        name: "sequenza/2.1.2m",
         url: "https://sequenzatools.bitbucket.io"
       },
       {
-        name: "sequenza-scripts/2.1.5",
+        name: "sequenza-scripts/2.1.5m",
         url: "https://github.com/oicr-gsi/sequenza"
       },
       {
@@ -72,7 +72,7 @@ input {
   String prefix = "SEQUENZA"
   String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
   String preprocessScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"
-  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.5"
+  String modules = "sequenza/2.1.2m sequenza-scripts/2.1.5m"
   Int  timeout = 20
   Int jobMemory = 38
 }
@@ -80,6 +80,7 @@ input {
 parameter_meta {
   snpFile: ".snp file from VarScan"
   cnvFile: ".copynumber file from Varscan"
+  prefix: "prefix for the output file name"
   rScript: "path to Rscript"
   preprocessScript: "Path to the preprocessing .R script"
   timeout: "timeout for this step in Hr, default is 20"
@@ -113,14 +114,16 @@ input {
   String gamma = "80"
   String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
   String prefix = "SEQUENZA"
+  String reference = "hg19"
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
-  String ploidyFile = "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
-  String modules = "sequenza/2.1.2 sequenza-scripts/2.1.5 sequenza-res/2.1.2"
+  String? ploidyFile
+  String modules = "sequenza/2.1.2m sequenza-scripts/2.1.5m sequenza-res/2.1.2"
   String? female
   String? cancerType
   Float? minReadsNormal
   Int? minReadsBaf
   Int windowSize = 100000
+  Int genomeSize = 23
   Int timeout = 20
   Int jobMemory = 24
 }
@@ -136,15 +139,18 @@ parameter_meta {
  rScript: "Path to Rscript"
  sequenzaScript: "Sequenza wrapper script, instructions for running the pipeline"
  ploidyFile: "Resource used by sequenza to infer ploidy value"
+ prefix: "prefix for the output file name"
+ reference: "genome assembly, hg38 etc. the default is hg19"
+ genomeSize: "number of chromosomes in haploid genome. Default is 23"
  modules: "Names and versions of modules"
  timeout: "Timeout in hours, needed to override imposed limits"
  jobMemory: "Memory allocated for this job"
 }
 
 command <<<
- set -euo pipefail 
- ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -l ~{ploidyFile} -w ~{windowSize} -g ~{gamma} -p ~{prefix} \
-            ~{"-f " + female} ~{"-t " + cancerType} ~{"-n " + minReadsNormal} ~{"-a " + minReadsBaf}
+ set -euo pipefail
+ ~{rScript} ~{sequenzaScript} -s ~{seqzFile} -r ~{reference} -z ~{genomeSize} -w ~{windowSize} -g ~{gamma} -p ~{prefix} \
+            ~{"-l " + ploidyFile} ~{"-f " + female} ~{"-t " + cancerType} ~{"-n " + minReadsNormal} ~{"-a " + minReadsBaf}
  zip -qr ~{prefix}_results.zip sol* ~{prefix}*
 >>>
 
@@ -173,7 +179,7 @@ input {
   Int jobMemory = 8
   Int width = 1200
   Int height = 400
-  String modules = "sequenza-scripts/2.1.5 rmarkdown/0.1"
+  String modules = "sequenza-scripts/2.1.5m rmarkdown/0.1m"
   String summaryPlotScript = "$SEQUENZA_SCRIPTS_ROOT/bin/plot_gamma_solutions.R"
   String sequenzaRmd = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaSummary.Rmd"
   String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"

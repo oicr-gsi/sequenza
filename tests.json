@@ -20,8 +20,9 @@
           "sequenza.snpFile": "/.mounts/labs/gsi/testdata/sequenza/input_data/VARTEST.snp",
           "sequenza.outputFileNamePrefix": "TESTING",
           "sequenza.preprocessInputs.jobMemory": 4,
+          "sequenza.runSequenza.ploidyFile": "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata",
           "sequenza.runSequenza.jobMemory": 6,
-          "sequenza.formatJson.jobMemory": 4
+          "sequenza.formatJson.jobMemory": 6
         }
       }
     }
