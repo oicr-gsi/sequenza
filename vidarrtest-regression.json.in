@@ -1,0 +1,102 @@
+[
+    {
+        "arguments": {
+            "sequenza.cnvFile": {
+                "contents": {
+                    "configuration": "/.mounts/labs/gsi/testdata/sequenza/input_data/VARTEST.copynumber",
+                    "externalIds": [
+                        {
+                            "id": "TEST",
+                            "provider": "TEST"
+                        }
+                    ]
+                },
+                "type": "EXTERNAL"
+            },
+            "sequenza.formatJson.height": null,
+            "sequenza.formatJson.jobMemory": 6,
+            "sequenza.formatJson.modules": null,
+            "sequenza.formatJson.rScript": null,
+            "sequenza.formatJson.sequenzaRmd": null,
+            "sequenza.formatJson.summaryPlotScript": null,
+            "sequenza.formatJson.width": null,
+            "sequenza.gammaRange": null,
+            "sequenza.outputFileNamePrefix": "TESTING",
+            "sequenza.preprocessInputs.jobMemory": 4,
+            "sequenza.preprocessInputs.modules": null,
+            "sequenza.preprocessInputs.preprocessScript": null,
+            "sequenza.preprocessInputs.rScript": null,
+            "sequenza.preprocessInputs.timeout": null,
+            "sequenza.runSequenza.cancerType": null,
+            "sequenza.runSequenza.female": null,
+            "sequenza.runSequenza.genomeSize": null,
+            "sequenza.runSequenza.jobMemory": 6,
+            "sequenza.runSequenza.minReadsBaf": null,
+            "sequenza.runSequenza.minReadsNormal": null,
+            "sequenza.runSequenza.modules": null,
+            "sequenza.runSequenza.ploidyFile": "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata",
+            "sequenza.runSequenza.rScript": null,
+            "sequenza.runSequenza.reference": null,
+            "sequenza.runSequenza.sequenzaScript": null,
+            "sequenza.runSequenza.timeout": null,
+            "sequenza.runSequenza.windowSize": null,
+            "sequenza.snpFile": {
+                "contents": {
+                    "configuration": "/.mounts/labs/gsi/testdata/sequenza/input_data/VARTEST.snp",
+                    "externalIds": [
+                        {
+                            "id": "TEST",
+                            "provider": "TEST"
+                        }
+                    ]
+                },
+                "type": "EXTERNAL"
+            }
+        },
+        "description": "Sequenza workflow test",
+        "engineArguments": {},
+        "id": "VARSCAN_OUTPUTS_PCSI_CHR22",
+        "metadata": {
+            "sequenza.gammaMarkdownPdf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_sequenza_VARSCAN_OUTPUTS_PCSI_CHR22_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "sequenza.gammaSummaryPlot": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_sequenza_VARSCAN_OUTPUTS_PCSI_CHR22_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "sequenza.resultJson": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_sequenza_VARSCAN_OUTPUTS_PCSI_CHR22_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "sequenza.resultZip": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_sequenza_VARSCAN_OUTPUTS_PCSI_CHR22_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            }
+        },
+        "validators": [
+            {
+                "metrics_calculate": "@CHECKOUT@/./calculate.sh",
+                "metrics_compare": "@CHECKOUT@/./compare.sh",
+                "output_metrics": "/.mounts/labs/gsi/testdata/sequenza/output_metrics/VARSCAN_OUTPUTS_PCSI_CHR22.metrics",
+                "type": "script"
+            }
+        ]
+    }
+]
