@@ -1,6 +1,7 @@
 {
     "names": [
-        "sequenza"
+        "sequenza",
+        "sequenza_by_tumor_group"
     ],
     "wdl": "sequenza.wdl"
 }
