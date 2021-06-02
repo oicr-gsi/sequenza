@@ -1,0 +1,116 @@
+# rstats/3.6
+- name: rstats
+  version: 3.6
+  build_type: custom
+  build_args:
+    steps:
+      - build_args:
+          prereq_args:
+            prereq_args:
+              md5: f5003472d58a3d3765a1c537fdae71d5
+              url: http://cran.utstat.utoronto.ca/src/base/R-3/R-3.6.1.tar.gz
+            prereq_type: download
+          prereq_type: extract
+          configure: ["--with-x=no"]
+        build_type: autotools
+      - build_args:
+          package: devtools
+          # version: don't set, devtools is needed for versioned cran installs
+        build_type: cran
+        scan_dirs: true
+  system_depends:
+    - name: libcurl4-openssl-dev
+    - name: libbz2-dev
+    - name: libncurses5-dev
+    - name: libreadline-dev
+      permitted_os: ["Ubuntu18.04"]
+    - name: libreadline6-dev
+      permitted_os: ["Debian8.11"]
+    - name: liblzma-dev
+    - name: libpcre3-dev
+    - name: gfortran
+      required_at: build
+    - name: libgfortran-7-dev
+      permitted_os: ["Ubuntu18.04"]
+    - name: libgfortran-4.9-dev
+      permitted_os: ["Debian8.11"]
+
+# bioconductor/3.8-rstats3.6
+- name: bioconductor
+  version: 3.8-rstats3.6
+  build_type: cran
+  build_args:
+    package: BiocManager
+    version: 1.30.4
+  depends:
+  - name: rstats
+    version: 3.6
+
+# sequenza/2.1.2
+- name: sequenza
+  version: 2.1.2
+  build_type: custom
+  build_args:
+    steps:
+      - build_type: bioc
+        build_args:
+          package: copynumber
+      - build_type: cran
+        build_args:
+          package: optparse
+      - build_type: cran
+        build_args:
+          package: sequenza
+          version: 2.1.2
+  depends:
+    - name: rstats
+      version: 3.6
+    - name: bioconductor
+      version: 3.8-rstats3.6
+      required_at: build
+
+# sequenza-scripts/2.1.2
+- name: sequenza-scripts
+  version: 2.1.2
+  build_type: custom
+  build_args:
+    prereq_args:
+      prereq_args:
+        sha256: 493b8ce6ae2397fbbc8f946a76cb5903e37ba224e9dfae0531f9d0f82ba86e93
+        url: https://github.com/oicr-gsi/sequenza/archive/v1.1.tar.gz
+      prereq_type: download
+    prereq_type: extract
+    steps:
+      - build_type: cran
+        build_args:
+          package: openxlsx
+      - build_type: copy
+        build_args:
+          from:
+            - Generate_plody_priors_table.R
+            - SequenzaPreProcess_v2.2.R
+            - SequenzaProcess_v2.2.R
+          to: bin/
+  depends:
+  - name: rstats
+    version: 3.6
+
+# sequenza-res/2.1.2
+- name: sequenza-res
+  version: 2.1.2
+  build_type: custom
+  build_args:
+    prereq_type: download
+    prereq_args:
+      sha256: b6604cf111849db6997c4ab0fc618f233fd63fc87a6381491470dfa6b1243bdc
+      url: http://api.gdc.cancer.gov/data/dea893cd-9189-4091-9611-e761a1d31ebe
+    steps:
+      - command: [ "Rscript", "{sequenza-scripts_root}/bin/Generate_plody_priors_table.R", "download" ]
+      - command: [ "cp", "PANCAN_ASCAT_ploidy_prob.Rdata", "{output_dir}/" ]
+  depends:
+    - name: sequenza-scripts
+      version: 2.1.2
+      required_at: build
+    - name: rstats
+      version: 3.6
+      required_at: build
