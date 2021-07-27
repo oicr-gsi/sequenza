@@ -4,8 +4,6 @@ Sequenza workflow, Given a pair of cellularity and ploidy parameters, the functi
 
 ## Overview
 
-![sequenza outputs](docs/Screenshot_Sequenza_PDFs.png)
-
 ## Dependencies
 
 * [sequenza 2.1.2m](https://sequenzatools.bitbucket.io)
@@ -76,28 +74,62 @@ Output | Type | Description
 `gammaMarkdownPdf`|File|rmarkdown pdf with all gamma-specific panels along with gamma effect summary plot
 
 
-## Niassa + Cromwell
+## Commands
 
-This WDL workflow is wrapped in a Niassa workflow (https://github.com/oicr-gsi/pipedev/tree/master/pipedev-niassa-cromwell-workflow) so that it can used with the Niassa metadata tracking system (https://github.com/oicr-gsi/niassa).
+This section lists command(s) run by sequenza workflow
 
-* Building
+* Running sequenza
+
+Sequenza produces the most likely allele-specific copy numbers for given values of B-allele frequency and depth ratio
+
+Preprocessing:
+
 ```
-mvn clean install
+  Rscript PREPROCESS_SCRIPT -s VARSCAN_SNP_FILE -c VARSCAN_CNV_FILE -y TRUE -p PREFIX
+
+```
+Prepearing data file using Varscan results:
+
+```
+ set -euo pipefail
+ Rscript SEQUENZA_SCRIPT -s SEQZ_FILE -r REFERENCE -z GENOME_SIZE -w WINDOW_SIZE -g GAMMA -p PREFIX \
+            -l PLOIDY_FILE (Optional) -f FEMALE_FLAG (Optional) -t CANCER_TYPE (Optional) -n MIN_READS_NORMAL (Optional) -a MIN_READS_BAF (OPtional)
+ zip -qr PREFIX_results.zip sol* PREFIX*
+
 ```
 
-* Testing
+Running analysis:
+
+
 ```
-mvn clean verify \
--Djava_opts="-Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication" \
--DrunTestThreads=2 \
--DskipITs=false \
--DskipRunITs=false \
--DworkingDirectory=/path/to/tmp/ \
--DschedulingHost=niassa_oozie_host \
--DwebserviceUrl=http://niassa-url:8080 \
--DwebserviceUser=niassa_user \
--DwebservicePassword=niassa_user_password \
--Dcromwell-host=http://cromwell-url:8000
+ ...
+
+ In this section Sequenza runs for a range of gamma values (fragment shown):
+
+ cellularity = []
+ ploidy = []
+ no_segments = []
+
+ for g in gammas:
+   print(g)
+   solutions = pd.read_table(os.path.join("gammas", g, "~{prefix}" + '_alternative_solutions.txt'))
+   row = solutions.loc[solutions['SLPP'].idxmax()]
+   cellularity.append(float(row['cellularity']))
+   ploidy.append(float(row['ploidy']))
+   path_seg = os.path.join("gammas", g, "~{prefix}" + '_Total_CN.seg')
+   no_segments.append(len(open(path_seg).readlines()) - 1)
+
+ 
+
+ gamma_solutions = pd.DataFrame({"gamma": gammas,
+                                 "cellularity": cellularity,
+                                 "ploidy": ploidy,
+                                 "no_segments": no_segments})
+ 
+ gamma_solutions.to_csv('gamma_solutions.csv', index=False)
+
+ ...
+
 ```
 
 ## Support
