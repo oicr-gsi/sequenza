@@ -88,18 +88,26 @@ Preprocessing:
   Rscript PREPROCESS_SCRIPT -s VARSCAN_SNP_FILE -c VARSCAN_CNV_FILE -y TRUE -p PREFIX
 
 ```
+
 Prepearing data file using Varscan results:
 
 ```
  set -euo pipefail
- Rscript SEQUENZA_SCRIPT -s SEQZ_FILE -r REFERENCE -z GENOME_SIZE -w WINDOW_SIZE -g GAMMA -p PREFIX \
-            -l PLOIDY_FILE (Optional) -f FEMALE_FLAG (Optional) -t CANCER_TYPE (Optional) -n MIN_READS_NORMAL (Optional) -a MIN_READS_BAF (OPtional)
+
+ Rscript SEQUENZA_SCRIPT -s SEQZ_FILE -r REFERENCE -z GENOME_SIZE 
+            -w WINDOW_SIZE 
+            -g GAMMA 
+            -p PREFIX 
+            -l PLOIDY_FILE (Optional) 
+            -f FEMALE_FLAG (Optional) 
+            -t CANCER_TYPE (Optional) 
+            -n MIN_READS_NORMAL (Optional) 
+            -a MIN_READS_BAF (OPtional)
+
  zip -qr PREFIX_results.zip sol* PREFIX*
 
 ```
-
 Running analysis:
-
 
 ```
  ...
@@ -110,6 +118,7 @@ Running analysis:
  ploidy = []
  no_segments = []
 
+
  for g in gammas:
    print(g)
    solutions = pd.read_table(os.path.join("gammas", g, "~{prefix}" + '_alternative_solutions.txt'))
@@ -119,13 +128,11 @@ Running analysis:
    path_seg = os.path.join("gammas", g, "~{prefix}" + '_Total_CN.seg')
    no_segments.append(len(open(path_seg).readlines()) - 1)
 
- 
 
  gamma_solutions = pd.DataFrame({"gamma": gammas,
                                  "cellularity": cellularity,
                                  "ploidy": ploidy,
                                  "no_segments": no_segments})
- 
  gamma_solutions.to_csv('gamma_solutions.csv', index=False)
 
  ...

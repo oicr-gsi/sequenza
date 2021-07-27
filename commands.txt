@@ -17,8 +17,16 @@ Prepearing data file using Varscan results:
 
 ```
  set -euo pipefail
- Rscript SEQUENZA_SCRIPT -s SEQZ_FILE -r REFERENCE -z GENOME_SIZE -w WINDOW_SIZE -g GAMMA -p PREFIX \
-            -l PLOIDY_FILE (Optional) -f FEMALE_FLAG (Optional) -t CANCER_TYPE (Optional) -n MIN_READS_NORMAL (Optional) -a MIN_READS_BAF (OPtional)
+ Rscript SEQUENZA_SCRIPT -s SEQZ_FILE -r REFERENCE -z GENOME_SIZE 
+            -w WINDOW_SIZE 
+            -g GAMMA 
+            -p PREFIX 
+            -l PLOIDY_FILE (Optional) 
+            -f FEMALE_FLAG (Optional) 
+            -t CANCER_TYPE (Optional) 
+            -n MIN_READS_NORMAL (Optional) 
+            -a MIN_READS_BAF (OPtional)
+
  zip -qr PREFIX_results.zip sol* PREFIX*
 
 ```
