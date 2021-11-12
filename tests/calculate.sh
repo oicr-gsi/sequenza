@@ -6,7 +6,7 @@ find .  -name "*\.zip" -exec unzip -q {} \; >/dev/null # unzip the results files
 # - .json files have no stochastic content, may be md5sum-checked
 # - .txt files are generically named, some stochastic content, may be md5sum-checked after rounding
 # - .seg files are processed similarly
-# - .pdf files are process after removing date from the header
+# - .pdf files are NOT PROCESSED, there is some stochastic part besides Date info
 
 # Therefore:
 # - Check md5sums for all types of files, sort
@@ -22,5 +22,3 @@ for f in $(find -name *_segments.txt);do awk '{printf "%s %i %i %.3f %i %.3f %.3
 echo ".seg files:"
 for f in $(find . -name *.seg);do awk '{printf "%s %s %i %i %i %.3f\n", $1, $2, $3, $4, $5, $6}' $f | md5sum;done | sort -V
 
-echo ".pdf files:"
-for f in $(find . -name "*.pdf");do tail -n +11 $f | md5sum;done | sort -V
