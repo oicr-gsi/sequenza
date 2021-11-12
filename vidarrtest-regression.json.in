@@ -54,7 +54,10 @@
             }
         },
         "description": "Sequenza workflow test",
-        "engineArguments": {},
+        "engineArguments": {
+           "write_to_cache": false,
+           "read_from_cache": false
+        },
         "id": "VARSCAN_OUTPUTS_PCSI_CHR22",
         "metadata": {
             "sequenza.gammaMarkdownPdf": {
@@ -92,8 +95,8 @@
         },
         "validators": [
             {
-                "metrics_calculate": "@CHECKOUT@/./calculate.sh",
-                "metrics_compare": "@CHECKOUT@/./compare.sh",
+                "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
+                "metrics_compare": "@CHECKOUT@/tests/compare.sh",
                 "output_metrics": "/.mounts/labs/gsi/testdata/sequenza/output_metrics/VARSCAN_OUTPUTS_PCSI_CHR22.metrics",
                 "type": "script"
             }
