@@ -1,3 +1,5 @@
+## Unreleased - 2021-11-10
+[GP-2887](https://jira.oicr.on.ca/browse/GP-2887) Making RT tests more robust
 ## 2.3 - 2021-01-08
  - Added genome size and reference parameters, ploidy file is optional. Modules used by default are R 4.0 - compliant, to enable support for newer assemblies (hg38, mm11)
 ## 2.2 - 2020-10-15
