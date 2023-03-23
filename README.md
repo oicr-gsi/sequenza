@@ -2,9 +2,10 @@
 
 Sequenza workflow, Given a pair of cellularity and ploidy parameters, the function returns the most likely allele-specific copy numbers with the corresponding log-posterior probability of the fit, for given values of B-allele frequency and depth ratio.
 Sequenza workflow, Given a pair of cellularity and ploidy parameters, the function returns the most likely allele-specific copy numbers with the corresponding log-posterior probability of the fit, for given values of B-allele frequency and depth ratio.
-
 ## Overview
 ![sequenza outputs](docs/Screenshot_Sequenza_PDFs.png)
+
+## Overview
 
 ## Dependencies
 
@@ -27,13 +28,14 @@ Parameter|Value|Description
 ---|---|---
 `snpFile`|File|File (data file with CNV calls from Varscan).
 `cnvFile`|File| File (data file with SNV calls from Varscan).
+`outputFileNamePrefix`|String|Output prefix to prefix output file names with.
+`reference`|String|Version of genome reference
 
 
 #### Optional workflow parameters:
 Parameter|Value|Default|Description
 ---|---|---|---
 `gammaRange`|Array[String]|["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "1000", "1250", "1500", "2000"]|List of gamma parameters for tuning Sequenza seqmentation step, used by copynumber package.
-`outputFileNamePrefix`|String|""|Output prefix to prefix output file names with.
 
 
 #### Optional task parameters:
@@ -45,16 +47,13 @@ Parameter|Value|Default|Description
 `preprocessInputs.timeout`|Int|20|timeout for this step in Hr, default is 20
 `preprocessInputs.jobMemory`|Int|38|Memory allocated for this job
 `runSequenza.rScript`|String|"$RSTATS_CAIRO_ROOT/bin/Rscript"|Path to Rscript
-`runSequenza.reference`|String|"hg19"|genome assembly, hg38 etc. the default is hg19
 `runSequenza.sequenzaScript`|String|"$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"|Sequenza wrapper script, instructions for running the pipeline
-`runSequenza.ploidyFile`|String?|None|Resource used by sequenza to infer ploidy value
 `runSequenza.modules`|String|"sequenza/2.1.2m sequenza-scripts/2.1.5m sequenza-res/2.1.2"|Names and versions of modules
 `runSequenza.female`|String?|None|logical, TRUE or FALSE. default is TRUE
 `runSequenza.cancerType`|String?|None|acronym for cancer type (from ploidy table)
 `runSequenza.minReadsNormal`|Float?|None|threshold of minimum number of observation of depth ratio in a segment
 `runSequenza.minReadsBaf`|Int?|None|threshold of minimum number of observation of B-allele frequency in a segment
 `runSequenza.windowSize`|Int|100000|parameter to define window size for segmentation
-`runSequenza.genomeSize`|Int|23|number of chromosomes in haploid genome. Default is 23
 `runSequenza.timeout`|Int|20|Timeout in hours, needed to override imposed limits
 `runSequenza.jobMemory`|Int|24|Memory allocated for this job
 `formatJson.jobMemory`|Int|8|Memory allocated for this job

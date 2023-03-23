@@ -51,6 +51,7 @@ parameter_meta {
   cnvFile: " File (data file with SNV calls from Varscan)."
   gammaRange: "List of gamma parameters for tuning Sequenza seqmentation step, used by copynumber package."
   outputFileNamePrefix: "Output prefix to prefix output file names with."
+  reference: "Version of genome reference"
 }
 
 meta {
