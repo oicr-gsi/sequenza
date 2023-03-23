@@ -12,7 +12,7 @@ input {
     File snpFile
     File cnvFile
     Array[String] gammaRange = ["50","100","200","300","400","500","600","700","800","900","1000","1250","1500","2000"]
-    String outputFileNamePrefix = ""
+    String outputFileNamePrefix
     String reference
 }
 
@@ -238,7 +238,7 @@ command <<<
  gammas = gms.split()
  zps = "~{sep=' ' zips}"
  zips = zps.split()
- json_name = "~{prefix}_alternative_solutions.json"
+ json_name = "~{prefix}_alternative_solutions.sequenza.json"
  jsonDict = {}
 
  for g in range(0, len(gammas)):
@@ -288,11 +288,11 @@ command <<<
  gamma_solutions.to_csv('gamma_solutions.csv', index=False)
  CODE
 
- ~{rScript} ~{summaryPlotScript} -f gamma_solutions.csv -o ~{prefix}_summary.png -w ~{width} -h ~{height}
+ ~{rScript} ~{summaryPlotScript} -f gamma_solutions.csv -o ~{prefix}_summary.sequenza.png -w ~{width} -h ~{height}
  cp ~{sequenzaRmd} .
- ~{rScript} -e "rmarkdown::render('SequenzaSummary.Rmd', params = list(sample = '~{prefix}',summaryImage = '~{prefix}_summary.png'))"
- mv SequenzaSummary.pdf ~{prefix}_summary.pdf
- zip -qr ~{prefix}_results.zip gammas/*
+ ~{rScript} -e "rmarkdown::render('SequenzaSummary.Rmd', params = list(sample = '~{prefix}',summaryImage = '~{prefix}_summary.sequenza.png'))"
+ mv SequenzaSummary.pdf ~{prefix}_summary.sequenza.pdf
+ zip -qr ~{prefix}_results.sequenza.zip gammas/*
 >>>
 
 runtime {
