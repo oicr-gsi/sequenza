@@ -1,5 +1,11 @@
 version 1.0
 
+
+struct GenomeResources {
+    Int genomeSize
+    String ploidyFile
+}
+
 workflow sequenza {
 input {
     # Normally we need only tumor bam, normal bam may be used when availablea
@@ -7,6 +13,26 @@ input {
     File cnvFile
     Array[String] gammaRange = ["50","100","200","300","400","500","600","700","800","900","1000","1250","1500","2000"]
     String outputFileNamePrefix = ""
+    String reference
+}
+
+Map[String, GenomeResources] resources = {
+  "hg19": {
+    "genomeSize": 23,
+    "ploidyFile": "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
+  },
+  "hg38": {
+    "genomeSize": 23,
+    "ploidyFile": "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
+  },
+  "mm9": {
+    "genomeSize": 20,
+    "ploidyFile": ""
+  },
+  "mm10": {
+    "genomeSize": 20,
+    "ploidyFile": ""
+  }
 }
 
 String sampleID = if outputFileNamePrefix=="" then basename(snpFile, ".snp") else outputFileNamePrefix
@@ -15,7 +41,7 @@ String sampleID = if outputFileNamePrefix=="" then basename(snpFile, ".snp") els
 call preprocessInputs { input: snpFile = snpFile, cnvFile = cnvFile, prefix = sampleID }
 # Configure and run Sequenza
 scatter (g in gammaRange) {
-  call runSequenza { input: seqzFile = preprocessInputs.seqzFile, prefix = sampleID, gamma = g }
+  call runSequenza { input: seqzFile = preprocessInputs.seqzFile, prefix = sampleID, gamma = g, reference = reference, ploidyFile = resources[reference].ploidyFile, genomeSize = resources[reference].genomeSize }
 }
 # Format combined json and re-zip results in a single zip
 call formatJson { input: txtPaths = select_all(runSequenza.altSolutions), zips = runSequenza.outZip,  gammaValues = runSequenza.gammaOut, prefix = sampleID }
@@ -25,6 +51,7 @@ parameter_meta {
   cnvFile: " File (data file with SNV calls from Varscan)."
   gammaRange: "List of gamma parameters for tuning Sequenza seqmentation step, used by copynumber package."
   outputFileNamePrefix: "Output prefix to prefix output file names with."
+  reference: "Version of genome reference"
 }
 
 meta {
@@ -114,7 +141,7 @@ input {
   String gamma = "80"
   String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
   String prefix = "SEQUENZA"
-  String reference = "hg19"
+  String reference 
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
   String? ploidyFile
   String modules = "sequenza/2.1.2m sequenza-scripts/2.1.5m sequenza-res/2.1.2"
@@ -212,7 +239,7 @@ command <<<
  gammas = gms.split()
  zps = "~{sep=' ' zips}"
  zips = zps.split()
- json_name = "~{prefix}_alternative_solutions.json"
+ json_name = "~{prefix}_alternative_solutions.sequenza.json"
  jsonDict = {}
 
  for g in range(0, len(gammas)):
@@ -262,11 +289,11 @@ command <<<
  gamma_solutions.to_csv('gamma_solutions.csv', index=False)
  CODE
 
- ~{rScript} ~{summaryPlotScript} -f gamma_solutions.csv -o ~{prefix}_summary.png -w ~{width} -h ~{height}
+ ~{rScript} ~{summaryPlotScript} -f gamma_solutions.csv -o ~{prefix}_summary.sequenza.png -w ~{width} -h ~{height}
  cp ~{sequenzaRmd} .
- ~{rScript} -e "rmarkdown::render('SequenzaSummary.Rmd', params = list(sample = '~{prefix}',summaryImage = '~{prefix}_summary.png'))"
- mv SequenzaSummary.pdf ~{prefix}_summary.pdf
- zip -qr ~{prefix}_results.zip gammas/*
+ ~{rScript} -e "rmarkdown::render('SequenzaSummary.Rmd', params = list(sample = '~{prefix}',summaryImage = '~{prefix}_summary.sequenza.png'))"
+ mv SequenzaSummary.pdf ~{prefix}_summary.sequenza.pdf
+ zip -qr ~{prefix}_results.sequenza.zip gammas/*
 >>>
 
 runtime {
@@ -275,9 +302,9 @@ runtime {
 }
 
 output {
-  File? outputJson = "~{prefix}_alternative_solutions.json"
-  File gammaSummaryPlot = "~{prefix}_summary.png"
-  File gammaMarkdownPdf = "~{prefix}_summary.pdf"
-  File combinedZip = "~{prefix}_results.zip"
+  File? outputJson = "~{prefix}_alternative_solutions.sequenza.json"
+  File gammaSummaryPlot = "~{prefix}_summary.sequenza.png"
+  File gammaMarkdownPdf = "~{prefix}_summary.sequenza.pdf"
+  File combinedZip = "~{prefix}_results.sequenza.zip"
 }
 }

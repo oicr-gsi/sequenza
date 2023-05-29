@@ -36,6 +36,7 @@
             "sequenza.runSequenza.modules": null,
             "sequenza.runSequenza.ploidyFile": "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata",
             "sequenza.runSequenza.rScript": null,
+            "sequenza.reference": "hg38",
             "sequenza.runSequenza.reference": null,
             "sequenza.runSequenza.sequenzaScript": null,
             "sequenza.runSequenza.timeout": null,
