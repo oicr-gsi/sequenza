@@ -97,7 +97,7 @@ input {
   File snpFile
   File cnvFile
   String prefix = "SEQUENZA"
-  String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
+  String rScript = "$RSTATS_ROOT/bin/Rscript"
   String preprocessScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaPreProcess_v2.2.R"
   String modules = "sequenza/2.1.2m sequenza-scripts/2.1.5m"
   Int  timeout = 20
@@ -139,7 +139,7 @@ input {
   File seqzFile
   # Parameters
   String gamma = "80"
-  String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
+  String rScript = "$RSTATS_ROOT/bin/Rscript"
   String prefix = "SEQUENZA"
   String reference 
   String sequenzaScript = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaProcess_v2.2.R"
@@ -209,7 +209,7 @@ input {
   String modules = "sequenza-scripts/2.1.5m rmarkdown/0.1m"
   String summaryPlotScript = "$SEQUENZA_SCRIPTS_ROOT/bin/plot_gamma_solutions.R"
   String sequenzaRmd = "$SEQUENZA_SCRIPTS_ROOT/bin/SequenzaSummary.Rmd"
-  String rScript = "$RSTATS_CAIRO_ROOT/bin/Rscript"
+  String rScript = "$RSTATS_ROOT/bin/Rscript"
 }
 
 parameter_meta {
