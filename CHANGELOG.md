@@ -1,3 +1,8 @@
+## [2.1.6] - 2023-05-30
+
+### Optmizing issues specified in GRD-544
+
+
 ## Unreleased - 2021-11-10
 [GP-2887](https://jira.oicr.on.ca/browse/GP-2887) Making RT tests more robust
 ## 2.3 - 2021-01-08
