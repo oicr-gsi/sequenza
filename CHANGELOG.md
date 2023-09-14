@@ -1,6 +1,8 @@
-## [2.1.6] - 2023-05-30
+## 2.1.7 - 2023-09-14
+- Removing mm9, updating mm10, and making ploidy file optional
 
-### Optmizing issues specified in GRD-544
+## [2.1.6] - 2023-05-30
+- Optmizing issues specified in GRD-544
 
 
 ## Unreleased - 2021-11-10
