@@ -1,10 +1,9 @@
+## 2.2.0 - 2024-06-25
+[GRD-797](https://jira.oicr.on.ca/browse/GRD-797) - add vidarr labels to outputs (changes to medata only)
 ## 2.1.7 - 2023-09-14
 - Removing mm9, updating mm10, and making ploidy file optional
-
 ## [2.1.6] - 2023-05-30
 - Optmizing issues specified in GRD-544
-
-
 ## Unreleased - 2021-11-10
 [GP-2887](https://jira.oicr.on.ca/browse/GP-2887) Making RT tests more robust
 ## 2.3 - 2021-01-08

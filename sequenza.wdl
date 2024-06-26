@@ -67,12 +67,24 @@ meta {
         url: "http://api.gdc.cancer.gov/data/dea893cd-9189-4091-9611-e761a1d31ebe"
       }
   ]
-  output_meta: {
-    resultZip: "All results from sequenza runs using gamma sweep.",
-    resultJson: "Combined json file with ploidy and contamination data.",
-    gammaSummaryPlot: "png for summary plot showing the effect of different gamma values",
-    gammaMarkdownPdf: "rmarkdown pdf with all gamma-specific panels along with gamma effect summary plot"
-  }
+    output_meta: {
+    resultZip: {
+        description: "All results from sequenza runs using gamma sweep.",
+        vidarr_label: "resultZip"
+    },
+    resultJson: {
+        description: "Combined json file with ploidy and contamination data.",
+        vidarr_label: "resultJson"
+    },
+    gammaSummaryPlot: {
+        description: "png for summary plot showing the effect of different gamma values",
+        vidarr_label: "gammaSummaryPlot"
+    },
+    gammaMarkdownPdf: {
+        description: "rmarkdown pdf with all gamma-specific panels along with gamma effect summary plot",
+        vidarr_label: "gammaMarkdownPdf"
+    }
+}
 }
 
 output {
