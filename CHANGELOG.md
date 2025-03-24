@@ -28,18 +28,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Added alternative name for sequenza
 
-## [Unrelease] - 2021-01-08
+## [2.1.5m] - 2021-01-08
 ### Added
 - Added genome size and reference parameters, ploidy file is optional. Modules used by default are R 4.0 - compliant, to enable support for newer assemblies (hg38, mm11).
 
-## [Unrealease] - 2020-10-15
+## [2.1.5] - 2020-10-15
 ### Added
 - Added an ability to produce .png for the contour and genome plots showing the effect of gamma value, along with a summary plot and a rmarkdown .pdf with all new plots together.
 
-## [Unrelease] - 2020-06-26
+## [2.1.2] - 2020-06-26
 ### Added
 - Added window, gamma, female and cancerType parameters for sequenza. Fixed an issue in R script, made more robust when dealing with challenging data.
 
-## [Unrelease] - 2020-05-07
+## [1.0] - 2020-03-13
 ### Added
 - Initial Release.
