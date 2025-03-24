@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Removing mm9, updating mm10, and making ploidy file optional.
 
+## [2.1.6m] - 2023-05-30
+### Changed
+- Use rstasts instead of now not supported rstats-cairo
+
 ## [2.1.6] - 2023-05-30
 ### Fixed
 - Optmizing issues specified in GRD-544.
@@ -20,18 +24,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [GP-2887](https://jira.oicr.on.ca/browse/GP-2887) Making RT tests more robust.
 
-## [2.3] - 2021-01-08
+## [1.0.0] - 2021-06-02
+### Changed
+- Added alternative name for sequenza
+
+## [Unrelease] - 2021-01-08
 ### Added
 - Added genome size and reference parameters, ploidy file is optional. Modules used by default are R 4.0 - compliant, to enable support for newer assemblies (hg38, mm11).
 
-## [2.2] - 2020-10-15
+## [Unrealease] - 2020-10-15
 ### Added
 - Added an ability to produce .png for the contour and genome plots showing the effect of gamma value, along with a summary plot and a rmarkdown .pdf with all new plots together.
 
-## [2.1] - 2020-06-26
+## [Unrelease] - 2020-06-26
 ### Added
 - Added window, gamma, female and cancerType parameters for sequenza. Fixed an issue in R script, made more robust when dealing with challenging data.
 
-## [2.0] - 2020-05-07
+## [Unrelease] - 2020-05-07
 ### Added
 - Initial Release.
