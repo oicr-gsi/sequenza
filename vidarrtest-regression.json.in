@@ -3,7 +3,7 @@
         "arguments": {
             "sequenza.cnvFile": {
                 "contents": {
-                    "configuration": "/.mounts/labs/gsi/testdata/sequenza/input_data/VARTEST.copynumber",
+                    "configuration": "/.mounts/labs/gsi/testdata/sequenza/test_inputs/VARTEST.copynumber",
                     "externalIds": [
                         {
                             "id": "TEST",
@@ -43,7 +43,7 @@
             "sequenza.runSequenza.windowSize": null,
             "sequenza.snpFile": {
                 "contents": {
-                    "configuration": "/.mounts/labs/gsi/testdata/sequenza/input_data/VARTEST.snp",
+                    "configuration": "/.mounts/labs/gsi/testdata/sequenza/test_inputs/VARTEST.snp",
                     "externalIds": [
                         {
                             "id": "TEST",
@@ -98,7 +98,7 @@
             {
                 "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
                 "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-                "output_metrics": "/.mounts/labs/gsi/testdata/sequenza/output_metrics/VARSCAN_OUTPUTS_PCSI_CHR22.metrics",
+                "output_metrics": "/.mounts/labs/gsi/testdata/sequenza/output_metrics/workflow_test_01.metrics",
                 "type": "script"
             }
         ]
