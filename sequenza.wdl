@@ -25,6 +25,10 @@ Map[String, GenomeResources] resources = {
     "genomeSize": 23,
     "ploidyFile": "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
   },
+  "hg38_noAlt": {
+    "genomeSize": 23,
+    "ploidyFile": "$SEQUENZA_RES_ROOT/PANCAN_ASCAT_ploidy_prob.Rdata"
+  },
   "mm10": {
     "genomeSize": 20 
   }
