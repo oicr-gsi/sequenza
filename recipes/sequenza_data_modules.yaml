@@ -1,0 +1,19 @@
+# sequenza-res/2.1.2
+- name: sequenza-res
+  version: 2.1.2
+  build_type: custom
+  build_args:
+    prereq_type: download
+    prereq_args:
+      sha256: b6604cf111849db6997c4ab0fc618f233fd63fc87a6381491470dfa6b1243bdc
+      url: http://api.gdc.cancer.gov/data/dea893cd-9189-4091-9611-e761a1d31ebe
+    steps:
+      - command: [ "Rscript", "{sequenza-scripts_root}/bin/Generate_plody_priors_table.R", "download" ]
+      - command: [ "cp", "PANCAN_ASCAT_ploidy_prob.Rdata", "{output_dir}/" ]
+  depends:
+    - name: sequenza-scripts
+      version: 2.1.2
+      required_at: build
+    - name: rstats
+      version: 3.6
+      required_at: build
